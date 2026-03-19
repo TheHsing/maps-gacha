@@ -899,11 +899,16 @@ function updateDailyUI(){
 async function claimPremiumDaily(){
   if(!currentUser){openAuthModal('signup');return;}
   var now=Date.now();
+  // Only reset if 24h has passed since the FIRST claim of the day (when claimed=set)
   var premReset=!dailyPremiumClaimed||(now-dailyPremiumClaimed)>=24*60*60*1000;
-  if(premReset) dailyPremiumClaimsLeft=2;
+  if(premReset){
+    dailyPremiumClaimsLeft=2;
+    dailyPremiumClaimed=null;
+  }
   if(dailyPremiumClaimsLeft<=0) return;
   dailyPremiumClaimsLeft--;
-  if(dailyPremiumClaimsLeft===0) dailyPremiumClaimed=now;
+  // Set the claimed timestamp on the FIRST claim so 24h timer starts
+  if(dailyPremiumClaimed===null) dailyPremiumClaimed=now;
   await saveCoins();updateDailyUI();
   showToast('Free Premium Pack!');
   selectPack('premium');startPull(true);
