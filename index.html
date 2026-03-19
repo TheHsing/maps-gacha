@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Maps Gacha</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
   --bg:#0e0e12;--bg2:#16161d;--bg3:#1e1e28;
@@ -21,17 +22,32 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(200,240,96,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(200,240,96,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
-nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:56px;}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 1.5rem;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:56px;}
 .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--text);display:flex;align-items:center;gap:8px;}
 .nav-logo-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block;}
 .nav-tabs{display:flex;gap:2px;}
 .nav-tab{padding:6px 14px;border-radius:8px;font-size:13px;font-weight:500;background:none;border:none;cursor:pointer;color:var(--text2);transition:all 0.15s;font-family:'DM Sans',sans-serif;}
 .nav-tab:hover{color:var(--text);background:rgba(255,255,255,0.05);}
 .nav-tab.active{color:var(--bg);background:var(--accent);}
+.nav-right{display:flex;align-items:center;justify-content:flex-end;gap:8px;}
 .coin-display{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:13px;font-weight:500;}
-.coin-icon{width:10px;height:10px;border-radius:50%;background:var(--legendary);}
+.coin-icon{width:10px;height:10px;border-radius:50%;background:var(--legendary);flex-shrink:0;}
+.auth-btn{padding:6px 14px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;border:1px solid var(--border2);background:transparent;color:var(--text2);transition:all 0.15s;}
+.auth-btn:hover{color:var(--text);background:rgba(255,255,255,0.05);}
+.auth-btn.primary{background:var(--accent);color:var(--bg);border-color:transparent;}
+.auth-btn.primary:hover{background:var(--accent2);}
+.user-display{font-size:12px;color:var(--text2);}
+
 .page{display:none;position:relative;z-index:1;}
 .page.active{display:block;}
+
+/* GUEST BANNER */
+.guest-banner{background:rgba(200,240,96,0.06);border:1px solid rgba(200,240,96,0.2);border-radius:10px;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:1.5rem;flex-wrap:wrap;}
+.guest-banner-text{font-size:13px;color:var(--text2);}
+.guest-banner-text span{color:var(--accent);font-weight:500;}
+.guest-banner-btn{padding:5px 14px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;background:var(--accent);color:var(--bg);border:none;}
 
 /* GACHA PAGE */
 .gacha-page{min-height:calc(100vh - 56px);display:flex;flex-direction:column;align-items:center;padding:3rem 1rem 4rem;gap:2rem;}
@@ -41,22 +57,14 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 
 /* PACK SELECTOR */
 .pack-selector{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;}
-.pack-option{
-  width:160px;border-radius:16px;background:var(--bg3);
-  border:1px solid var(--border2);display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:8px;cursor:pointer;
-  transition:transform 0.2s,border-color 0.2s;position:relative;
-  overflow:hidden;padding:24px 16px;
-}
+.pack-option{width:160px;border-radius:16px;background:var(--bg3);border:1px solid var(--border2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:transform 0.2s,border-color 0.2s;position:relative;overflow:hidden;padding:24px 16px;}
 .pack-option::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,rgba(200,240,96,0.06),transparent 70%);pointer-events:none;}
 .pack-option:hover{transform:translateY(-4px);}
 .pack-option.selected{border-color:var(--accent);}
 .pack-option.pack-premium::before{background:radial-gradient(circle at 50% 30%,rgba(55,138,221,0.1),transparent 70%);}
 .pack-option.pack-elite::before{background:radial-gradient(circle at 50% 30%,rgba(239,159,39,0.12),transparent 70%);}
-.pack-option:hover.pack-standard{border-color:var(--accent);}
 .pack-option:hover.pack-premium{border-color:var(--rare);}
 .pack-option:hover.pack-elite{border-color:var(--legendary);}
-.pack-globe{font-size:40px;}
 .pack-name{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--text);text-align:center;}
 .pack-cost{font-size:12px;font-weight:500;padding:3px 10px;border-radius:20px;display:flex;align-items:center;gap:5px;}
 .pack-cost-free{background:rgba(200,240,96,0.12);color:var(--accent);}
@@ -65,8 +73,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .pack-rates span{color:var(--text);font-weight:500;}
 
 /* PULL AREA */
-.pull-area{display:flex;flex-direction:column;align-items:center;gap:1.5rem;}
-.pull-btn-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;}
+.pull-area{display:flex;flex-direction:column;align-items:center;gap:1.5rem;width:100%;}
 .pull-btn{padding:14px 44px;border-radius:100px;background:var(--accent);border:none;font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:#0e0e12;cursor:pointer;transition:transform 0.15s,background 0.15s;letter-spacing:0.03em;}
 .pull-btn:hover{background:var(--accent2);transform:scale(1.03);}
 .pull-btn:active{transform:scale(0.97);}
@@ -75,8 +82,9 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .pull-btn.elite-btn{background:var(--legendary);color:#0e0e12;}
 .pull-btn.elite-btn:hover{background:#BA7517;}
 .pull-btn:disabled{opacity:0.4;cursor:default;transform:none;}
+.not-enough{font-size:11px;color:var(--mythic);text-align:center;}
 
-.cards-row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;max-width:760px;}
+.cards-row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;max-width:1100px;}
 .card-slot{perspective:900px;cursor:pointer;}
 @keyframes cardFallIn{from{opacity:0;transform:translateY(-60px) rotate(var(--rot));}to{opacity:1;transform:translateY(0) rotate(var(--rot));}}
 .card-slot.falling{animation:cardFallIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;}
@@ -113,7 +121,6 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .flash-epic{background:rgba(127,119,221,0.45);}
 .flash-legendary{background:rgba(239,159,39,0.45);}
 .flash-mythic{background:rgba(226,75,74,0.5);}
-
 .gacha-hint{font-size:13px;color:var(--text2);text-align:center;min-height:20px;}
 
 /* COLLECTION PAGE */
@@ -137,7 +144,6 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .fpill.active.fe{background:var(--epic-bg);border-color:var(--epic);color:var(--epic-light);}
 .fpill.active.fl{background:var(--legendary-bg);border-color:var(--legendary);color:var(--legendary-light);}
 .fpill.active.fm{background:var(--mythic-bg);border-color:var(--mythic);color:var(--mythic-light);}
-
 .coll-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;}
 .coll-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform 0.15s,border-color 0.15s;position:relative;}
 .coll-card:hover{transform:translateY(-3px);border-color:var(--border2);}
@@ -152,7 +158,6 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .cc-date{font-size:9px;color:var(--text3);}
 .cc-copies{font-size:9px;color:var(--text2);}
 .dupe-badge-cc{position:absolute;top:6px;right:6px;background:rgba(14,14,18,0.85);border:1px solid var(--border2);border-radius:8px;padding:2px 6px;font-size:9px;font-weight:600;color:var(--text2);}
-
 .coll-list{display:flex;flex-direction:column;gap:5px;}
 .list-item{display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;cursor:pointer;transition:background 0.15s,border-color 0.15s;}
 .list-item:hover{background:var(--bg3);border-color:var(--border2);}
@@ -165,11 +170,33 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .li-copies{font-size:12px;color:var(--text2);flex-shrink:0;min-width:36px;text-align:right;}
 .li-date{font-size:11px;color:var(--text3);flex-shrink:0;min-width:54px;text-align:right;}
 
-/* MODAL */
+/* AUTH MODAL */
 .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
 .modal-backdrop.open{display:flex;}
 .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;width:320px;overflow:hidden;animation:modalIn 0.25s cubic-bezier(0.34,1.56,0.64,1);max-height:90vh;overflow-y:auto;}
 @keyframes modalIn{from{opacity:0;transform:scale(0.88) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
+/* AUTH FORM */
+.auth-modal{padding:28px 24px;}
+.auth-modal-title{font-family:'Syne',sans-serif;font-weight:700;font-size:20px;margin-bottom:4px;}
+.auth-modal-sub{font-size:13px;color:var(--text2);margin-bottom:24px;}
+.auth-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.auth-field label{font-size:12px;color:var(--text2);}
+.auth-field input{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;font-size:14px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;}
+.auth-field input:focus{border-color:var(--accent);}
+.auth-submit{width:100%;padding:12px 0;border-radius:10px;background:var(--accent);border:none;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#0e0e12;cursor:pointer;margin-top:6px;transition:background 0.15s;}
+.auth-submit:hover{background:var(--accent2);}
+.auth-divider{display:flex;align-items:center;gap:10px;margin:16px 0;font-size:12px;color:var(--text3);}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.google-btn{width:100%;padding:11px 0;border-radius:10px;background:var(--bg3);border:1px solid var(--border2);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 0.15s;}
+.google-btn:hover{background:rgba(255,255,255,0.07);}
+.auth-switch{text-align:center;margin-top:16px;font-size:13px;color:var(--text2);}
+.auth-switch button{background:none;border:none;color:var(--accent);cursor:pointer;font-size:13px;font-family:'DM Sans',sans-serif;}
+.auth-error{font-size:12px;color:var(--mythic);margin-bottom:10px;text-align:center;}
+.auth-close{width:100%;padding:10px 0;background:none;border:none;border-top:1px solid var(--border);cursor:pointer;font-size:12px;color:var(--text2);font-family:'DM Sans',sans-serif;margin-top:16px;}
+.auth-close:hover{color:var(--text);}
+
+/* CARD MODAL */
 .modal-rarity{padding:8px 0;font-size:10px;font-weight:700;letter-spacing:0.1em;text-align:center;font-family:'Syne',sans-serif;}
 .modal-img{width:100%;height:150px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:64px;overflow:hidden;}
 .modal-img img{width:100%;height:100%;object-fit:cover;}
@@ -203,23 +230,32 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .bsr-btn:hover:not(.mdisabled){background:var(--bg2);}
 .modal-close{width:100%;padding:12px 0;background:none;border:none;border-top:1px solid var(--border);cursor:pointer;font-size:13px;color:var(--text2);font-family:'DM Sans',sans-serif;transition:color 0.15s;}
 .modal-close:hover{color:var(--text);}
+
 .empty-state{text-align:center;padding:4rem 1rem;color:var(--text2);}
 .empty-state p{font-size:14px;margin-top:8px;}
 .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:10px 20px;font-size:13px;color:var(--text);z-index:300;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);}
-.not-enough{font-size:11px;color:var(--mythic);text-align:center;}
+.loading-overlay{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:500;font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text2);}
 </style>
 </head>
 <body>
+
+<div class="loading-overlay" id="loading-overlay">Loading...</div>
+
 <nav>
   <div class="nav-logo"><span class="nav-logo-dot"></span>Maps Gacha</div>
   <div class="nav-tabs">
     <button class="nav-tab active" id="tab-gacha">Pull</button>
     <button class="nav-tab" id="tab-collection">Collection</button>
   </div>
-  <div class="coin-display"><div class="coin-icon"></div><span id="nav-coins">0</span></div>
+  <div class="nav-right" id="nav-right">
+    <div class="coin-display" id="coin-display" style="display:none"><div class="coin-icon"></div><span id="nav-coins">0</span></div>
+    <button class="auth-btn" id="btn-login">Log in</button>
+    <button class="auth-btn primary" id="btn-signup">Sign up</button>
+  </div>
 </nav>
 
+<!-- GACHA PAGE -->
 <div class="page active" id="page-gacha">
   <div class="gacha-page">
     <div>
@@ -227,41 +263,31 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
       <div class="gacha-sub">Pull packs · collect places · upgrade cards</div>
     </div>
 
+    <div id="guest-banner-wrap"></div>
+
     <div class="pack-selector">
       <div class="pack-option pack-standard selected" data-pack="standard">
-        <div class="pack-globe">🌍</div>
+        <div style="font-size:40px">🌍</div>
         <div class="pack-name">Standard</div>
         <div class="pack-cost pack-cost-free">Free</div>
-        <div class="pack-rates">
-          Common <span>48%</span> · Uncommon <span>30%</span><br>
-          Rare <span>15%</span> · Epic <span>5%</span><br>
-          Legendary <span>2%</span> · Mythic <span>0.5%</span>
-        </div>
+        <div class="pack-rates">Common <span>48%</span> · Uncommon <span>30%</span><br>Rare <span>15%</span> · Epic <span>5%</span><br>Legendary <span>2%</span> · Mythic <span>0.5%</span></div>
       </div>
       <div class="pack-option pack-premium" data-pack="premium">
-        <div class="pack-globe">🌐</div>
+        <div style="font-size:40px">🌐</div>
         <div class="pack-name">Premium</div>
         <div class="pack-cost pack-cost-coins"><div class="coin-icon"></div>500 coins</div>
-        <div class="pack-rates">
-          Common <span>30%</span> · Uncommon <span>25%</span><br>
-          Rare <span>25%</span> · Epic <span>12%</span><br>
-          Legendary <span>6%</span> · Mythic <span>2%</span>
-        </div>
+        <div class="pack-rates">Common <span>30%</span> · Uncommon <span>25%</span><br>Rare <span>25%</span> · Epic <span>12%</span><br>Legendary <span>6%</span> · Mythic <span>2%</span></div>
       </div>
       <div class="pack-option pack-elite" data-pack="elite">
-        <div class="pack-globe">🗺️</div>
+        <div style="font-size:40px">🗺️</div>
         <div class="pack-name">Elite</div>
         <div class="pack-cost pack-cost-coins"><div class="coin-icon"></div>2,000 coins</div>
-        <div class="pack-rates">
-          Common <span>10%</span> · Uncommon <span>15%</span><br>
-          Rare <span>25%</span> · Epic <span>25%</span><br>
-          Legendary <span>18%</span> · Mythic <span>7%</span>
-        </div>
+        <div class="pack-rates">Common <span>10%</span> · Uncommon <span>15%</span><br>Rare <span>25%</span> · Epic <span>25%</span><br>Legendary <span>18%</span> · Mythic <span>7%</span></div>
       </div>
     </div>
 
     <div class="pull-area">
-      <div class="pull-btn-wrap">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
         <button class="pull-btn" id="pull-btn">Pull Standard Pack</button>
         <div class="not-enough" id="not-enough" style="display:none">Not enough coins</div>
       </div>
@@ -272,8 +298,10 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
   </div>
 </div>
 
+<!-- COLLECTION PAGE -->
 <div class="page" id="page-collection">
   <div class="coll-page">
+    <div id="coll-guest-banner-wrap"></div>
     <div class="coll-top">
       <div class="coll-top-left">
         <span class="coll-title-txt">Collection</span>
@@ -306,25 +334,29 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
   </div>
 </div>
 
+<!-- MODALS -->
 <div class="modal-backdrop" id="modal-backdrop">
   <div class="modal" id="modal-inner"></div>
+</div>
+<div class="modal-backdrop" id="auth-backdrop">
+  <div class="modal" id="auth-modal-inner"></div>
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
+const SUPABASE_URL = 'https://xaazwommyeepwoencncb.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_MWA2ngLdac8VMD5g2eRocQ_2X4-4NrY';
 const API_URL = 'https://xaazwommyeepwoencncb.supabase.co/functions/v1/dynamic-responder';
-const COIN_RATES   = {common:10, uncommon:25, rare:75, epic:200, legendary:500, mythic:1500};
-const SHARD_COSTS  = {common:30, uncommon:75, rare:225, epic:600, legendary:1500, mythic:4500};
-const RARITY_ORD   = {common:0, uncommon:1, rare:2, epic:3, legendary:4, mythic:5};
-const PACK_COSTS   = {standard:0, premium:500, elite:2000};
-const PACK_WEIGHTS = {
-  standard: {common:48, uncommon:30, rare:15, epic:5,  legendary:2,  mythic:0.5},
-  premium:  {common:30, uncommon:25, rare:25, epic:12, legendary:6,  mythic:2},
-  elite:    {common:10, uncommon:15, rare:25, epic:25, legendary:18, mythic:7}
-};
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const COIN_RATES  = {common:10, uncommon:25, rare:75, epic:200, legendary:500, mythic:1500};
+const SHARD_COSTS = {common:30, uncommon:75, rare:225, epic:600, legendary:1500, mythic:4500};
+const RARITY_ORD  = {common:0, uncommon:1, rare:2, epic:3, legendary:4, mythic:5};
+const PACK_COSTS  = {standard:0, premium:500, elite:2000};
 const PACK_BTN_CLASS = {standard:'', premium:'premium-btn', elite:'elite-btn'};
 const PACK_LABELS = {standard:'Standard Pack', premium:'Premium Pack', elite:'Elite Pack'};
-const C=2000, GAVG=4.4, MAXR=250000;
+const C = 2000, GAVG = 4.4;
 
 let collection = [];
 let coins = 0;
@@ -332,7 +364,9 @@ let collView = 'grid';
 let collFilter = 'all';
 let pulling = false;
 let selectedPack = 'standard';
+let currentUser = null;
 
+// ── UTILS ──────────────────────────────────────────────────────────────
 function showToast(msg) {
   var t = document.getElementById('toast');
   t.textContent = msg;
@@ -344,14 +378,156 @@ function updateCoinDisplay() {
   document.getElementById('nav-coins').textContent = coins.toLocaleString();
 }
 
-function showPage(p, tabEl) {
-  document.querySelectorAll('.page').forEach(function(x) { x.classList.remove('active'); });
-  document.querySelectorAll('.nav-tab').forEach(function(x) { x.classList.remove('active'); });
-  document.getElementById('page-' + p).classList.add('active');
-  tabEl.classList.add('active');
-  if (p === 'collection') renderCollection();
+// ── AUTH ───────────────────────────────────────────────────────────────
+function updateNavForUser(user) {
+  currentUser = user;
+  var right = document.getElementById('nav-right');
+  if (user) {
+    right.innerHTML =
+      '<div class="coin-display" id="coin-display"><div class="coin-icon"></div><span id="nav-coins">' + coins.toLocaleString() + '</span></div>' +
+      '<span class="user-display">' + (user.email || '').split('@')[0] + '</span>' +
+      '<button class="auth-btn" id="btn-signout">Sign out</button>';
+    document.getElementById('btn-signout').addEventListener('click', signOut);
+  } else {
+    right.innerHTML =
+      '<div class="coin-display" id="coin-display" style="display:none"><div class="coin-icon"></div><span id="nav-coins">0</span></div>' +
+      '<button class="auth-btn" id="btn-login">Log in</button>' +
+      '<button class="auth-btn primary" id="btn-signup">Sign up</button>';
+    document.getElementById('btn-login').addEventListener('click', function() { openAuthModal('login'); });
+    document.getElementById('btn-signup').addEventListener('click', function() { openAuthModal('signup'); });
+  }
+  renderGuestBanners();
 }
 
+function renderGuestBanners() {
+  var html = !currentUser ?
+    '<div class="guest-banner"><span class="guest-banner-text">Playing as guest — <span>log in to save your collection</span></span><button class="guest-banner-btn" id="banner-login-btn">Log in / Sign up</button></div>' : '';
+  var w1 = document.getElementById('guest-banner-wrap');
+  var w2 = document.getElementById('coll-guest-banner-wrap');
+  if (w1) w1.innerHTML = html;
+  if (w2) w2.innerHTML = html;
+  document.querySelectorAll('#banner-login-btn').forEach(function(b) {
+    b.addEventListener('click', function() { openAuthModal('signup'); });
+  });
+}
+
+function openAuthModal(mode) {
+  var isLogin = mode === 'login';
+  document.getElementById('auth-modal-inner').innerHTML =
+    '<div class="auth-modal">' +
+      '<div class="auth-modal-title">' + (isLogin ? 'Welcome back' : 'Create account') + '</div>' +
+      '<div class="auth-modal-sub">' + (isLogin ? 'Log in to access your collection' : 'Sign up to save your cards') + '</div>' +
+      '<div class="auth-error" id="auth-error" style="display:none"></div>' +
+      '<div class="auth-field"><label>Email</label><input type="email" id="auth-email" placeholder="you@example.com"></div>' +
+      '<div class="auth-field"><label>Password</label><input type="password" id="auth-password" placeholder="••••••••"></div>' +
+      '<button class="auth-submit" id="auth-submit-btn">' + (isLogin ? 'Log in' : 'Sign up') + '</button>' +
+      '<div class="auth-divider">or</div>' +
+      '<button class="google-btn" id="google-btn"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>Continue with Google</button>' +
+      '<div class="auth-switch">'+  (isLogin ? "Don't have an account? " : 'Already have an account? ') + '<button id="auth-switch-btn">' + (isLogin ? 'Sign up' : 'Log in') + '</button></div>' +
+      '<button class="auth-close" id="auth-close-btn">cancel</button>' +
+    '</div>';
+
+  document.getElementById('auth-submit-btn').addEventListener('click', function() { handleAuth(isLogin); });
+  document.getElementById('auth-email').addEventListener('keydown', function(e) { if(e.key==='Enter') handleAuth(isLogin); });
+  document.getElementById('auth-password').addEventListener('keydown', function(e) { if(e.key==='Enter') handleAuth(isLogin); });
+  document.getElementById('google-btn').addEventListener('click', handleGoogleAuth);
+  document.getElementById('auth-switch-btn').addEventListener('click', function() { openAuthModal(isLogin ? 'signup' : 'login'); });
+  document.getElementById('auth-close-btn').addEventListener('click', closeAuthModal);
+  document.getElementById('auth-backdrop').classList.add('open');
+}
+
+async function handleAuth(isLogin) {
+  var email = document.getElementById('auth-email').value.trim();
+  var password = document.getElementById('auth-password').value;
+  var errEl = document.getElementById('auth-error');
+  errEl.style.display = 'none';
+
+  if (!email || !password) { errEl.textContent = 'Please fill in all fields'; errEl.style.display = 'block'; return; }
+
+  var result = isLogin
+    ? await sb.auth.signInWithPassword({ email, password })
+    : await sb.auth.signUp({ email, password });
+
+  if (result.error) {
+    errEl.textContent = result.error.message;
+    errEl.style.display = 'block';
+    return;
+  }
+
+  closeAuthModal();
+  if (!isLogin) showToast('Account created! Check your email to confirm.');
+}
+
+async function handleGoogleAuth() {
+  await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.href }
+  });
+}
+
+async function signOut() {
+  await sb.auth.signOut();
+  collection = [];
+  coins = 0;
+  currentUser = null;
+  updateNavForUser(null);
+  renderCollection();
+  showToast('Signed out');
+}
+
+function closeAuthModal() {
+  document.getElementById('auth-backdrop').classList.remove('open');
+}
+
+// ── SUPABASE DB ────────────────────────────────────────────────────────
+async function loadCollection() {
+  if (!currentUser) return;
+  var { data: cards } = await sb.from('collections').select('*').eq('user_id', currentUser.id);
+  var { data: stats } = await sb.from('user_stats').select('*').eq('user_id', currentUser.id).single();
+
+  collection = (cards || []).map(function(r) {
+    return {
+      name: r.card_name, loc: r.loc, rarity: r.rarity,
+      rating: r.rating, reviews: r.reviews, atk: r.atk, def: r.def,
+      emoji: r.emoji, photoUrl: r.photo_url, copies: r.copies,
+      date: new Date(r.first_pulled).toLocaleDateString('en-US', {month:'short', day:'numeric'})
+    };
+  });
+  coins = stats ? stats.coins : 0;
+  updateCoinDisplay();
+  renderCollection();
+}
+
+async function saveCard(card) {
+  if (!currentUser) return;
+  await sb.from('collections').upsert({
+    user_id: currentUser.id,
+    card_name: card.name,
+    loc: card.loc,
+    rarity: card.rarity,
+    rating: card.rating,
+    reviews: card.reviews,
+    atk: card.atk,
+    def: card.def,
+    emoji: card.emoji,
+    photo_url: card.photoUrl,
+    copies: card.copies,
+    first_pulled: card.date,
+    updated_at: new Date().toISOString()
+  }, { onConflict: 'user_id,card_name' });
+}
+
+async function deleteCard(cardName) {
+  if (!currentUser) return;
+  await sb.from('collections').delete().eq('user_id', currentUser.id).eq('card_name', cardName);
+}
+
+async function saveCoins() {
+  if (!currentUser) return;
+  await sb.from('user_stats').upsert({ user_id: currentUser.id, coins: coins }, { onConflict: 'user_id' });
+}
+
+// ── PACK SELECTION ─────────────────────────────────────────────────────
 function selectPack(pack) {
   selectedPack = pack;
   document.querySelectorAll('.pack-option').forEach(function(el) { el.classList.remove('selected'); });
@@ -362,13 +538,11 @@ function selectPack(pack) {
   document.getElementById('not-enough').style.display = 'none';
 }
 
+// ── PULL ───────────────────────────────────────────────────────────────
 async function startPull() {
   if (pulling) return;
   var cost = PACK_COSTS[selectedPack];
-  if (coins < cost) {
-    document.getElementById('not-enough').style.display = 'block';
-    return;
-  }
+  if (coins < cost) { document.getElementById('not-enough').style.display = 'block'; return; }
   document.getElementById('not-enough').style.display = 'none';
   pulling = true;
   document.getElementById('pull-btn').disabled = true;
@@ -389,39 +563,9 @@ async function startPull() {
 
   coins -= cost;
   updateCoinDisplay();
-
-  // Apply pack-specific weighting by resampling
-  var weights = PACK_WEIGHTS[selectedPack];
-  var hand = applyPackWeights(cards, weights);
-
+  if (currentUser) saveCoins();
   document.getElementById('gacha-hint').textContent = '';
-  showCards(hand);
-}
-
-function applyPackWeights(cards, weights) {
-  // Build weighted pool from available cards using pack weights
-  var pool = [];
-  cards.forEach(function(card) {
-    var w = Math.round((weights[card.rarity] || 1) * 10);
-    for (var i = 0; i < w; i++) pool.push(card);
-  });
-  // Shuffle
-  for (var i = pool.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
-    var tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
-  }
-  // Pick 5 unique
-  var seen = {};
-  var hand = [];
-  for (var k = 0; k < pool.length && hand.length < 5; k++) {
-    if (!seen[pool[k].name]) {
-      seen[pool[k].name] = true;
-      hand.push(pool[k]);
-    }
-  }
-  // Sort common -> mythic
-  hand.sort(function(a,b) { return RARITY_ORD[a.rarity] - RARITY_ORD[b.rarity]; });
-  return hand;
+  showCards(cards);
 }
 
 function showCards(cards) {
@@ -434,11 +578,7 @@ function showCards(cards) {
     var slot = document.createElement('div');
     slot.className = 'card-slot';
     slot.style.cssText = '--rot:' + rot + 'deg;opacity:0;';
-
-    var imgInner = card.photoUrl
-      ? '<img src="' + card.photoUrl + '" alt="" onerror="this.style.display=\'none\'">'
-      : card.emoji;
-
+    var imgInner = card.photoUrl ? '<img src="' + card.photoUrl + '" alt="" onerror="this.style.display=\'none\'">' : card.emoji;
     slot.innerHTML =
       '<div class="card-inner">' +
         '<div class="card-back"><div class="card-back-inner">🌍</div></div>' +
@@ -446,17 +586,9 @@ function showCards(cards) {
           '<div class="card-rarity-bar rb-' + card.rarity + '">' + card.rarity.toUpperCase() + '</div>' +
           '<div class="card-img-zone">' + imgInner + '</div>' +
           '<div class="card-body-sm">' +
-            '<div>' +
-              '<div class="card-nm">' + card.name + '</div>' +
-              '<div class="card-loc-sm">' + card.loc + '</div>' +
-            '</div>' +
-            '<div>' +
-              '<div class="card-stats-row">' +
-                '<div class="cs cs-atk">ATK ' + card.atk.toLocaleString() + '</div>' +
-                '<div class="cs cs-def">DEF ' + card.def.toLocaleString() + '</div>' +
-              '</div>' +
-              '<div class="card-rating">' + card.rating + '★ · ' + card.reviews.toLocaleString() + ' reviews</div>' +
-            '</div>' +
+            '<div><div class="card-nm">' + card.name + '</div><div class="card-loc-sm">' + card.loc + '</div></div>' +
+            '<div><div class="card-stats-row"><div class="cs cs-atk">ATK ' + card.atk.toLocaleString() + '</div><div class="cs cs-def">DEF ' + card.def.toLocaleString() + '</div></div>' +
+            '<div class="card-rating">' + card.rating + '★ · ' + card.reviews.toLocaleString() + ' reviews</div></div>' +
           '</div>' +
         '</div>' +
       '</div>';
@@ -470,32 +602,25 @@ function showCards(cards) {
         flipCard(slot, card.rarity);
       }
     });
-    row.appendChild(slot);
 
-    setTimeout(function() {
-      slot.classList.add('falling');
-      slot.style.opacity = '1';
-    }, i * 130);
+    row.appendChild(slot);
+    setTimeout(function() { slot.classList.add('falling'); slot.style.opacity = '1'; }, i * 130);
 
     var existing = collection.find(function(c) { return c.name === card.name; });
     if (existing) {
       existing.copies++;
+      if (currentUser) saveCard(existing);
     } else {
       var copy = Object.assign({}, card);
       copy.copies = 1;
       copy.date = new Date().toLocaleDateString('en-US', {month:'short', day:'numeric'});
       collection.push(copy);
+      if (currentUser) saveCard(copy);
     }
   });
 
-  setTimeout(function() {
-    document.getElementById('gacha-hint').textContent = 'Tap each card to reveal';
-  }, cards.length * 130 + 250);
-
-  setTimeout(function() {
-    document.getElementById('pull-again-btn').style.display = 'block';
-    document.getElementById('pull-btn').disabled = false;
-  }, cards.length * 130 + 900);
+  setTimeout(function() { document.getElementById('gacha-hint').textContent = 'Tap to reveal · Tap again to open in Google Maps'; }, cards.length * 130 + 250);
+  setTimeout(function() { document.getElementById('pull-again-btn').style.display = 'block'; document.getElementById('pull-btn').disabled = false; }, cards.length * 130 + 900);
 }
 
 function flipCard(slot, rarity) {
@@ -507,10 +632,6 @@ function flipCard(slot, rarity) {
   slot.style.position = 'relative';
   slot.appendChild(flash);
   setTimeout(function() { flash.remove(); }, 700);
-  var allFlipped = Array.from(document.querySelectorAll('.card-inner')).every(function(c) {
-    return c.classList.contains('flipped');
-  });
-  if (allFlipped) document.getElementById('gacha-hint').textContent = 'All revealed! ✦  Tap a card to open in Google Maps';
 }
 
 function resetPull() {
@@ -522,10 +643,11 @@ function resetPull() {
   startPull();
 }
 
+// ── COLLECTION ─────────────────────────────────────────────────────────
 function setCollView(v) {
   collView = v;
-  document.getElementById('vt-grid').classList.toggle('active', v === 'grid');
-  document.getElementById('vt-list').classList.toggle('active', v === 'list');
+  document.getElementById('vt-grid').classList.toggle('active', v==='grid');
+  document.getElementById('vt-list').classList.toggle('active', v==='list');
   renderCollection();
 }
 
@@ -539,11 +661,11 @@ function setFilter(f, el) {
 function getSorted() {
   var sort = document.getElementById('sort-sel').value;
   var cards = collFilter === 'all' ? collection.slice() : collection.filter(function(c) { return c.rarity === collFilter; });
-  if (sort === 'rarity') cards.sort(function(a,b) { return RARITY_ORD[b.rarity] - RARITY_ORD[a.rarity]; });
-  else if (sort === 'atk') cards.sort(function(a,b) { return b.atk - a.atk; });
-  else if (sort === 'def') cards.sort(function(a,b) { return b.def - a.def; });
-  else if (sort === 'copies') cards.sort(function(a,b) { return b.copies - a.copies; });
-  else if (sort === 'date') cards.sort(function(a,b) { return new Date(b.date) - new Date(a.date); });
+  if (sort==='rarity') cards.sort(function(a,b) { return RARITY_ORD[b.rarity]-RARITY_ORD[a.rarity]; });
+  else if (sort==='atk') cards.sort(function(a,b) { return b.atk-a.atk; });
+  else if (sort==='def') cards.sort(function(a,b) { return b.def-a.def; });
+  else if (sort==='copies') cards.sort(function(a,b) { return b.copies-a.copies; });
+  else if (sort==='date') cards.sort(function(a,b) { return new Date(b.date)-new Date(a.date); });
   return cards;
 }
 
@@ -552,6 +674,10 @@ function renderCollection() {
   updateCoinDisplay();
   var cards = getSorted();
   var container = document.getElementById('coll-container');
+  if (!currentUser) {
+    container.innerHTML = '<div class="empty-state"><div style="font-size:52px">🔒</div><p>Log in to save and view your collection</p></div>';
+    return;
+  }
   if (!cards.length) {
     container.innerHTML = '<div class="empty-state"><div style="font-size:52px">🌍</div><p>No cards yet — pull a pack!</p></div>';
     return;
@@ -559,24 +685,13 @@ function renderCollection() {
   if (collView === 'grid') {
     container.className = 'coll-grid';
     container.innerHTML = cards.map(function(c) {
-      var imgHtml = c.photoUrl
-        ? '<div class="cc-img"><img src="' + c.photoUrl + '" alt="" onerror="this.style.display=\'none\'"></div>'
-        : '<div class="cc-img">' + c.emoji + '</div>';
+      var imgHtml = c.photoUrl ? '<div class="cc-img"><img src="' + c.photoUrl + '" alt="" onerror="this.style.display=\'none\'"></div>' : '<div class="cc-img">' + c.emoji + '</div>';
       return '<div class="coll-card" data-name="' + encodeURIComponent(c.name) + '">' +
-        (c.copies > 1 ? '<div class="dupe-badge-cc">x' + c.copies + '</div>' : '') +
-        '<div class="cc-rarity rb-' + c.rarity + '">' + c.rarity.toUpperCase() + '</div>' +
-        imgHtml +
-        '<div class="cc-info">' +
-          '<div class="cc-name">' + c.name + '</div>' +
-          '<div class="cc-stats">' +
-            '<div class="cc-stat cs-atk">ATK ' + c.atk.toLocaleString() + '</div>' +
-            '<div class="cc-stat cs-def">DEF ' + c.def.toLocaleString() + '</div>' +
-          '</div>' +
-        '</div>' +
-        '<div class="cc-footer">' +
-          '<span class="cc-date">' + c.date + '</span>' +
-          '<span class="cc-copies">' + c.copies + ' copy' + (c.copies !== 1 ? 's' : '') + '</span>' +
-        '</div>' +
+        (c.copies>1?'<div class="dupe-badge-cc">x'+c.copies+'</div>':'')+
+        '<div class="cc-rarity rb-'+c.rarity+'">'+c.rarity.toUpperCase()+'</div>'+
+        imgHtml+
+        '<div class="cc-info"><div class="cc-name">'+c.name+'</div><div class="cc-stats"><div class="cc-stat cs-atk">ATK '+c.atk.toLocaleString()+'</div><div class="cc-stat cs-def">DEF '+c.def.toLocaleString()+'</div></div></div>'+
+        '<div class="cc-footer"><span class="cc-date">'+c.date+'</span><span class="cc-copies">'+c.copies+' copy'+(c.copies!==1?'s':'')+'</span></div>'+
       '</div>';
     }).join('');
     container.querySelectorAll('.coll-card').forEach(function(el) {
@@ -586,16 +701,13 @@ function renderCollection() {
     container.className = 'coll-list';
     container.innerHTML = cards.map(function(c) {
       return '<div class="list-item" data-name="' + encodeURIComponent(c.name) + '">' +
-        '<span class="li-emoji">' + c.emoji + '</span>' +
-        '<div class="li-dot" style="background:var(--' + c.rarity + ')"></div>' +
-        '<span class="li-name">' + c.name + '</span>' +
-        '<span class="li-loc">' + c.loc + '</span>' +
-        '<div class="li-stats">' +
-          '<span class="li-stat cs-atk">ATK ' + c.atk.toLocaleString() + '</span>' +
-          '<span class="li-stat cs-def">DEF ' + c.def.toLocaleString() + '</span>' +
-        '</div>' +
-        '<span class="li-copies">' + (c.copies > 1 ? 'x' + c.copies : '') + '</span>' +
-        '<span class="li-date">' + c.date + '</span>' +
+        '<span class="li-emoji">'+c.emoji+'</span>'+
+        '<div class="li-dot" style="background:var(--'+c.rarity+')"></div>'+
+        '<span class="li-name">'+c.name+'</span>'+
+        '<span class="li-loc">'+c.loc+'</span>'+
+        '<div class="li-stats"><span class="li-stat cs-atk">ATK '+c.atk.toLocaleString()+'</span><span class="li-stat cs-def">DEF '+c.def.toLocaleString()+'</span></div>'+
+        '<span class="li-copies">'+(c.copies>1?'x'+c.copies:'')+'</span>'+
+        '<span class="li-date">'+c.date+'</span>'+
       '</div>';
     }).join('');
     container.querySelectorAll('.list-item').forEach(function(el) {
@@ -604,6 +716,7 @@ function renderCollection() {
   }
 }
 
+// ── CARD MODAL ─────────────────────────────────────────────────────────
 function openModal(name) {
   var card = collection.find(function(c) { return c.name === name; });
   if (!card) return;
@@ -611,12 +724,7 @@ function openModal(name) {
   var coinVal = COIN_RATES[card.rarity];
   var shardCost = SHARD_COSTS[card.rarity];
   var canUpgrade = shards >= 3;
-  var canConvert = shards >= 1;
-  var canBuy = coins >= shardCost;
-
-  var imgHtml = card.photoUrl
-    ? '<div class="modal-img"><img src="' + card.photoUrl + '" alt="" onerror="this.style.display=\'none\'"></div>'
-    : '<div class="modal-img">' + card.emoji + '</div>';
+  var imgHtml = card.photoUrl ? '<div class="modal-img"><img src="' + card.photoUrl + '" alt="" onerror="this.style.display=\'none\'"></div>' : '<div class="modal-img">' + card.emoji + '</div>';
 
   document.getElementById('modal-inner').innerHTML =
     '<div class="modal-rarity rb-' + card.rarity + '">' + card.rarity.toUpperCase() + '</div>' +
@@ -625,44 +733,25 @@ function openModal(name) {
       '<div class="modal-name">' + card.name + '</div>' +
       '<div class="modal-loc">' + card.loc + '</div>' +
       '<div class="modal-stats">' +
-        '<div class="modal-stat">' +
-          '<div class="msl">ATK</div>' +
-          '<div class="msv">' + card.atk.toLocaleString() + '</div>' +
-          '<div class="ms-bar"><div class="ms-fill" style="width:' + (card.atk/100) + '%;background:#D85A30"></div></div>' +
-        '</div>' +
-        '<div class="modal-stat">' +
-          '<div class="msl">DEF</div>' +
-          '<div class="msv">' + card.def.toLocaleString() + '</div>' +
-          '<div class="ms-bar"><div class="ms-fill" style="width:' + (card.def/100) + '%;background:#1D9E75"></div></div>' +
-        '</div>' +
+        '<div class="modal-stat"><div class="msl">ATK</div><div class="msv">' + card.atk.toLocaleString() + '</div><div class="ms-bar"><div class="ms-fill" style="width:' + (card.atk/100) + '%;background:#D85A30"></div></div></div>' +
+        '<div class="modal-stat"><div class="msl">DEF</div><div class="msv">' + card.def.toLocaleString() + '</div><div class="ms-bar"><div class="ms-fill" style="width:' + (card.def/100) + '%;background:#1D9E75"></div></div></div>' +
       '</div>' +
-      '<div class="modal-meta">' +
-        '<span>First pulled ' + card.date + '</span>' +
-        '<span>' + card.rating + '★ · ' + card.reviews.toLocaleString() + ' reviews</span>' +
-      '</div>' +
+      '<div class="modal-meta"><span>First pulled ' + card.date + '</span><span>' + card.rating + '★ · ' + card.reviews.toLocaleString() + ' reviews</span></div>' +
       '<div class="shard-info">' +
         '<div class="shard-row"><span class="shard-label">Copies</span><span class="shard-val">' + card.copies + '</span></div>' +
         '<div class="shard-row"><span class="shard-label">Sell value (1 copy)</span><span class="shard-val">' + coinVal.toLocaleString() + ' coins</span></div>' +
-        (shards > 0 ? '<div class="shard-row"><span class="shard-label">Extra copies (shards)</span><span class="shard-val">' + shards + '</span></div>' : '') +
+        (shards > 0 ? '<div class="shard-row"><span class="shard-label">Extra shards</span><span class="shard-val">' + shards + '</span></div>' : '') +
       '</div>' +
       '<div class="modal-section-title">UPGRADE & SELL</div>' +
       '<div class="modal-actions">' +
-        '<button class="mact-btn mact-upgrade' + (canUpgrade ? '' : ' mdisabled') + '" id="modal-upgrade-btn">Upgrade (3 shards)</button>' +
+        '<button class="mact-btn mact-upgrade' + (canUpgrade?'':' mdisabled') + '" id="modal-upgrade-btn">Upgrade (3 shards)</button>' +
         '<button class="mact-btn" id="modal-sell-one-btn">Sell 1 copy</button>' +
         (shards > 0 ? '<button class="mact-btn" id="modal-convert-btn">Sell ' + shards + ' shards</button>' : '') +
       '</div>' +
       '<div class="modal-section-title">BUY SHARDS</div>' +
       '<div class="buy-shards-grid">' +
-        '<div class="buy-shard-row">' +
-          '<span class="bsr-left">1 shard</span>' +
-          '<span class="bsr-cost"><div class="coin-icon"></div>' + shardCost.toLocaleString() + '</span>' +
-          '<button class="bsr-btn' + (canBuy ? '' : ' mdisabled') + '" id="buy-1-btn">Buy</button>' +
-        '</div>' +
-        '<div class="buy-shard-row">' +
-          '<span class="bsr-left">3 shards</span>' +
-          '<span class="bsr-cost"><div class="coin-icon"></div>' + (shardCost*3).toLocaleString() + '</span>' +
-          '<button class="bsr-btn' + (coins >= shardCost*3 ? '' : ' mdisabled') + '" id="buy-3-btn">Buy</button>' +
-        '</div>' +
+        '<div class="buy-shard-row"><span class="bsr-left">1 shard</span><span class="bsr-cost"><div class="coin-icon"></div>' + shardCost.toLocaleString() + '</span><button class="bsr-btn' + (coins>=shardCost?'':' mdisabled') + '" id="buy-1-btn">Buy</button></div>' +
+        '<div class="buy-shard-row"><span class="bsr-left">3 shards</span><span class="bsr-cost"><div class="coin-icon"></div>' + (shardCost*3).toLocaleString() + '</span><button class="bsr-btn' + (coins>=shardCost*3?'':' mdisabled') + '" id="buy-3-btn">Buy</button></div>' +
       '</div>' +
       '<button class="modal-close" id="modal-close-btn">close</button>' +
     '</div>';
@@ -670,15 +759,13 @@ function openModal(name) {
   if (canUpgrade) document.getElementById('modal-upgrade-btn').addEventListener('click', function() { upgradeCard(name); });
   document.getElementById('modal-sell-one-btn').addEventListener('click', function() { sellOneCard(name); });
   if (shards > 0) document.getElementById('modal-convert-btn').addEventListener('click', function() { convertShards(name); });
-  if (canBuy) document.getElementById('buy-1-btn').addEventListener('click', function() { buyShards(name, 1); });
+  if (coins >= shardCost) document.getElementById('buy-1-btn').addEventListener('click', function() { buyShards(name, 1); });
   if (coins >= shardCost*3) document.getElementById('buy-3-btn').addEventListener('click', function() { buyShards(name, 3); });
   document.getElementById('modal-close-btn').addEventListener('click', closeModal);
   document.getElementById('modal-backdrop').classList.add('open');
 }
 
-function closeModal() {
-  document.getElementById('modal-backdrop').classList.remove('open');
-}
+function closeModal() { document.getElementById('modal-backdrop').classList.remove('open'); }
 
 function upgradeCard(name) {
   var card = collection.find(function(c) { return c.name === name; });
@@ -686,10 +773,10 @@ function upgradeCard(name) {
   card.copies -= 3;
   card.rating = Math.min(5.0, parseFloat((card.rating + 0.05).toFixed(2)));
   var wr = (card.reviews * card.rating + C * GAVG) / (card.reviews + C);
-  card.def = Math.max(1, Math.min(10000, Math.round(((wr - 3.5) / 1.5) * 10000)));
+  card.def = Math.max(1, Math.min(10000, Math.round(((wr-3.5)/1.5)*10000)));
+  if (currentUser) saveCard(card);
   showToast('Card upgraded! Rating +0.05★');
-  renderCollection();
-  openModal(name);
+  renderCollection(); openModal(name);
 }
 
 function sellOneCard(name) {
@@ -699,16 +786,17 @@ function sellOneCard(name) {
   coins += gained;
   if (card.copies > 1) {
     card.copies--;
+    if (currentUser) saveCard(card);
     showToast('+' + gained.toLocaleString() + ' coins — 1 copy sold');
-    renderCollection();
-    openModal(name);
+    renderCollection(); openModal(name);
   } else {
     collection = collection.filter(function(c) { return c.name !== name; });
+    if (currentUser) deleteCard(name);
     showToast('+' + gained.toLocaleString() + ' coins — card sold');
-    updateCoinDisplay();
-    renderCollection();
-    closeModal();
+    renderCollection(); closeModal();
   }
+  if (currentUser) saveCoins();
+  updateCoinDisplay();
 }
 
 function convertShards(name) {
@@ -716,12 +804,10 @@ function convertShards(name) {
   if (!card || card.copies < 2) return;
   var shards = card.copies - 1;
   var gained = shards * COIN_RATES[card.rarity];
-  coins += gained;
-  card.copies = 1;
+  coins += gained; card.copies = 1;
+  if (currentUser) { saveCard(card); saveCoins(); }
   showToast('+' + gained.toLocaleString() + ' coins');
-  updateCoinDisplay();
-  renderCollection();
-  openModal(name);
+  updateCoinDisplay(); renderCollection(); openModal(name);
 }
 
 function buyShards(name, qty) {
@@ -729,15 +815,47 @@ function buyShards(name, qty) {
   if (!card) return;
   var cost = SHARD_COSTS[card.rarity] * qty;
   if (coins < cost) { showToast('Not enough coins!'); return; }
-  coins -= cost;
-  card.copies += qty;
-  showToast('Bought ' + qty + ' shard' + (qty > 1 ? 's' : '') + ' for ' + cost.toLocaleString() + ' coins');
-  updateCoinDisplay();
-  renderCollection();
-  openModal(name);
+  coins -= cost; card.copies += qty;
+  if (currentUser) { saveCard(card); saveCoins(); }
+  showToast('Bought ' + qty + ' shard' + (qty>1?'s':'') + ' for ' + cost.toLocaleString() + ' coins');
+  updateCoinDisplay(); renderCollection(); openModal(name);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+function showPage(p, tabEl) {
+  document.querySelectorAll('.page').forEach(function(x) { x.classList.remove('active'); });
+  document.querySelectorAll('.nav-tab').forEach(function(x) { x.classList.remove('active'); });
+  document.getElementById('page-' + p).classList.add('active');
+  tabEl.classList.add('active');
+  if (p === 'collection') renderCollection();
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', async function() {
+  // Auth state listener
+  sb.auth.onAuthStateChange(async function(event, session) {
+    if (session && session.user) {
+      currentUser = session.user;
+      updateNavForUser(session.user);
+      await loadCollection();
+      document.getElementById('coin-display') && (document.getElementById('coin-display').style.display = 'flex');
+    } else {
+      currentUser = null;
+      collection = [];
+      coins = 0;
+      updateNavForUser(null);
+      renderCollection();
+    }
+    document.getElementById('loading-overlay').style.display = 'none';
+  });
+
+  // Check existing session
+  var { data: { session } } = await sb.auth.getSession();
+  if (!session) {
+    updateNavForUser(null);
+    document.getElementById('loading-overlay').style.display = 'none';
+  }
+
+  // Wire up events
   document.getElementById('pull-btn').addEventListener('click', startPull);
   document.getElementById('pull-again-btn').addEventListener('click', resetPull);
   document.getElementById('tab-gacha').addEventListener('click', function() { showPage('gacha', this); });
@@ -745,15 +863,16 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('sort-sel').addEventListener('change', renderCollection);
   document.getElementById('vt-grid').addEventListener('click', function() { setCollView('grid'); });
   document.getElementById('vt-list').addEventListener('click', function() { setCollView('list'); });
-  document.getElementById('modal-backdrop').addEventListener('click', function(e) {
-    if (e.target === document.getElementById('modal-backdrop')) closeModal();
-  });
+  document.getElementById('modal-backdrop').addEventListener('click', function(e) { if(e.target===this) closeModal(); });
+  document.getElementById('auth-backdrop').addEventListener('click', function(e) { if(e.target===this) closeAuthModal(); });
   document.querySelectorAll('.pack-option').forEach(function(el) {
     el.addEventListener('click', function() { selectPack(el.dataset.pack); });
   });
   document.querySelectorAll('.fpill').forEach(function(btn) {
     btn.addEventListener('click', function() { setFilter(this.dataset.filter, this); });
   });
+  document.getElementById('btn-login') && document.getElementById('btn-login').addEventListener('click', function() { openAuthModal('login'); });
+  document.getElementById('btn-signup') && document.getElementById('btn-signup').addEventListener('click', function() { openAuthModal('signup'); });
 });
 </script>
 </body>
