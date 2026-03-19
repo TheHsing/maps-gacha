@@ -601,8 +601,11 @@ async function signOut(){
 // ── SUPABASE DB ────────────────────────────────────────────────────────
 async function loadCollection(){
   if(!currentUser) return;
+  console.log('loadCollection called for user:', currentUser.id);
   var res1=await sb.from('collections').select('*').eq('user_id',currentUser.id);
   var res2=await sb.from('user_stats').select('*').eq('user_id',currentUser.id).single();
+  console.log('collections result:', res1.data ? res1.data.length+' cards' : 'error', res1.error);
+  console.log('user_stats result:', res2.data, res2.error);
   collection=(res1.data||[]).map(function(r){
     return {name:r.card_name,loc:r.loc,rarity:r.rarity,rating:r.rating,reviews:r.reviews,
       atk:r.atk,def:r.def,emoji:r.emoji,photoUrl:r.photo_url,copies:r.copies,
@@ -720,6 +723,7 @@ function selectPack(pack){
 }
 
 async function startPull(){
+  console.log('startPull called, pulling='+pulling+', selectedPack='+selectedPack+', coins='+coins);
   if(pulling) return;
   var cost=PACK_COSTS[selectedPack]||0;
   if(coins<cost){document.getElementById('not-enough').style.display='block';return;}
@@ -1185,6 +1189,7 @@ document.addEventListener('DOMContentLoaded', function(){
   // Also load immediately from existing session so collection shows on refresh
   sb.auth.getSession().then(async function(res){
     var session = res.data && res.data.session;
+    console.log('getSession result:', session ? 'logged in as '+session.user.email : 'no session');
     if(session && session.user && !currentUser){
       currentUser = session.user;
       updateNavForUser(session.user);
@@ -1195,7 +1200,7 @@ document.addEventListener('DOMContentLoaded', function(){
       updateDailyUI();
       hideLoading();
     }
-  }).catch(function(){hideLoading();});
+  }).catch(function(e){console.error('getSession error:',e);hideLoading();});
 });
 </script>
 </body>
