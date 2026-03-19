@@ -60,7 +60,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .daily-countdown{font-size:11px;font-weight:500;color:var(--text2);font-family:'Syne',sans-serif;}
 .daily-section-label{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:0.08em;font-family:'Syne',sans-serif;}
 .pack-selector{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;}
-.pack-option{width:160px;border-radius:16px;background:var(--bg3);border:1px solid var(--border2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:transform 0.2s,border-color 0.2s;position:relative;overflow:hidden;padding:24px 16px;}
+.pack-option{width:160px;min-height:220px;border-radius:16px;background:var(--bg3);border:1px solid var(--border2);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:8px;cursor:pointer;transition:transform 0.2s,border-color 0.2s;position:relative;overflow:hidden;padding:20px 16px;}
 .pack-option::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,rgba(200,240,96,0.06),transparent 70%);pointer-events:none;}
 .pack-option.pack-premium::before{background:radial-gradient(circle at 50% 30%,rgba(55,138,221,0.1),transparent 70%);}
 .pack-option.pack-elite::before{background:radial-gradient(circle at 50% 30%,rgba(239,159,39,0.12),transparent 70%);}
@@ -72,7 +72,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .pack-cost{font-size:12px;font-weight:500;padding:3px 10px;border-radius:20px;display:flex;align-items:center;gap:5px;}
 .pack-cost-free{background:rgba(200,240,96,0.12);color:var(--accent);}
 .pack-cost-coins{background:rgba(239,159,39,0.12);color:var(--legendary);}
-.pack-rates{font-size:10px;color:var(--text2);text-align:center;line-height:1.6;}
+.pack-rates{font-size:10px;color:var(--text2);text-align:center;line-height:1.8;margin-top:auto;}
 .pack-rates span{color:var(--text);font-weight:500;}
 .pull-area{display:flex;flex-direction:column;align-items:center;gap:1.5rem;width:100%;}
 .pull-btn{padding:14px 44px;border-radius:100px;background:var(--accent);border:none;font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:#0e0e12;cursor:pointer;transition:transform 0.15s,background 0.15s;letter-spacing:0.03em;}
@@ -82,7 +82,15 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .pull-btn:disabled{opacity:0.4;cursor:default;transform:none;}
 .not-enough{font-size:11px;color:var(--mythic);text-align:center;}
 .cards-row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;max-width:1100px;}
-.card-slot{perspective:900px;cursor:pointer;}
+.card-slot{perspective:900px;cursor:pointer;position:relative;}
+.card-glow{position:absolute;bottom:-8px;left:10%;right:10%;height:16px;border-radius:50%;filter:blur(8px);opacity:0.7;pointer-events:none;transition:opacity 0.4s;}
+.card-inner.flipped ~ .card-glow{opacity:0;}
+.glow-common{background:var(--common);}
+.glow-uncommon{background:var(--uncommon);}
+.glow-rare{background:var(--rare);}
+.glow-epic{background:var(--epic);}
+.glow-legendary{background:var(--legendary);}
+.glow-mythic{background:var(--mythic);}
 @keyframes cardFallIn{from{opacity:0;transform:translateY(-60px) rotate(var(--rot));}to{opacity:1;transform:translateY(0) rotate(var(--rot));}}
 .card-slot.falling{animation:cardFallIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;}
 .card-inner{width:200px;height:296px;position:relative;transform-style:preserve-3d;transition:transform 0.55s cubic-bezier(0.4,0,0.2,1);border-radius:14px;}
@@ -337,14 +345,14 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
       <div class="daily-section-label">DAILY REWARDS</div>
       <div class="daily-rewards">
         <div class="daily-card premium-daily">
-          <div style="font-size:28px">🌐</div>
+          <div style="font-size:28px">🧭</div>
           <div class="daily-card-title">2x Premium Pack</div>
           <div class="daily-card-sub" id="premium-daily-sub">Free daily</div>
           <button class="daily-claim-btn claimed" id="claim-premium-btn">Loading...</button>
           <div class="daily-countdown" id="premium-countdown"></div>
         </div>
         <div class="daily-card elite-daily">
-          <div style="font-size:28px">🗺️</div>
+          <div style="font-size:28px">👑</div>
           <div class="daily-card-title">1x Elite Pack</div>
           <div class="daily-card-sub" id="elite-daily-sub">Free daily</div>
           <button class="daily-claim-btn claimed" id="claim-elite-btn">Loading...</button>
@@ -357,19 +365,19 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
         <div style="font-size:40px">🌍</div>
         <div class="pack-name">Standard</div>
         <div class="pack-cost pack-cost-free">Free</div>
-        <div class="pack-rates">Common <span>48%</span> · Uncommon <span>30%</span><br>Rare <span>15%</span> · Epic <span>5%</span><br>Legendary <span>2%</span> · Mythic <span>0.5%</span></div>
+        <div class="pack-rates">Common <span>48%</span><br>Uncommon <span>30%</span><br>Rare <span>15%</span><br>Epic <span>5%</span><br>Legendary <span>2%</span><br>Mythic <span>0.5%</span></div>
       </div>
       <div class="pack-option pack-premium" data-pack="premium">
-        <div style="font-size:40px">🌐</div>
+        <div style="font-size:40px">🧭</div>
         <div class="pack-name">Premium</div>
         <div class="pack-cost pack-cost-coins"><div class="coin-icon"></div>500 coins</div>
-        <div class="pack-rates">Common <span>30%</span> · Uncommon <span>25%</span><br>Rare <span>25%</span> · Epic <span>12%</span><br>Legendary <span>6%</span> · Mythic <span>2%</span></div>
+        <div class="pack-rates">Common <span>30%</span><br>Uncommon <span>25%</span><br>Rare <span>25%</span><br>Epic <span>12%</span><br>Legendary <span>6%</span><br>Mythic <span>2%</span></div>
       </div>
       <div class="pack-option pack-elite" data-pack="elite">
-        <div style="font-size:40px">🗺️</div>
+        <div style="font-size:40px">👑</div>
         <div class="pack-name">Elite</div>
         <div class="pack-cost pack-cost-coins"><div class="coin-icon"></div>2,000 coins</div>
-        <div class="pack-rates">Common <span>10%</span> · Uncommon <span>15%</span><br>Rare <span>25%</span> · Epic <span>25%</span><br>Legendary <span>18%</span> · Mythic <span>7%</span></div>
+        <div class="pack-rates">Common <span>10%</span><br>Uncommon <span>15%</span><br>Rare <span>25%</span><br>Epic <span>25%</span><br>Legendary <span>18%</span><br>Mythic <span>7%</span></div>
       </div>
     </div>
     <div class="pull-area">
@@ -985,6 +993,9 @@ function showCards(cards){
         '</div>'+
       '</div>'+
     '</div>';
+    var glow=document.createElement('div');
+    glow.className='card-glow glow-'+card.rarity;
+    slot.appendChild(glow);
     slot.onclick=function(){
       var inner=slot.querySelector('.card-inner');
       if(inner.classList.contains('flipped')){
@@ -1007,6 +1018,8 @@ function flipCard(slot,rarity){
   var inner=slot.querySelector('.card-inner');
   if(inner.classList.contains('flipped')) return;
   inner.classList.add('flipped');
+  var glow=slot.querySelector('.card-glow');
+  if(glow) glow.style.opacity='0';
   var flash=document.createElement('div');flash.className='rarity-flash flash-'+rarity;
   slot.style.position='relative';slot.appendChild(flash);
   setTimeout(function(){flash.remove();},700);
