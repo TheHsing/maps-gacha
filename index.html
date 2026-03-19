@@ -944,6 +944,7 @@ async function startPull(free){
   var cost=free?0:(PACK_COSTS[selectedPack]||0);
   if(coins<cost){document.getElementById('not-enough').style.display='block';return;}
   lastPullWasFree=!!free;
+  console.log('cost check: free='+free+' cost='+cost+' coins='+coins+' PACK_COSTS='+JSON.stringify(PACK_COSTS)+' selectedPack='+selectedPack);
   document.getElementById('not-enough').style.display='none';
   pulling=true;
   document.getElementById('pull-btn').disabled=true;
