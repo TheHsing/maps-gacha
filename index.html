@@ -823,10 +823,12 @@ async function loadCollection(){
 
 async function saveCard(card){
   if(!currentUser) return;
-  await sb.from('collections').upsert({user_id:currentUser.id,card_name:card.name,loc:card.loc,rarity:card.rarity,
+  console.log('saveCard:', card.name, 'token:', sb._token ? 'present' : 'MISSING');
+  var result = await sb.from('collections').upsert({user_id:currentUser.id,card_name:card.name,loc:card.loc,rarity:card.rarity,
     rating:card.rating,reviews:card.reviews,atk:card.atk,def:card.def,emoji:card.emoji,
     photo_url:card.photoUrl,copies:card.copies,first_pulled:card.date,updated_at:new Date().toISOString()},
     {onConflict:'user_id,card_name'});
+  console.log('saveCard result:', result.error ? 'ERROR: '+JSON.stringify(result.error) : 'OK');
 }
 
 async function deleteCard(cardName){
@@ -836,10 +838,12 @@ async function deleteCard(cardName){
 
 async function saveCoins(){
   if(!currentUser) return;
-  await sb.from('user_stats').upsert({user_id:currentUser.id,coins:coins,
+  console.log('saveCoins:', coins, 'premiumLeft:', dailyPremiumClaimsLeft, 'token:', sb._token ? 'present' : 'MISSING');
+  var result = await sb.from('user_stats').upsert({user_id:currentUser.id,coins:coins,
     daily_premium_claimed:dailyPremiumClaimed?new Date(dailyPremiumClaimed).toISOString():null,
     daily_elite_claimed:dailyEliteClaimed?new Date(dailyEliteClaimed).toISOString():null,
     daily_premium_claims_left:dailyPremiumClaimsLeft},{onConflict:'user_id'});
+  console.log('saveCoins result:', result.error ? 'ERROR: '+JSON.stringify(result.error) : 'OK');
 }
 
 // ── DAILY REWARDS ──────────────────────────────────────────────────────
