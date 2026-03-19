@@ -83,6 +83,24 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .pull-btn.elite-btn:hover{background:#BA7517;}
 .pull-btn:disabled{opacity:0.4;cursor:default;transform:none;}
 .not-enough{font-size:11px;color:var(--mythic);text-align:center;}
+/* DAILY REWARDS */
+.daily-rewards{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;width:100%;max-width:600px;}
+.daily-card{flex:1;min-width:160px;background:var(--bg3);border:1px solid var(--border2);border-radius:14px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;overflow:hidden;}
+.daily-card::before{content:'';position:absolute;inset:0;pointer-events:none;}
+.daily-card.premium-daily::before{background:radial-gradient(circle at 50% 0%,rgba(55,138,221,0.1),transparent 70%);}
+.daily-card.elite-daily::before{background:radial-gradient(circle at 50% 0%,rgba(239,159,39,0.12),transparent 70%);}
+.daily-card-icon{font-size:28px;}
+.daily-card-title{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--text);text-align:center;}
+.daily-card-sub{font-size:11px;color:var(--text2);text-align:center;}
+.daily-claim-btn{padding:7px 18px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:'Syne',sans-serif;transition:all 0.15s;width:100%;}
+.daily-claim-btn.can-claim-premium{background:var(--rare);color:#fff;}
+.daily-claim-btn.can-claim-premium:hover{background:#185FA5;}
+.daily-claim-btn.can-claim-elite{background:var(--legendary);color:#0e0e12;}
+.daily-claim-btn.can-claim-elite:hover{background:#BA7517;}
+.daily-claim-btn.claimed{background:var(--bg2);color:var(--text3);cursor:default;border:1px solid var(--border);}
+.daily-countdown{font-size:11px;font-weight:500;color:var(--text2);font-family:'Syne',sans-serif;}
+.daily-section-label{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:0.08em;font-family:'Syne',sans-serif;}
+
 
 .cards-row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;max-width:1100px;}
 .card-slot{perspective:900px;cursor:pointer;}
@@ -265,6 +283,26 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 
     <div id="guest-banner-wrap"></div>
 
+    <div style="display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;max-width:600px;">
+      <div class="daily-section-label">DAILY REWARDS</div>
+      <div class="daily-rewards" id="daily-rewards">
+        <div class="daily-card premium-daily">
+          <div class="daily-card-icon">🌐</div>
+          <div class="daily-card-title">2x Premium Pack</div>
+          <div class="daily-card-sub" id="premium-daily-sub">Free daily</div>
+          <button class="daily-claim-btn claimed" id="claim-premium-btn">Loading...</button>
+          <div class="daily-countdown" id="premium-countdown"></div>
+        </div>
+        <div class="daily-card elite-daily">
+          <div class="daily-card-icon">🗺️</div>
+          <div class="daily-card-title">1x Elite Pack</div>
+          <div class="daily-card-sub" id="elite-daily-sub">Free daily</div>
+          <button class="daily-claim-btn claimed" id="claim-elite-btn">Loading...</button>
+          <div class="daily-countdown" id="elite-countdown"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="pack-selector">
       <div class="pack-option pack-standard selected" data-pack="standard">
         <div style="font-size:40px">🌍</div>
@@ -365,6 +403,9 @@ let collFilter = 'all';
 let pulling = false;
 let selectedPack = 'standard';
 let currentUser = null;
+let dailyPremiumClaimed = null;
+let dailyEliteClaimed = null;
+let dailyPremiumClaimsLeft = 2;
 
 // ── UTILS ──────────────────────────────────────────────────────────────
 function showToast(msg) {
@@ -494,7 +535,13 @@ async function loadCollection() {
     };
   });
   coins = stats ? stats.coins : 0;
+  dailyPremiumClaimed = stats && stats.daily_premium_claimed ? new Date(stats.daily_premium_claimed).getTime() : null;
+  dailyEliteClaimed = stats && stats.daily_elite_claimed ? new Date(stats.daily_elite_claimed).getTime() : null;
+  dailyPremiumClaimsLeft = stats && stats.daily_premium_claims_left !== null ? stats.daily_premium_claims_left : 2;
+  // Reset claims if 24h has passed
+  if (dailyPremiumClaimed && (Date.now() - dailyPremiumClaimed) >= 24*60*60*1000) dailyPremiumClaimsLeft = 2;
   updateCoinDisplay();
+  updateDailyUI();
   renderCollection();
 }
 
@@ -821,6 +868,114 @@ function buyShards(name, qty) {
   updateCoinDisplay(); renderCollection(); openModal(name);
 }
 
+
+// ── DAILY REWARDS ──────────────────────────────────────────────────────
+var dailyTimer = null;
+
+function formatCountdown(ms) {
+  if (ms <= 0) return '';
+  var totalSecs = Math.floor(ms / 1000);
+  var h = Math.floor(totalSecs / 3600);
+  var m = Math.floor((totalSecs % 3600) / 60);
+  var s = totalSecs % 60;
+  return h + 'h ' + m + 'm ' + s + 's';
+}
+
+function updateDailyUI() {
+  var now = Date.now();
+  var premiumBtn = document.getElementById('claim-premium-btn');
+  var eliteBtn = document.getElementById('claim-elite-btn');
+  var premiumCountdown = document.getElementById('premium-countdown');
+  var eliteCountdown = document.getElementById('elite-countdown');
+  var premiumSub = document.getElementById('premium-daily-sub');
+  var eliteSub = document.getElementById('elite-daily-sub');
+  if (!premiumBtn || !eliteBtn) return;
+
+  // Premium
+  var premiumReady = !dailyPremiumClaimed || (now - dailyPremiumClaimed) >= 24*60*60*1000;
+  var premiumClaimsLeft = dailyPremiumClaimsLeft !== null ? dailyPremiumClaimsLeft : 2;
+  if (!currentUser) {
+    premiumBtn.className = 'daily-claim-btn claimed';
+    premiumBtn.textContent = 'Log in to claim';
+    premiumCountdown.textContent = '';
+    premiumSub.textContent = '2 packs · free daily';
+  } else if (premiumReady || premiumClaimsLeft > 0) {
+    if (premiumClaimsLeft <= 0 && premiumReady) premiumClaimsLeft = 2;
+    premiumBtn.className = 'daily-claim-btn can-claim-premium';
+    premiumBtn.textContent = 'Claim (' + premiumClaimsLeft + ' left)';
+    premiumCountdown.textContent = '';
+    premiumSub.textContent = '2 packs · free daily';
+  } else {
+    var msLeft = 24*60*60*1000 - (now - dailyPremiumClaimed);
+    premiumBtn.className = 'daily-claim-btn claimed';
+    premiumBtn.textContent = 'Claimed';
+    premiumCountdown.textContent = formatCountdown(msLeft);
+    premiumSub.textContent = 'resets in';
+  }
+
+  // Elite
+  var eliteReady = !dailyEliteClaimed || (now - dailyEliteClaimed) >= 24*60*60*1000;
+  if (!currentUser) {
+    eliteBtn.className = 'daily-claim-btn claimed';
+    eliteBtn.textContent = 'Log in to claim';
+    eliteCountdown.textContent = '';
+    eliteSub.textContent = '1 pack · free daily';
+  } else if (eliteReady) {
+    eliteBtn.className = 'daily-claim-btn can-claim-elite';
+    eliteBtn.textContent = 'Claim';
+    eliteCountdown.textContent = '';
+    eliteSub.textContent = '1 pack · free daily';
+  } else {
+    var msLeftE = 24*60*60*1000 - (now - dailyEliteClaimed);
+    eliteBtn.className = 'daily-claim-btn claimed';
+    eliteBtn.textContent = 'Claimed';
+    eliteCountdown.textContent = formatCountdown(msLeftE);
+    eliteSub.textContent = 'resets in';
+  }
+}
+
+function startDailyTimer() {
+  if (dailyTimer) clearInterval(dailyTimer);
+  dailyTimer = setInterval(updateDailyUI, 1000);
+}
+
+async function claimPremiumDaily() {
+  if (!currentUser) { openAuthModal('signup'); return; }
+  var now = Date.now();
+  var premiumReady = !dailyPremiumClaimed || (now - dailyPremiumClaimed) >= 24*60*60*1000;
+  if (premiumReady) dailyPremiumClaimsLeft = 2;
+  if (dailyPremiumClaimsLeft <= 0) return;
+  dailyPremiumClaimsLeft--;
+  if (dailyPremiumClaimsLeft === 0) dailyPremiumClaimed = now;
+  await sb.from('user_stats').upsert({
+    user_id: currentUser.id,
+    coins: coins,
+    daily_premium_claimed: dailyPremiumClaimsLeft === 0 ? new Date(now).toISOString() : (dailyPremiumClaimed ? new Date(dailyPremiumClaimed).toISOString() : null),
+    daily_premium_claims_left: dailyPremiumClaimsLeft
+  }, { onConflict: 'user_id' });
+  updateDailyUI();
+  showToast('Free Premium Pack claimed!');
+  selectPack('premium');
+  await startPull();
+}
+
+async function claimEliteDaily() {
+  if (!currentUser) { openAuthModal('signup'); return; }
+  var now = Date.now();
+  var eliteReady = !dailyEliteClaimed || (now - dailyEliteClaimed) >= 24*60*60*1000;
+  if (!eliteReady) return;
+  dailyEliteClaimed = now;
+  await sb.from('user_stats').upsert({
+    user_id: currentUser.id,
+    coins: coins,
+    daily_elite_claimed: new Date(now).toISOString()
+  }, { onConflict: 'user_id' });
+  updateDailyUI();
+  showToast('Free Elite Pack claimed!');
+  selectPack('elite');
+  await startPull();
+}
+
 function showPage(p, tabEl) {
   document.querySelectorAll('.page').forEach(function(x) { x.classList.remove('active'); });
   document.querySelectorAll('.nav-tab').forEach(function(x) { x.classList.remove('active'); });
@@ -837,12 +992,17 @@ document.addEventListener('DOMContentLoaded', async function() {
       currentUser = session.user;
       updateNavForUser(session.user);
       await loadCollection();
+      updateDailyUI();
       document.getElementById('coin-display') && (document.getElementById('coin-display').style.display = 'flex');
     } else {
       currentUser = null;
       collection = [];
       coins = 0;
+      dailyPremiumClaimed = null;
+      dailyEliteClaimed = null;
+      dailyPremiumClaimsLeft = 2;
       updateNavForUser(null);
+      updateDailyUI();
       renderCollection();
     }
     document.getElementById('loading-overlay').style.display = 'none';
@@ -857,6 +1017,9 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   // Wire up events
   document.getElementById('pull-btn').addEventListener('click', startPull);
+  document.getElementById('claim-premium-btn').addEventListener('click', claimPremiumDaily);
+  document.getElementById('claim-elite-btn').addEventListener('click', claimEliteDaily);
+  startDailyTimer();
   document.getElementById('pull-again-btn').addEventListener('click', resetPull);
   document.getElementById('tab-gacha').addEventListener('click', function() { showPage('gacha', this); });
   document.getElementById('tab-collection').addEventListener('click', function() { showPage('collection', this); });
