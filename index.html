@@ -1532,9 +1532,22 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById('loading-overlay').style.display = 'none';
   });
 
+  // Fallback: always hide loading after 3 seconds no matter what
+  setTimeout(function() {
+    var overlay = document.getElementById('loading-overlay');
+    if (overlay) overlay.style.display = 'none';
+  }, 3000);
+
   // Check existing session
-  var { data: { session } } = await sb.auth.getSession();
-  if (!session) {
+  try {
+    var sessionRes = await sb.auth.getSession();
+    var session = sessionRes.data && sessionRes.data.session;
+    if (!session) {
+      updateNavForUser(null);
+      document.getElementById('loading-overlay').style.display = 'none';
+    }
+  } catch(e) {
+    console.error('Session check failed:', e);
     updateNavForUser(null);
     document.getElementById('loading-overlay').style.display = 'none';
   }
