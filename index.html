@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Maps Gacha</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 :root {
   --bg:#0e0e12;--bg2:#16161d;--bg3:#1e1e28;
@@ -468,11 +468,12 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 <div class="modal-backdrop" id="auth-backdrop"><div class="modal" id="auth-modal-inner"></div></div>
 <div class="toast" id="toast"></div>
 
-<script>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const SUPABASE_URL = 'https://xaazwommyeepwoencncb.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_MWA2ngLdac8VMD5g2eRocQ_2X4-4NrY';
 const API_URL = 'https://xaazwommyeepwoencncb.supabase.co/functions/v1/dynamic-responder';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const COIN_RATES  = {common:10,uncommon:25,rare:75,epic:200,legendary:500,mythic:1500};
 const SHARD_COSTS = {common:30,uncommon:75,rare:225,epic:600,legendary:1500,mythic:4500};
