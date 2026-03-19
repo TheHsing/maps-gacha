@@ -1218,7 +1218,7 @@ function renderTeamSlots() {
       slot.dataset.idx = i;
     } else {
       slot.className = 'team-slot filled';
-      var imgHtml = card.photoUrl ? '<img src="' + card.photoUrl + '" alt="" onerror="this.style.display='none'">' : card.emoji;
+      var imgHtml = card.photoUrl ? '<img src="' + card.photoUrl + '" alt="" onerror="this.style.display=\'none\'">' : card.emoji;
       slot.innerHTML =
         '<div class="slot-rarity rb-' + card.rarity + '">' + card.rarity.toUpperCase() + '</div>' +
         '<div class="slot-img">' + imgHtml + '</div>' +
@@ -1257,7 +1257,7 @@ function renderPickerGrid() {
   var sorted = collection.slice().sort(function(a,b) { return RARITY_ORD[b.rarity]-RARITY_ORD[a.rarity]; });
   grid.innerHTML = sorted.map(function(c) {
     var inTeam = battleTeam.some(function(t) { return t && t.name === c.name; });
-    var imgHtml = c.photoUrl ? '<img src="' + c.photoUrl + '" alt="" onerror="this.style.display='none'">' : c.emoji;
+    var imgHtml = c.photoUrl ? '<img src="' + c.photoUrl + '" alt="" onerror="this.style.display=\'none\'">' : c.emoji;
     return '<div class="picker-card' + (inTeam?' in-team':'') + '" data-name="' + encodeURIComponent(c.name) + '">' +
       '<div class="pc-rarity rb-' + c.rarity + '">' + c.rarity.toUpperCase() + '</div>' +
       '<div class="pc-img">' + imgHtml + '</div>' +
@@ -1401,7 +1401,7 @@ function renderNextEnemyCard(enemyTeam, idx) {
 }
 
 function buildArenaCardHTML(card, side, idx) {
-  var imgHtml = card.photoUrl ? '<img src="' + card.photoUrl + '" alt="" onerror="this.style.display='none'">' : (card.emoji || '📍');
+  var imgHtml = card.photoUrl ? '<img src="' + card.photoUrl + '" alt="" onerror="this.style.display=\'none\'">' : (card.emoji || '📍');
   return '<div class="arena-card" id="arena-' + side + '-' + idx + '">' +
     '<div class="ac-rarity rb-' + card.rarity + '">' + card.rarity.toUpperCase() + '</div>' +
     '<div class="ac-img">' + imgHtml + '</div>' +
