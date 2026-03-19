@@ -468,12 +468,201 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 <div class="modal-backdrop" id="auth-backdrop"><div class="modal" id="auth-modal-inner"></div></div>
 <div class="toast" id="toast"></div>
 
-<script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+<script>
 const SUPABASE_URL = 'https://xaazwommyeepwoencncb.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_MWA2ngLdac8VMD5g2eRocQ_2X4-4NrY';
 const API_URL = 'https://xaazwommyeepwoencncb.supabase.co/functions/v1/dynamic-responder';
-const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+const REST = SUPABASE_URL + '/rest/v1';
+const AUTH = SUPABASE_URL + '/auth/v1';
+
+// Raw fetch-based Supabase client - no library needed
+const sb = {
+  _token: null,
+  _refreshToken: null,
+  _authCallbacks: [],
+
+  async _getHeaders(extra) {
+    var h = {'apikey': SUPABASE_KEY, 'Content-Type': 'application/json'};
+    if (sb._token) h['Authorization'] = 'Bearer ' + sb._token;
+    return Object.assign(h, extra || {});
+  },
+
+  auth: {
+    onAuthStateChange: function(cb) { sb._authCallbacks.push(cb); },
+
+    getSession: async function() {
+      var stored = localStorage.getItem('sb_session');
+      if (stored) {
+        try {
+          var s = JSON.parse(stored);
+          if (s.expires_at && Date.now() / 1000 < s.expires_at - 60) {
+            sb._token = s.access_token;
+            sb._refreshToken = s.refresh_token;
+            return { data: { session: s } };
+          } else if (s.refresh_token) {
+            return await sb.auth._refresh(s.refresh_token);
+          }
+        } catch(e) {}
+      }
+      return { data: { session: null } };
+    },
+
+    _refresh: async function(refreshToken) {
+      try {
+        var r = await fetch(AUTH + '/token?grant_type=refresh_token', {
+          method: 'POST',
+          headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refresh_token: refreshToken })
+        });
+        var d = await r.json();
+        if (d.access_token) {
+          sb._token = d.access_token;
+          sb._refreshToken = d.refresh_token;
+          var session = { access_token: d.access_token, refresh_token: d.refresh_token,
+            expires_at: Math.floor(Date.now()/1000) + d.expires_in, user: d.user };
+          localStorage.setItem('sb_session', JSON.stringify(session));
+          return { data: { session: session } };
+        }
+      } catch(e) {}
+      localStorage.removeItem('sb_session');
+      return { data: { session: null } };
+    },
+
+    signInWithPassword: async function(opts) {
+      try {
+        var r = await fetch(AUTH + '/token?grant_type=password', {
+          method: 'POST',
+          headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: opts.email, password: opts.password })
+        });
+        var d = await r.json();
+        if (d.access_token) {
+          sb._token = d.access_token;
+          var session = { access_token: d.access_token, refresh_token: d.refresh_token,
+            expires_at: Math.floor(Date.now()/1000) + d.expires_in, user: d.user };
+          localStorage.setItem('sb_session', JSON.stringify(session));
+          sb._authCallbacks.forEach(function(cb){ cb('SIGNED_IN', session); });
+          return { data: { session: session }, error: null };
+        }
+        return { data: null, error: { message: d.error_description || d.msg || 'Login failed' } };
+      } catch(e) { return { data: null, error: { message: e.message } }; }
+    },
+
+    signUp: async function(opts) {
+      try {
+        var r = await fetch(AUTH + '/signup', {
+          method: 'POST',
+          headers: { 'apikey': SUPABASE_KEY, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: opts.email, password: opts.password })
+        });
+        var d = await r.json();
+        if (d.access_token) {
+          sb._token = d.access_token;
+          var session = { access_token: d.access_token, refresh_token: d.refresh_token,
+            expires_at: Math.floor(Date.now()/1000) + d.expires_in, user: d.user };
+          localStorage.setItem('sb_session', JSON.stringify(session));
+          sb._authCallbacks.forEach(function(cb){ cb('SIGNED_IN', session); });
+          return { data: { session: session }, error: null };
+        }
+        if (d.id) return { data: { session: null }, error: null }; // email confirmation needed
+        return { data: null, error: { message: d.error_description || d.msg || 'Signup failed' } };
+      } catch(e) { return { data: null, error: { message: e.message } }; }
+    },
+
+    signInWithOAuth: async function(opts) {
+      var redirectTo = opts.options && opts.options.redirectTo ? opts.options.redirectTo : window.location.href;
+      window.location.href = AUTH + '/authorize?provider=' + opts.provider + '&redirect_to=' + encodeURIComponent(redirectTo);
+    },
+
+    signOut: async function() {
+      try {
+        if (sb._token) await fetch(AUTH + '/logout', { method: 'POST', headers: await sb._getHeaders() });
+      } catch(e) {}
+      sb._token = null; sb._refreshToken = null;
+      localStorage.removeItem('sb_session');
+      sb._authCallbacks.forEach(function(cb){ cb('SIGNED_OUT', null); });
+    }
+  },
+
+  from: function(table) {
+    return {
+      select: function(cols) {
+        return {
+          eq: function(col, val) {
+            return {
+              eq: function(col2, val2) {
+                return {
+                  async _run() {
+                    var url = REST+'/'+table+'?'+col+'=eq.'+encodeURIComponent(val)+'&'+col2+'=eq.'+encodeURIComponent(val2);
+                    var r = await fetch(url, { headers: await sb._getHeaders({'Prefer':'return=representation'}) });
+                    var d = await r.json(); return { data: d, error: null };
+                  },
+                  then(res, rej) { return this._run().then(res, rej); }
+                };
+              },
+              single: async function() {
+                var url = REST+'/'+table+'?'+col+'=eq.'+encodeURIComponent(val)+'&limit=1';
+                var r = await fetch(url, { headers: await sb._getHeaders({'Accept':'application/vnd.pgrst.object+json'}) });
+                if (r.status === 406) return { data: null, error: null };
+                var d = await r.json();
+                if (d && d.code) return { data: null, error: d };
+                return { data: d, error: null };
+              },
+              async _run() {
+                var url = REST+'/'+table+'?'+col+'=eq.'+encodeURIComponent(val);
+                var r = await fetch(url, { headers: await sb._getHeaders() });
+                var d = await r.json(); return { data: Array.isArray(d)?d:[], error: null };
+              },
+              then(res, rej) { return this._run().then(res, rej); }
+            };
+          }
+        };
+      },
+      upsert: async function(row, opts) {
+        var headers = await sb._getHeaders({'Prefer': 'resolution=merge-duplicates,return=minimal'});
+        if (opts && opts.onConflict) headers['Prefer'] += ',on_conflict='+opts.onConflict;
+        var r = await fetch(REST+'/'+table, { method: 'POST', headers: headers, body: JSON.stringify(row) });
+        return { data: null, error: r.ok ? null : await r.json() };
+      },
+      delete: function() {
+        return {
+          eq: function(col, val) {
+            return {
+              eq: async function(col2, val2) {
+                var url = REST+'/'+table+'?'+col+'=eq.'+encodeURIComponent(val)+'&'+col2+'=eq.'+encodeURIComponent(val2);
+                var r = await fetch(url, { method: 'DELETE', headers: await sb._getHeaders() });
+                return { data: null, error: r.ok ? null : await r.json() };
+              }
+            };
+          }
+        };
+      }
+    };
+  }
+};
+
+// Handle OAuth callback hash
+(function() {
+  var hash = window.location.hash;
+  if (hash && hash.includes('access_token')) {
+    var params = {};
+    hash.slice(1).split('&').forEach(function(p) { var kv=p.split('='); params[kv[0]]=decodeURIComponent(kv[1]||''); });
+    if (params.access_token) {
+      var session = { access_token: params.access_token, refresh_token: params.refresh_token,
+        expires_at: Math.floor(Date.now()/1000) + parseInt(params.expires_in||3600), user: null };
+      // Get user info
+      fetch(AUTH + '/user', { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + params.access_token } })
+        .then(function(r){ return r.json(); })
+        .then(function(user) {
+          session.user = user;
+          sb._token = params.access_token;
+          localStorage.setItem('sb_session', JSON.stringify(session));
+          window.location.hash = '';
+          sb._authCallbacks.forEach(function(cb){ cb('SIGNED_IN', session); });
+        });
+    }
+  }
+})();
 
 const COIN_RATES  = {common:10,uncommon:25,rare:75,epic:200,legendary:500,mythic:1500};
 const SHARD_COSTS = {common:30,uncommon:75,rare:225,epic:600,legendary:1500,mythic:4500};
