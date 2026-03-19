@@ -498,6 +498,7 @@ const sb = {
           if (s.expires_at && Date.now() / 1000 < s.expires_at - 60) {
             sb._token = s.access_token;
             sb._refreshToken = s.refresh_token;
+            console.log('getSession: found valid stored session for', s.user && s.user.email);
             return { data: { session: s } };
           } else if (s.refresh_token) {
             return await sb.auth._refresh(s.refresh_token);
@@ -619,10 +620,14 @@ const sb = {
         };
       },
       upsert: async function(row, opts) {
-        var headers = await sb._getHeaders({'Prefer': 'resolution=merge-duplicates,return=minimal'});
-        if (opts && opts.onConflict) headers['Prefer'] += ',on_conflict='+opts.onConflict;
-        var r = await fetch(REST+'/'+table, { method: 'POST', headers: headers, body: JSON.stringify(row) });
-        return { data: null, error: r.ok ? null : await r.json() };
+        var onConflict = opts && opts.onConflict ? opts.onConflict : '';
+        var prefer = 'resolution=merge-duplicates,return=minimal';
+        var url = REST+'/'+table;
+        if (onConflict) url += '?on_conflict='+encodeURIComponent(onConflict);
+        var headers = await sb._getHeaders({'Prefer': prefer});
+        var r = await fetch(url, { method: 'POST', headers: headers, body: JSON.stringify(row) });
+        if (!r.ok) { var err = await r.json(); console.error('upsert error:', err); return { data: null, error: err }; }
+        return { data: null, error: null };
       },
       delete: function() {
         return {
@@ -641,24 +646,25 @@ const sb = {
   }
 };
 
-// Handle OAuth callback hash
+// Handle OAuth callback hash - defer until after DOMContentLoaded so callbacks are registered
 (function() {
   var hash = window.location.hash;
   if (hash && hash.includes('access_token')) {
     var params = {};
-    hash.slice(1).split('&').forEach(function(p) { var kv=p.split('='); params[kv[0]]=decodeURIComponent(kv[1]||''); });
+    hash.slice(1).split('&').forEach(function(p) { var kv=p.split('='); params[decodeURIComponent(kv[0])]=decodeURIComponent(kv[1]||''); });
     if (params.access_token) {
-      var session = { access_token: params.access_token, refresh_token: params.refresh_token,
-        expires_at: Math.floor(Date.now()/1000) + parseInt(params.expires_in||3600), user: null };
-      // Get user info
+      sb._token = params.access_token;
       fetch(AUTH + '/user', { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + params.access_token } })
         .then(function(r){ return r.json(); })
         .then(function(user) {
-          session.user = user;
-          sb._token = params.access_token;
+          var session = { access_token: params.access_token, refresh_token: params.refresh_token||'',
+            expires_at: Math.floor(Date.now()/1000) + parseInt(params.expires_in||3600), user: user };
           localStorage.setItem('sb_session', JSON.stringify(session));
-          window.location.hash = '';
-          sb._authCallbacks.forEach(function(cb){ cb('SIGNED_IN', session); });
+          history.replaceState(null, '', window.location.pathname);
+          // Fire after a tick so DOMContentLoaded has registered callbacks
+          setTimeout(function() {
+            sb._authCallbacks.forEach(function(cb){ cb('SIGNED_IN', session); });
+          }, 100);
         });
     }
   }
@@ -891,7 +897,7 @@ async function claimPremiumDaily(){
   if(dailyPremiumClaimsLeft===0) dailyPremiumClaimed=now;
   await saveCoins();updateDailyUI();
   showToast('Free Premium Pack!');
-  selectPack('premium');startPull();
+  selectPack('premium');startPull(true);
 }
 
 async function claimEliteDaily(){
@@ -902,7 +908,7 @@ async function claimEliteDaily(){
   dailyEliteClaimed=now;
   await saveCoins();updateDailyUI();
   showToast('Free Elite Pack!');
-  selectPack('elite');startPull();
+  selectPack('elite');startPull(true);
 }
 
 // ── PACK & PULL ────────────────────────────────────────────────────────
@@ -917,10 +923,10 @@ function selectPack(pack){
   document.getElementById('not-enough').style.display='none';
 }
 
-async function startPull(){
+async function startPull(free){
   console.log('startPull called, pulling='+pulling+', selectedPack='+selectedPack+', coins='+coins);
   if(pulling) return;
-  var cost=PACK_COSTS[selectedPack]||0;
+  var cost=free?0:(PACK_COSTS[selectedPack]||0);
   if(coins<cost){document.getElementById('not-enough').style.display='block';return;}
   document.getElementById('not-enough').style.display='none';
   pulling=true;
