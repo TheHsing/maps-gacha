@@ -693,7 +693,7 @@ async function claimPremiumDaily(){
   if(dailyPremiumClaimsLeft===0) dailyPremiumClaimed=now;
   await saveCoins();updateDailyUI();
   showToast('Free Premium Pack!');
-  selectPack('premium');await startPull();
+  selectPack('premium');startPull();
 }
 
 async function claimEliteDaily(){
@@ -704,7 +704,7 @@ async function claimEliteDaily(){
   dailyEliteClaimed=now;
   await saveCoins();updateDailyUI();
   showToast('Free Elite Pack!');
-  selectPack('elite');await startPull();
+  selectPack('elite');startPull();
 }
 
 // ── PACK & PULL ────────────────────────────────────────────────────────
@@ -1182,8 +1182,19 @@ document.addEventListener('DOMContentLoaded', function(){
     hideLoading();
   });
 
-  sb.auth.getSession().then(function(res){
-    if(!res.data||!res.data.session) hideLoading();
+  // Also load immediately from existing session so collection shows on refresh
+  sb.auth.getSession().then(async function(res){
+    var session = res.data && res.data.session;
+    if(session && session.user && !currentUser){
+      currentUser = session.user;
+      updateNavForUser(session.user);
+      await loadCollection();
+      hideLoading();
+    } else if(!session){
+      updateNavForUser(null);
+      updateDailyUI();
+      hideLoading();
+    }
   }).catch(function(){hideLoading();});
 });
 </script>
