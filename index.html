@@ -1349,7 +1349,7 @@ document.addEventListener('DOMContentLoaded', function(){
   document.getElementById('btn-signout').onclick=signOut;
 
   // Pull
-  document.getElementById('pull-btn').onclick=startPull;
+  document.getElementById('pull-btn').onclick=function(){startPull();};
   document.getElementById('pull-again-btn').onclick=resetPull;
 
   // Pack selector
