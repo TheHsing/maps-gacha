@@ -22,8 +22,6 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(200,240,96,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(200,240,96,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
-
-/* NAV */
 nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 1.5rem;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:56px;}
 .nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--text);display:flex;align-items:center;gap:8px;}
 .nav-logo-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block;}
@@ -39,69 +37,50 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .auth-btn.primary{background:var(--accent);color:var(--bg);border-color:transparent;}
 .auth-btn.primary:hover{background:var(--accent2);}
 .user-display{font-size:12px;color:var(--text2);}
-
 .page{display:none;position:relative;z-index:1;}
 .page.active{display:block;}
-
-/* GUEST BANNER */
 .guest-banner{background:rgba(200,240,96,0.06);border:1px solid rgba(200,240,96,0.2);border-radius:10px;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:1.5rem;flex-wrap:wrap;}
 .guest-banner-text{font-size:13px;color:var(--text2);}
 .guest-banner-text span{color:var(--accent);font-weight:500;}
 .guest-banner-btn{padding:5px 14px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;background:var(--accent);color:var(--bg);border:none;}
-
-/* GACHA PAGE */
 .gacha-page{min-height:calc(100vh - 56px);display:flex;flex-direction:column;align-items:center;padding:3rem 1rem 4rem;gap:2rem;}
 .gacha-title{font-family:'Syne',sans-serif;font-weight:800;font-size:42px;line-height:1.1;margin-bottom:8px;text-align:center;}
 .gacha-title span{color:var(--accent);}
 .gacha-sub{font-size:14px;color:var(--text2);text-align:center;}
-
-/* PACK SELECTOR */
+.daily-rewards{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;width:100%;max-width:600px;}
+.daily-card{flex:1;min-width:160px;background:var(--bg3);border:1px solid var(--border2);border-radius:14px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;overflow:hidden;}
+.daily-card.premium-daily::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(55,138,221,0.1),transparent 70%);pointer-events:none;}
+.daily-card.elite-daily::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(239,159,39,0.12),transparent 70%);pointer-events:none;}
+.daily-card-title{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--text);text-align:center;}
+.daily-card-sub{font-size:11px;color:var(--text2);text-align:center;}
+.daily-claim-btn{padding:7px 18px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:'Syne',sans-serif;transition:all 0.15s;width:100%;}
+.daily-claim-btn.can-claim-premium{background:var(--rare);color:#fff;}
+.daily-claim-btn.can-claim-elite{background:var(--legendary);color:#0e0e12;}
+.daily-claim-btn.claimed{background:var(--bg2);color:var(--text3);cursor:default;border:1px solid var(--border);}
+.daily-countdown{font-size:11px;font-weight:500;color:var(--text2);font-family:'Syne',sans-serif;}
+.daily-section-label{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:0.08em;font-family:'Syne',sans-serif;}
 .pack-selector{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;}
 .pack-option{width:160px;border-radius:16px;background:var(--bg3);border:1px solid var(--border2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:transform 0.2s,border-color 0.2s;position:relative;overflow:hidden;padding:24px 16px;}
 .pack-option::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,rgba(200,240,96,0.06),transparent 70%);pointer-events:none;}
-.pack-option:hover{transform:translateY(-4px);}
-.pack-option.selected{border-color:var(--accent);}
 .pack-option.pack-premium::before{background:radial-gradient(circle at 50% 30%,rgba(55,138,221,0.1),transparent 70%);}
 .pack-option.pack-elite::before{background:radial-gradient(circle at 50% 30%,rgba(239,159,39,0.12),transparent 70%);}
-.pack-option:hover.pack-premium{border-color:var(--rare);}
-.pack-option:hover.pack-elite{border-color:var(--legendary);}
+.pack-option:hover{transform:translateY(-4px);}
+.pack-option.selected{border-color:var(--accent);}
+.pack-option.pack-premium.selected{border-color:var(--rare);}
+.pack-option.pack-elite.selected{border-color:var(--legendary);}
 .pack-name{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--text);text-align:center;}
 .pack-cost{font-size:12px;font-weight:500;padding:3px 10px;border-radius:20px;display:flex;align-items:center;gap:5px;}
 .pack-cost-free{background:rgba(200,240,96,0.12);color:var(--accent);}
 .pack-cost-coins{background:rgba(239,159,39,0.12);color:var(--legendary);}
 .pack-rates{font-size:10px;color:var(--text2);text-align:center;line-height:1.6;}
 .pack-rates span{color:var(--text);font-weight:500;}
-
-/* PULL AREA */
 .pull-area{display:flex;flex-direction:column;align-items:center;gap:1.5rem;width:100%;}
 .pull-btn{padding:14px 44px;border-radius:100px;background:var(--accent);border:none;font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:#0e0e12;cursor:pointer;transition:transform 0.15s,background 0.15s;letter-spacing:0.03em;}
 .pull-btn:hover{background:var(--accent2);transform:scale(1.03);}
-.pull-btn:active{transform:scale(0.97);}
 .pull-btn.premium-btn{background:var(--rare);color:#fff;}
-.pull-btn.premium-btn:hover{background:#185FA5;}
 .pull-btn.elite-btn{background:var(--legendary);color:#0e0e12;}
-.pull-btn.elite-btn:hover{background:#BA7517;}
 .pull-btn:disabled{opacity:0.4;cursor:default;transform:none;}
 .not-enough{font-size:11px;color:var(--mythic);text-align:center;}
-/* DAILY REWARDS */
-.daily-rewards{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;width:100%;max-width:600px;}
-.daily-card{flex:1;min-width:160px;background:var(--bg3);border:1px solid var(--border2);border-radius:14px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;overflow:hidden;}
-.daily-card::before{content:'';position:absolute;inset:0;pointer-events:none;}
-.daily-card.premium-daily::before{background:radial-gradient(circle at 50% 0%,rgba(55,138,221,0.1),transparent 70%);}
-.daily-card.elite-daily::before{background:radial-gradient(circle at 50% 0%,rgba(239,159,39,0.12),transparent 70%);}
-.daily-card-icon{font-size:28px;}
-.daily-card-title{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--text);text-align:center;}
-.daily-card-sub{font-size:11px;color:var(--text2);text-align:center;}
-.daily-claim-btn{padding:7px 18px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:'Syne',sans-serif;transition:all 0.15s;width:100%;}
-.daily-claim-btn.can-claim-premium{background:var(--rare);color:#fff;}
-.daily-claim-btn.can-claim-premium:hover{background:#185FA5;}
-.daily-claim-btn.can-claim-elite{background:var(--legendary);color:#0e0e12;}
-.daily-claim-btn.can-claim-elite:hover{background:#BA7517;}
-.daily-claim-btn.claimed{background:var(--bg2);color:var(--text3);cursor:default;border:1px solid var(--border);}
-.daily-countdown{font-size:11px;font-weight:500;color:var(--text2);font-family:'Syne',sans-serif;}
-.daily-section-label{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:0.08em;font-family:'Syne',sans-serif;}
-
-
 .cards-row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;max-width:1100px;}
 .card-slot{perspective:900px;cursor:pointer;}
 @keyframes cardFallIn{from{opacity:0;transform:translateY(-60px) rotate(var(--rot));}to{opacity:1;transform:translateY(0) rotate(var(--rot));}}
@@ -123,14 +102,12 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .cs-atk{background:rgba(216,90,48,0.2);color:#F0997B;}
 .cs-def{background:rgba(29,158,117,0.2);color:#5DCAA5;}
 .card-rating{font-size:10px;color:var(--text2);margin-top:6px;}
-
 .rb-common{background:var(--common-bg);color:var(--common-light);}
 .rb-uncommon{background:var(--uncommon-bg);color:var(--uncommon-light);}
 .rb-rare{background:var(--rare-bg);color:var(--rare-light);}
 .rb-epic{background:var(--epic-bg);color:var(--epic-light);}
 .rb-legendary{background:var(--legendary-bg);color:var(--legendary-light);}
 .rb-mythic{background:var(--mythic-bg);color:var(--mythic-light);}
-
 @keyframes rarityFlash{0%{opacity:0;transform:scale(0.7)}35%{opacity:1;transform:scale(1.08)}100%{opacity:0;transform:scale(1.12)}}
 .rarity-flash{position:absolute;inset:-6px;border-radius:18px;z-index:20;pointer-events:none;animation:rarityFlash 0.65s ease forwards;}
 .flash-common{background:rgba(136,135,128,0.35);}
@@ -140,8 +117,6 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .flash-legendary{background:rgba(239,159,39,0.45);}
 .flash-mythic{background:rgba(226,75,74,0.5);}
 .gacha-hint{font-size:13px;color:var(--text2);text-align:center;min-height:20px;}
-
-/* COLLECTION PAGE */
 .coll-page{padding:2rem 1.5rem 4rem;max-width:1000px;margin:0 auto;}
 .coll-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:10px;}
 .coll-top-left{display:flex;align-items:baseline;gap:10px;}
@@ -154,7 +129,6 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .vt-btn.active{background:var(--bg3);color:var(--text);}
 .filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem;}
 .fpill{font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;cursor:pointer;color:var(--text2);transition:all 0.15s;font-family:'DM Sans',sans-serif;}
-.fpill:hover{border-color:var(--border2);color:var(--text);}
 .fpill.active.fa{background:var(--bg3);border-color:var(--border2);color:var(--text);}
 .fpill.active.fc{background:var(--common-bg);border-color:var(--common);color:var(--common-light);}
 .fpill.active.fu{background:var(--uncommon-bg);border-color:var(--uncommon);color:var(--uncommon-light);}
@@ -187,34 +161,97 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .li-stat{font-size:11px;font-weight:500;padding:3px 8px;border-radius:4px;}
 .li-copies{font-size:12px;color:var(--text2);flex-shrink:0;min-width:36px;text-align:right;}
 .li-date{font-size:11px;color:var(--text3);flex-shrink:0;min-width:54px;text-align:right;}
-
-/* AUTH MODAL */
+.battle-page{min-height:calc(100vh - 56px);display:flex;flex-direction:column;align-items:center;padding:3rem 1rem 4rem;gap:2rem;max-width:900px;margin:0 auto;}
+.battle-header{text-align:center;}
+.battle-title{font-family:'Syne',sans-serif;font-weight:800;font-size:42px;line-height:1.1;margin-bottom:8px;}
+.battle-title span{color:var(--mythic);}
+.battle-sub{font-size:14px;color:var(--text2);}
+.battle-section{width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;}
+.battle-section-label{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:0.08em;font-family:'Syne',sans-serif;display:flex;align-items:center;gap:8px;}
+.battle-section-label span{color:var(--accent);}
+.battle-team-slots{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+.team-slot{width:140px;height:200px;border-radius:14px;border:1px dashed var(--border2);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;position:relative;overflow:hidden;}
+.team-slot.empty:hover{border-color:var(--accent);background:rgba(200,240,96,0.04);}
+.team-slot.filled{border-style:solid;background:var(--bg2);}
+.team-slot.filled:hover{border-color:var(--mythic);}
+.slot-plus{font-size:28px;color:var(--text3);margin-bottom:6px;}
+.slot-hint{font-size:11px;color:var(--text3);}
+.slot-rarity{padding:3px 0;font-size:7px;font-weight:700;letter-spacing:0.1em;text-align:center;width:100%;font-family:'Syne',sans-serif;flex-shrink:0;}
+.slot-img{width:100%;height:80px;display:flex;align-items:center;justify-content:center;font-size:28px;background:var(--bg3);overflow:hidden;flex-shrink:0;}
+.slot-img img{width:100%;height:100%;object-fit:cover;}
+.slot-info{padding:6px 8px;flex:1;display:flex;flex-direction:column;justify-content:space-between;width:100%;}
+.slot-name{font-size:9px;font-weight:600;font-family:'Syne',sans-serif;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.slot-stats{display:flex;gap:3px;margin-top:4px;}
+.slot-stat{flex:1;font-size:7px;font-weight:500;padding:2px 3px;border-radius:3px;text-align:center;}
+.slot-remove{position:absolute;top:4px;right:4px;background:rgba(226,75,74,0.2);border:none;border-radius:50%;width:18px;height:18px;font-size:9px;cursor:pointer;color:var(--mythic);display:flex;align-items:center;justify-content:center;}
+.difficulty-selector{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+.diff-btn{padding:14px 16px;border-radius:12px;background:var(--bg3);border:1px solid var(--border2);cursor:pointer;transition:all 0.15s;text-align:center;min-width:130px;}
+.diff-btn:hover{transform:translateY(-2px);}
+.diff-btn.selected{border-color:var(--accent);background:rgba(200,240,96,0.06);}
+.diff-btn[data-diff="hard"].selected{border-color:var(--rare);background:rgba(55,138,221,0.06);}
+.diff-btn[data-diff="legendary"].selected{border-color:var(--legendary);background:rgba(239,159,39,0.06);}
+.diff-name{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--text);margin-bottom:4px;}
+.diff-reward{font-size:11px;color:var(--accent);font-weight:500;}
+.diff-btn[data-diff="hard"] .diff-reward{color:var(--rare);}
+.diff-btn[data-diff="legendary"] .diff-reward{color:var(--legendary);}
+.diff-odds{font-size:10px;color:var(--text2);margin-top:2px;}
+.battle-start-btn{padding:13px 40px;border-radius:100px;background:var(--mythic);border:none;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#fff;cursor:pointer;transition:all 0.15s;margin-top:8px;}
+.battle-start-btn:hover:not(:disabled){transform:scale(1.03);background:#C73E3E;}
+.battle-start-btn:disabled{opacity:0.4;cursor:default;transform:none;}
+.battle-picker{width:100%;}
+.picker-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.picker-close-btn{background:none;border:1px solid var(--border2);border-radius:8px;padding:4px 10px;color:var(--text2);cursor:pointer;font-size:13px;}
+.picker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;max-height:400px;overflow-y:auto;}
+.picker-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:all 0.15s;}
+.picker-card:hover{transform:translateY(-2px);border-color:var(--accent);}
+.picker-card.in-team{opacity:0.35;cursor:default;pointer-events:none;}
+.pc-rarity{padding:3px 0;font-size:7px;font-weight:700;letter-spacing:0.1em;text-align:center;font-family:'Syne',sans-serif;}
+.pc-img{height:55px;display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--bg3);overflow:hidden;}
+.pc-img img{width:100%;height:100%;object-fit:cover;}
+.pc-info{padding:5px 6px;}
+.pc-name{font-size:8px;font-weight:600;font-family:'Syne',sans-serif;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;}
+.pc-stats{display:flex;gap:2px;}
+.pc-stat{flex:1;font-size:7px;font-weight:500;padding:2px 0;border-radius:3px;text-align:center;}
+.battle-arena{width:100%;}
+.arena-header{text-align:center;margin-bottom:1.5rem;}
+.arena-title{font-family:'Syne',sans-serif;font-weight:700;font-size:20px;color:var(--text);}
+.arena-field{display:flex;align-items:flex-start;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem;}
+.arena-side{display:flex;flex-direction:column;align-items:center;gap:10px;flex:1;min-width:200px;}
+.arena-label{font-size:10px;font-weight:600;color:var(--text2);letter-spacing:0.08em;font-family:'Syne',sans-serif;}
+.arena-cards{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+.arena-card{width:90px;border-radius:10px;background:var(--bg2);border:1px solid var(--border2);overflow:hidden;transition:all 0.3s;position:relative;}
+.arena-card.defeated{opacity:0.3;filter:grayscale(1);}
+.arena-card.attacking{transform:scale(1.08);border-color:var(--accent);z-index:2;}
+.enemy-side .arena-card.attacking{border-color:var(--mythic);}
+@keyframes cardHit{0%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(4px)}100%{transform:translateX(0)}}
+.arena-card.hit{animation:cardHit 0.3s ease;}
+.ac-rarity{padding:2px 0;font-size:7px;font-weight:700;letter-spacing:0.08em;text-align:center;font-family:'Syne',sans-serif;}
+.ac-img{height:55px;display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--bg3);overflow:hidden;}
+.ac-img img{width:100%;height:100%;object-fit:cover;}
+.ac-name{font-size:8px;font-weight:600;font-family:'Syne',sans-serif;color:var(--text);padding:4px 5px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ac-hp-bar{height:4px;background:var(--border);margin:0 5px 5px;border-radius:2px;overflow:hidden;}
+.ac-hp-fill{height:100%;border-radius:2px;background:#1D9E75;transition:width 0.4s ease;}
+.ac-hp-fill.low{background:#EF9F27;}
+.ac-hp-fill.critical{background:var(--mythic);}
+.ac-hp-text{font-size:7px;color:var(--text2);text-align:center;padding-bottom:4px;}
+.damage-pop{position:absolute;top:10px;left:50%;transform:translateX(-50%);font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--mythic);pointer-events:none;animation:damagePop 0.8s ease forwards;z-index:10;}
+@keyframes damagePop{0%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}100%{opacity:0;transform:translateX(-50%) translateY(-30px) scale(1.3)}}
+.arena-vs{font-family:'Syne',sans-serif;font-weight:800;font-size:24px;color:var(--text3);align-self:center;}
+.battle-log{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;max-height:160px;overflow-y:auto;font-size:12px;color:var(--text2);line-height:1.8;width:100%;}
+.log-entry.player-atk{color:var(--accent);}
+.log-entry.enemy-atk{color:var(--mythic);}
+.log-entry.result-win{color:var(--uncommon);font-weight:600;}
+.log-entry.result-lose{color:var(--mythic);font-weight:600;}
+.log-entry.exclusive{color:var(--legendary);font-weight:600;}
+.battle-result{text-align:center;padding:1.5rem 0;}
+.result-title{font-family:'Syne',sans-serif;font-weight:800;font-size:32px;margin-bottom:12px;}
+.result-title.win{color:var(--accent);}
+.result-title.lose{color:var(--mythic);}
+.result-rewards{font-size:14px;color:var(--text2);margin-bottom:20px;line-height:1.8;}
 .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
 .modal-backdrop.open{display:flex;}
 .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;width:320px;overflow:hidden;animation:modalIn 0.25s cubic-bezier(0.34,1.56,0.64,1);max-height:90vh;overflow-y:auto;}
 @keyframes modalIn{from{opacity:0;transform:scale(0.88) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
-
-/* AUTH FORM */
-.auth-modal{padding:28px 24px;}
-.auth-modal-title{font-family:'Syne',sans-serif;font-weight:700;font-size:20px;margin-bottom:4px;}
-.auth-modal-sub{font-size:13px;color:var(--text2);margin-bottom:24px;}
-.auth-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
-.auth-field label{font-size:12px;color:var(--text2);}
-.auth-field input{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;font-size:14px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;}
-.auth-field input:focus{border-color:var(--accent);}
-.auth-submit{width:100%;padding:12px 0;border-radius:10px;background:var(--accent);border:none;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#0e0e12;cursor:pointer;margin-top:6px;transition:background 0.15s;}
-.auth-submit:hover{background:var(--accent2);}
-.auth-divider{display:flex;align-items:center;gap:10px;margin:16px 0;font-size:12px;color:var(--text3);}
-.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border);}
-.google-btn{width:100%;padding:11px 0;border-radius:10px;background:var(--bg3);border:1px solid var(--border2);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 0.15s;}
-.google-btn:hover{background:rgba(255,255,255,0.07);}
-.auth-switch{text-align:center;margin-top:16px;font-size:13px;color:var(--text2);}
-.auth-switch button{background:none;border:none;color:var(--accent);cursor:pointer;font-size:13px;font-family:'DM Sans',sans-serif;}
-.auth-error{font-size:12px;color:var(--mythic);margin-bottom:10px;text-align:center;}
-.auth-close{width:100%;padding:10px 0;background:none;border:none;border-top:1px solid var(--border);cursor:pointer;font-size:12px;color:var(--text2);font-family:'DM Sans',sans-serif;margin-top:16px;}
-.auth-close:hover{color:var(--text);}
-
-/* CARD MODAL */
 .modal-rarity{padding:8px 0;font-size:10px;font-weight:700;letter-spacing:0.1em;text-align:center;font-family:'Syne',sans-serif;}
 .modal-img{width:100%;height:150px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:64px;overflow:hidden;}
 .modal-img img{width:100%;height:100%;object-fit:cover;}
@@ -236,10 +273,9 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .modal-section-title{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:0.06em;margin-bottom:8px;font-family:'Syne',sans-serif;}
 .modal-actions{display:flex;gap:8px;margin-bottom:10px;}
 .mact-btn{flex:1;padding:10px 0;border-radius:10px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:var(--bg3);color:var(--text);transition:all 0.15s;font-family:'DM Sans',sans-serif;}
-.mact-btn:hover:not(.mdisabled){background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.2);}
+.mact-btn:hover:not(.mdisabled){background:rgba(255,255,255,0.07);}
 .mdisabled{opacity:0.35;cursor:default;}
 .mact-upgrade{border-color:var(--accent);color:var(--accent);}
-.mact-upgrade:hover:not(.mdisabled){background:rgba(200,240,96,0.08);}
 .buy-shards-grid{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
 .buy-shard-row{display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 12px;}
 .bsr-left{font-size:12px;color:var(--text);}
@@ -248,118 +284,26 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .bsr-btn:hover:not(.mdisabled){background:var(--bg2);}
 .modal-close{width:100%;padding:12px 0;background:none;border:none;border-top:1px solid var(--border);cursor:pointer;font-size:13px;color:var(--text2);font-family:'DM Sans',sans-serif;transition:color 0.15s;}
 .modal-close:hover{color:var(--text);}
-
+.auth-modal{padding:28px 24px;}
+.auth-modal-title{font-family:'Syne',sans-serif;font-weight:700;font-size:20px;margin-bottom:4px;}
+.auth-modal-sub{font-size:13px;color:var(--text2);margin-bottom:24px;}
+.auth-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.auth-field label{font-size:12px;color:var(--text2);}
+.auth-field input{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;font-size:14px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;}
+.auth-field input:focus{border-color:var(--accent);}
+.auth-submit{width:100%;padding:12px 0;border-radius:10px;background:var(--accent);border:none;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#0e0e12;cursor:pointer;margin-top:6px;}
+.auth-divider{display:flex;align-items:center;gap:10px;margin:16px 0;font-size:12px;color:var(--text3);}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.google-btn{width:100%;padding:11px 0;border-radius:10px;background:var(--bg3);border:1px solid var(--border2);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
+.auth-switch{text-align:center;margin-top:16px;font-size:13px;color:var(--text2);}
+.auth-switch button{background:none;border:none;color:var(--accent);cursor:pointer;font-size:13px;font-family:'DM Sans',sans-serif;}
+.auth-error{font-size:12px;color:var(--mythic);margin-bottom:10px;text-align:center;}
+.auth-close{width:100%;padding:10px 0;background:none;border:none;border-top:1px solid var(--border);cursor:pointer;font-size:12px;color:var(--text2);font-family:'DM Sans',sans-serif;margin-top:16px;}
 .empty-state{text-align:center;padding:4rem 1rem;color:var(--text2);}
 .empty-state p{font-size:14px;margin-top:8px;}
 .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:10px 20px;font-size:13px;color:var(--text);z-index:300;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);}
-.loading-overlay{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:500;font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text2);transition:opacity 0.3s;}
-
-/* BATTLE PAGE */
-.battle-page{min-height:calc(100vh - 56px);display:flex;flex-direction:column;align-items:center;padding:3rem 1rem 4rem;gap:2rem;max-width:900px;margin:0 auto;}
-.battle-header{text-align:center;}
-.battle-title{font-family:'Syne',sans-serif;font-weight:800;font-size:42px;line-height:1.1;margin-bottom:8px;}
-.battle-title span{color:var(--mythic);}
-.battle-sub{font-size:14px;color:var(--text2);}
-.battle-section{width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;}
-.battle-section-label{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:0.08em;font-family:'Syne',sans-serif;display:flex;align-items:center;gap:8px;}
-.battle-section-label span{color:var(--accent);}
-
-/* TEAM SLOTS */
-.battle-team-slots{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
-.team-slot{width:140px;height:200px;border-radius:14px;border:1px dashed var(--border2);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;position:relative;overflow:hidden;}
-.team-slot.empty:hover{border-color:var(--accent);background:rgba(200,240,96,0.04);}
-.team-slot.filled{border-style:solid;background:var(--bg2);cursor:pointer;}
-.team-slot.filled:hover{border-color:var(--mythic);}
-.slot-plus{font-size:28px;color:var(--text3);margin-bottom:6px;}
-.slot-hint{font-size:11px;color:var(--text3);}
-.slot-rarity{padding:3px 0;font-size:7px;font-weight:700;letter-spacing:0.1em;text-align:center;width:100%;font-family:'Syne',sans-serif;flex-shrink:0;}
-.slot-img{width:100%;height:80px;display:flex;align-items:center;justify-content:center;font-size:28px;background:var(--bg3);overflow:hidden;flex-shrink:0;}
-.slot-img img{width:100%;height:100%;object-fit:cover;}
-.slot-info{padding:6px 8px;flex:1;display:flex;flex-direction:column;justify-content:space-between;width:100%;}
-.slot-name{font-size:9px;font-weight:600;font-family:'Syne',sans-serif;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.slot-stats{display:flex;gap:3px;margin-top:4px;}
-.slot-stat{flex:1;font-size:7px;font-weight:500;padding:2px 3px;border-radius:3px;text-align:center;}
-.slot-remove{position:absolute;top:4px;right:4px;background:rgba(226,75,74,0.2);border:none;border-radius:50%;width:18px;height:18px;font-size:9px;cursor:pointer;color:var(--mythic);display:flex;align-items:center;justify-content:center;}
-
-/* DIFFICULTY */
-.difficulty-selector{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
-.diff-btn{padding:14px 16px;border-radius:12px;background:var(--bg3);border:1px solid var(--border2);cursor:pointer;transition:all 0.15s;text-align:center;min-width:130px;}
-.diff-btn:hover{transform:translateY(-2px);}
-.diff-btn.selected{border-color:var(--accent);background:rgba(200,240,96,0.06);}
-.diff-btn[data-diff="hard"].selected{border-color:var(--rare);background:rgba(55,138,221,0.06);}
-.diff-btn[data-diff="legendary"].selected{border-color:var(--legendary);background:rgba(239,159,39,0.06);}
-.diff-name{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--text);margin-bottom:4px;}
-.diff-reward{font-size:11px;color:var(--accent);font-weight:500;}
-.diff-btn[data-diff="hard"] .diff-reward{color:var(--rare);}
-.diff-btn[data-diff="legendary"] .diff-reward{color:var(--legendary);}
-.diff-odds{font-size:10px;color:var(--text2);margin-top:2px;}
-
-/* BATTLE BTN */
-.battle-start-btn{padding:13px 40px;border-radius:100px;background:var(--mythic);border:none;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#fff;cursor:pointer;transition:all 0.15s;margin-top:8px;}
-.battle-start-btn:hover:not(:disabled){transform:scale(1.03);background:#C73E3E;}
-.battle-start-btn:disabled{opacity:0.4;cursor:default;transform:none;}
-
-/* PICKER */
-.battle-picker{width:100%;}
-.picker-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-.picker-close-btn{background:none;border:1px solid var(--border2);border-radius:8px;padding:4px 10px;color:var(--text2);cursor:pointer;font-size:13px;}
-.picker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;max-height:400px;overflow-y:auto;}
-.picker-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:all 0.15s;}
-.picker-card:hover{transform:translateY(-2px);border-color:var(--accent);}
-.picker-card.in-team{opacity:0.35;cursor:default;pointer-events:none;}
-.pc-rarity{padding:3px 0;font-size:7px;font-weight:700;letter-spacing:0.1em;text-align:center;font-family:'Syne',sans-serif;}
-.pc-img{height:55px;display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--bg3);overflow:hidden;}
-.pc-img img{width:100%;height:100%;object-fit:cover;}
-.pc-info{padding:5px 6px;}
-.pc-name{font-size:8px;font-weight:600;font-family:'Syne',sans-serif;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;}
-.pc-stats{display:flex;gap:2px;}
-.pc-stat{flex:1;font-size:7px;font-weight:500;padding:2px 0;border-radius:3px;text-align:center;}
-
-/* ARENA */
-.battle-arena{width:100%;}
-.arena-header{text-align:center;margin-bottom:1.5rem;}
-.arena-title{font-family:'Syne',sans-serif;font-weight:700;font-size:20px;color:var(--text);}
-.arena-field{display:flex;align-items:flex-start;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem;}
-.arena-side{display:flex;flex-direction:column;align-items:center;gap:10px;flex:1;min-width:200px;}
-.arena-label{font-size:10px;font-weight:600;color:var(--text2);letter-spacing:0.08em;font-family:'Syne',sans-serif;}
-.arena-cards{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
-.arena-card{width:90px;border-radius:10px;background:var(--bg2);border:1px solid var(--border2);overflow:hidden;transition:all 0.3s;position:relative;}
-.arena-card.defeated{opacity:0.3;filter:grayscale(1);}
-.arena-card.attacking{transform:scale(1.08);border-color:var(--accent);z-index:2;}
-.arena-card.hit{animation:cardHit 0.3s ease;}
-.enemy-side .arena-card.attacking{border-color:var(--mythic);}
-@keyframes cardHit{0%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(4px)}100%{transform:translateX(0)}}
-.ac-rarity{padding:2px 0;font-size:7px;font-weight:700;letter-spacing:0.08em;text-align:center;font-family:'Syne',sans-serif;}
-.ac-img{height:55px;display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--bg3);overflow:hidden;}
-.ac-img img{width:100%;height:100%;object-fit:cover;}
-.ac-name{font-size:8px;font-weight:600;font-family:'Syne',sans-serif;color:var(--text);padding:4px 5px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.ac-hp-bar{height:4px;background:var(--border);margin:0 5px 5px;border-radius:2px;overflow:hidden;}
-.ac-hp-fill{height:100%;border-radius:2px;background:#1D9E75;transition:width 0.4s ease;}
-.ac-hp-fill.low{background:#EF9F27;}
-.ac-hp-fill.critical{background:var(--mythic);}
-.ac-hp-text{font-size:7px;color:var(--text2);text-align:center;padding-bottom:4px;}
-.damage-pop{position:absolute;top:10px;left:50%;transform:translateX(-50%);font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--mythic);pointer-events:none;animation:damagePop 0.8s ease forwards;z-index:10;}
-.heal-pop{color:var(--uncommon);}
-@keyframes damagePop{0%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}100%{opacity:0;transform:translateX(-50%) translateY(-30px) scale(1.3)}}
-.arena-vs{font-family:'Syne',sans-serif;font-weight:800;font-size:24px;color:var(--text3);align-self:center;}
-
-/* BATTLE LOG */
-.battle-log{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;max-height:160px;overflow-y:auto;font-size:12px;color:var(--text2);line-height:1.8;width:100%;}
-.log-entry{padding:1px 0;}
-.log-entry.player-atk{color:var(--accent);}
-.log-entry.enemy-atk{color:var(--mythic);}
-.log-entry.result-win{color:var(--uncommon);font-weight:600;}
-.log-entry.result-lose{color:var(--mythic);font-weight:600;}
-.log-entry.exclusive{color:var(--legendary);font-weight:600;}
-
-/* RESULT */
-.battle-result{text-align:center;padding:1.5rem 0;}
-.result-title{font-family:'Syne',sans-serif;font-weight:800;font-size:32px;margin-bottom:12px;}
-.result-title.win{color:var(--accent);}
-.result-title.lose{color:var(--mythic);}
-.result-rewards{font-size:14px;color:var(--text2);margin-bottom:20px;line-height:1.8;}
-
+.loading-overlay{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:500;font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text2);}
 </style>
 </head>
 <body>
@@ -375,33 +319,32 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
   </div>
   <div class="nav-right" id="nav-right">
     <div class="coin-display" id="coin-display" style="display:none"><div class="coin-icon"></div><span id="nav-coins">0</span></div>
+    <span class="user-display" id="user-display" style="display:none"></span>
     <button class="auth-btn" id="btn-login">Log in</button>
     <button class="auth-btn primary" id="btn-signup">Sign up</button>
+    <button class="auth-btn" id="btn-signout" style="display:none">Sign out</button>
   </div>
 </nav>
 
-<!-- GACHA PAGE -->
 <div class="page active" id="page-gacha">
   <div class="gacha-page">
     <div>
       <div class="gacha-title">Find your next<br><span>destination.</span></div>
       <div class="gacha-sub">Pull packs · collect places · upgrade cards</div>
     </div>
-
     <div id="guest-banner-wrap"></div>
-
     <div style="display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;max-width:600px;">
       <div class="daily-section-label">DAILY REWARDS</div>
-      <div class="daily-rewards" id="daily-rewards">
+      <div class="daily-rewards">
         <div class="daily-card premium-daily">
-          <div class="daily-card-icon">🌐</div>
+          <div style="font-size:28px">🌐</div>
           <div class="daily-card-title">2x Premium Pack</div>
           <div class="daily-card-sub" id="premium-daily-sub">Free daily</div>
           <button class="daily-claim-btn claimed" id="claim-premium-btn">Loading...</button>
           <div class="daily-countdown" id="premium-countdown"></div>
         </div>
         <div class="daily-card elite-daily">
-          <div class="daily-card-icon">🗺️</div>
+          <div style="font-size:28px">🗺️</div>
           <div class="daily-card-title">1x Elite Pack</div>
           <div class="daily-card-sub" id="elite-daily-sub">Free daily</div>
           <button class="daily-claim-btn claimed" id="claim-elite-btn">Loading...</button>
@@ -409,7 +352,6 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
         </div>
       </div>
     </div>
-
     <div class="pack-selector">
       <div class="pack-option pack-standard selected" data-pack="standard">
         <div style="font-size:40px">🌍</div>
@@ -430,7 +372,6 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
         <div class="pack-rates">Common <span>10%</span> · Uncommon <span>15%</span><br>Rare <span>25%</span> · Epic <span>25%</span><br>Legendary <span>18%</span> · Mythic <span>7%</span></div>
       </div>
     </div>
-
     <div class="pull-area">
       <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
         <button class="pull-btn" id="pull-btn">Pull Standard Pack</button>
@@ -443,7 +384,6 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
   </div>
 </div>
 
-<!-- COLLECTION PAGE -->
 <div class="page" id="page-collection">
   <div class="coll-page">
     <div id="coll-guest-banner-wrap"></div>
@@ -479,1121 +419,772 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
   </div>
 </div>
 
-
-<!-- BATTLE PAGE -->
 <div class="page" id="page-battle">
   <div class="battle-page">
     <div class="battle-header">
       <div class="battle-title">Battle<span>.</span></div>
-      <div class="battle-sub">Build your team · choose your difficulty · fight for rewards</div>
+      <div class="battle-sub">Build your team · choose difficulty · fight for rewards</div>
     </div>
-
-    <div id="battle-ui">
-      <!-- TEAM SELECTION -->
-      <div class="battle-section" id="battle-team-section">
-        <div class="battle-section-label">YOUR TEAM <span id="team-count">0/3</span></div>
-        <div class="battle-team-slots" id="team-slots">
-          <div class="team-slot empty" id="slot-0"><div class="slot-plus">+</div><div class="slot-hint">Pick a card</div></div>
-          <div class="team-slot empty" id="slot-1"><div class="slot-plus">+</div><div class="slot-hint">Pick a card</div></div>
-          <div class="team-slot empty" id="slot-2"><div class="slot-plus">+</div><div class="slot-hint">Pick a card</div></div>
-        </div>
-        <div class="battle-section-label" style="margin-top:1.5rem">CHOOSE DIFFICULTY</div>
-        <div class="difficulty-selector">
-          <div class="diff-btn selected" data-diff="easy">
-            <div class="diff-name">Easy</div>
-            <div class="diff-reward">+100 coins</div>
-            <div class="diff-odds">Win rate: high</div>
-          </div>
-          <div class="diff-btn" data-diff="hard">
-            <div class="diff-name">Hard</div>
-            <div class="diff-reward">+300 coins</div>
-            <div class="diff-odds">Exclusive card chance</div>
-          </div>
-          <div class="diff-btn" data-diff="legendary">
-            <div class="diff-name">Legendary</div>
-            <div class="diff-reward">+750 coins</div>
-            <div class="diff-odds">High exclusive chance</div>
-          </div>
-        </div>
-        <button class="battle-start-btn" id="battle-start-btn" disabled>Select 3 cards to battle</button>
+    <div id="battle-team-section" class="battle-section">
+      <div class="battle-section-label">YOUR TEAM <span id="team-count">0/3</span></div>
+      <div class="battle-team-slots" id="team-slots">
+        <div class="team-slot empty" id="slot-0"><div class="slot-plus">+</div><div class="slot-hint">Pick a card</div></div>
+        <div class="team-slot empty" id="slot-1"><div class="slot-plus">+</div><div class="slot-hint">Pick a card</div></div>
+        <div class="team-slot empty" id="slot-2"><div class="slot-plus">+</div><div class="slot-hint">Pick a card</div></div>
       </div>
-
-      <!-- CARD PICKER -->
-      <div class="battle-picker" id="battle-picker" style="display:none">
-        <div class="picker-header">
-          <div class="battle-section-label">SELECT A CARD</div>
-          <button class="picker-close-btn" id="picker-close">✕</button>
-        </div>
-        <div class="picker-grid" id="picker-grid"></div>
+      <div class="battle-section-label" style="margin-top:1.5rem">DIFFICULTY</div>
+      <div class="difficulty-selector">
+        <div class="diff-btn selected" data-diff="easy"><div class="diff-name">Easy</div><div class="diff-reward">+100 coins</div><div class="diff-odds">Win rate: high</div></div>
+        <div class="diff-btn" data-diff="hard"><div class="diff-name">Hard</div><div class="diff-reward">+300 coins</div><div class="diff-odds">Exclusive card chance</div></div>
+        <div class="diff-btn" data-diff="legendary"><div class="diff-name">Legendary</div><div class="diff-reward">+750 coins</div><div class="diff-odds">High exclusive chance</div></div>
       </div>
-
-      <!-- BATTLE ARENA -->
-      <div class="battle-arena" id="battle-arena" style="display:none">
-        <div class="arena-header">
-          <div class="arena-title" id="arena-title">Battle starting...</div>
-        </div>
-        <div class="arena-field">
-          <div class="arena-side player-side">
-            <div class="arena-label">YOUR TEAM</div>
-            <div class="arena-cards" id="player-arena-cards"></div>
-          </div>
-          <div class="arena-vs">VS</div>
-          <div class="arena-side enemy-side">
-            <div class="arena-label">OPPONENT</div>
-            <div class="arena-cards" id="enemy-arena-cards"></div>
-          </div>
-        </div>
-        <div class="battle-log" id="battle-log"></div>
-        <div class="battle-result" id="battle-result" style="display:none">
-          <div class="result-title" id="result-title"></div>
-          <div class="result-rewards" id="result-rewards"></div>
-          <button class="battle-start-btn" id="battle-again-btn">Battle Again</button>
-        </div>
+      <button class="battle-start-btn" id="battle-start-btn" disabled>Select 3 cards to battle</button>
+    </div>
+    <div class="battle-picker" id="battle-picker" style="display:none">
+      <div class="picker-header">
+        <div class="battle-section-label">SELECT A CARD</div>
+        <button class="picker-close-btn" id="picker-close">✕ Back</button>
+      </div>
+      <div class="picker-grid" id="picker-grid"></div>
+    </div>
+    <div class="battle-arena" id="battle-arena" style="display:none;width:100%">
+      <div class="arena-header"><div class="arena-title" id="arena-title">Battle!</div></div>
+      <div class="arena-field">
+        <div class="arena-side player-side"><div class="arena-label">YOUR TEAM</div><div class="arena-cards" id="player-arena-cards"></div></div>
+        <div class="arena-vs">VS</div>
+        <div class="arena-side enemy-side"><div class="arena-label">OPPONENT</div><div class="arena-cards" id="enemy-arena-cards"></div></div>
+      </div>
+      <div class="battle-log" id="battle-log"></div>
+      <div class="battle-result" id="battle-result" style="display:none">
+        <div class="result-title" id="result-title"></div>
+        <div class="result-rewards" id="result-rewards"></div>
+        <button class="battle-start-btn" id="battle-again-btn">Battle Again</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- MODALS -->
-<div class="modal-backdrop" id="modal-backdrop">
-  <div class="modal" id="modal-inner"></div>
-</div>
-<div class="modal-backdrop" id="auth-backdrop">
-  <div class="modal" id="auth-modal-inner"></div>
-</div>
+<div class="modal-backdrop" id="modal-backdrop"><div class="modal" id="modal-inner"></div></div>
+<div class="modal-backdrop" id="auth-backdrop"><div class="modal" id="auth-modal-inner"></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
 const SUPABASE_URL = 'https://xaazwommyeepwoencncb.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_MWA2ngLdac8VMD5g2eRocQ_2X4-4NrY';
 const API_URL = 'https://xaazwommyeepwoencncb.supabase.co/functions/v1/dynamic-responder';
-
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const COIN_RATES  = {common:10, uncommon:25, rare:75, epic:200, legendary:500, mythic:1500};
-const SHARD_COSTS = {common:30, uncommon:75, rare:225, epic:600, legendary:1500, mythic:4500};
-const RARITY_ORD  = {common:0, uncommon:1, rare:2, epic:3, legendary:4, mythic:5};
-const PACK_COSTS  = {standard:0, premium:500, elite:2000};
-const PACK_BTN_CLASS = {standard:'', premium:'premium-btn', elite:'elite-btn'};
-const PACK_LABELS = {standard:'Standard Pack', premium:'Premium Pack', elite:'Elite Pack'};
-const C = 2000, GAVG = 4.4;
+const COIN_RATES  = {common:10,uncommon:25,rare:75,epic:200,legendary:500,mythic:1500};
+const SHARD_COSTS = {common:30,uncommon:75,rare:225,epic:600,legendary:1500,mythic:4500};
+const RARITY_ORD  = {common:0,uncommon:1,rare:2,epic:3,legendary:4,mythic:5};
+const PACK_COSTS  = {standard:0,premium:500,elite:2000};
+const PACK_BTN_CLASS = {standard:'',premium:'premium-btn',elite:'elite-btn'};
+const PACK_LABELS = {standard:'Standard Pack',premium:'Premium Pack',elite:'Elite Pack'};
+const DIFF_SETTINGS = {
+  easy:      {multiplier:0.7, winCoins:100, loseCoins:20,  exclusiveChance:0},
+  hard:      {multiplier:1.0, winCoins:300, loseCoins:50,  exclusiveChance:0.15},
+  legendary: {multiplier:1.4, winCoins:750, loseCoins:100, exclusiveChance:0.40}
+};
+const EXCLUSIVE_CARDS = [
+  {name:"Great Wall of China",  loc:"Beijing, China",      emoji:"🏯",rarity:"mythic",    rating:4.9,reviews:180000,atk:9200,def:9800},
+  {name:"Burj Khalifa",         loc:"Dubai, UAE",          emoji:"🏙️",rarity:"mythic",    rating:4.8,reviews:95000, atk:8800,def:9500},
+  {name:"Angkor Wat",           loc:"Siem Reap, Cambodia", emoji:"🛕",rarity:"legendary", rating:4.9,reviews:72000, atk:8200,def:9200},
+  {name:"Machu Picchu",         loc:"Cusco, Peru",         emoji:"🏔️",rarity:"legendary", rating:4.9,reviews:143000,atk:8600,def:9000},
+  {name:"Petra",                loc:"Ma'an, Jordan",       emoji:"🏛️",rarity:"legendary", rating:4.9,reviews:58000, atk:7900,def:8800},
+  {name:"Chichen Itza",         loc:"Yucatan, Mexico",     emoji:"🔺",rarity:"epic",      rating:4.7,reviews:49000, atk:7400,def:8200},
+  {name:"Colosseum",            loc:"Rome, Italy",         emoji:"🏟️",rarity:"epic",      rating:4.7,reviews:180000,atk:7800,def:8000},
+  {name:"Sydney Opera House",   loc:"Sydney, Australia",   emoji:"🎭",rarity:"epic",      rating:4.7,reviews:88000, atk:7200,def:7800}
+];
 
-let collection = [];
-let coins = 0;
-let collView = 'grid';
-let collFilter = 'all';
-let pulling = false;
-let selectedPack = 'standard';
-let currentUser = null;
-let dailyPremiumClaimed = null;
-let dailyEliteClaimed = null;
-let dailyPremiumClaimsLeft = 2;
+const C=2000,GAVG=4.4;
+var collection=[], coins=0, collView='grid', collFilter='all';
+var pulling=false, selectedPack='standard', currentUser=null;
+var battleTeam=[null,null,null], selectedDifficulty='easy', pickingSlot=-1, battleRunning=false;
+var dailyPremiumClaimed=null, dailyEliteClaimed=null, dailyPremiumClaimsLeft=2;
+var dailyTimer=null;
 
-// ── UTILS ──────────────────────────────────────────────────────────────
-function showToast(msg) {
-  var t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(function() { t.classList.remove('show'); }, 2400);
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2400);}
+function updateCoinDisplay(){var el=document.getElementById('nav-coins');if(el)el.textContent=coins.toLocaleString();}
+function hideLoading(){var o=document.getElementById('loading-overlay');if(o){o.style.opacity='0';o.style.pointerEvents='none';setTimeout(function(){if(o.parentNode)o.parentNode.removeChild(o);},400);}}
+
+function showPage(pageId){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.nav-tab').forEach(function(t){t.classList.remove('active');});
+  document.getElementById('page-'+pageId).classList.add('active');
+  document.getElementById('tab-'+pageId).classList.add('active');
+  if(pageId==='collection') renderCollection();
+  if(pageId==='battle') renderTeamSlots();
 }
 
-function updateCoinDisplay() {
-  document.getElementById('nav-coins').textContent = coins.toLocaleString();
-}
-
-// ── AUTH ───────────────────────────────────────────────────────────────
-function updateNavForUser(user) {
-  currentUser = user;
-  var right = document.getElementById('nav-right');
-  if (user) {
-    right.innerHTML =
-      '<div class="coin-display" id="coin-display"><div class="coin-icon"></div><span id="nav-coins">' + coins.toLocaleString() + '</span></div>' +
-      '<span class="user-display">' + (user.email || '').split('@')[0] + '</span>' +
-      '<button class="auth-btn" id="btn-signout">Sign out</button>';
-    document.getElementById('btn-signout').addEventListener('click', signOut);
+function updateNavForUser(user){
+  currentUser=user;
+  var coinDisplay=document.getElementById('coin-display');
+  var userDisplay=document.getElementById('user-display');
+  var btnLogin=document.getElementById('btn-login');
+  var btnSignup=document.getElementById('btn-signup');
+  var btnSignout=document.getElementById('btn-signout');
+  if(user){
+    if(coinDisplay) coinDisplay.style.display='flex';
+    if(userDisplay){userDisplay.textContent=(user.email||'').split('@')[0];userDisplay.style.display='inline';}
+    if(btnLogin) btnLogin.style.display='none';
+    if(btnSignup) btnSignup.style.display='none';
+    if(btnSignout) btnSignout.style.display='inline';
   } else {
-    right.innerHTML =
-      '<div class="coin-display" id="coin-display" style="display:none"><div class="coin-icon"></div><span id="nav-coins">0</span></div>' +
-      '<button class="auth-btn" id="btn-login">Log in</button>' +
-      '<button class="auth-btn primary" id="btn-signup">Sign up</button>';
-    document.getElementById('btn-login').addEventListener('click', function() { openAuthModal('login'); });
-    document.getElementById('btn-signup').addEventListener('click', function() { openAuthModal('signup'); });
+    if(coinDisplay) coinDisplay.style.display='none';
+    if(userDisplay) userDisplay.style.display='none';
+    if(btnLogin) btnLogin.style.display='inline';
+    if(btnSignup) btnSignup.style.display='inline';
+    if(btnSignout) btnSignout.style.display='none';
   }
-
-  // Re-wire nav tabs every time nav is redrawn
-  var tabGacha = document.getElementById('tab-gacha');
-  var tabColl = document.getElementById('tab-collection');
-  var tabBattle = document.getElementById('tab-battle');
-  if (tabGacha) tabGacha.onclick = function() { showPage('gacha', this); };
-  if (tabColl) tabColl.onclick = function() { showPage('collection', this); };
-  if (tabBattle) tabBattle.onclick = function() { showPage('battle', this); initBattlePage(); };
-
   renderGuestBanners();
 }
 
-function renderGuestBanners() {
-  var html = !currentUser ?
-    '<div class="guest-banner"><span class="guest-banner-text">Playing as guest — <span>log in to save your collection</span></span><button class="guest-banner-btn" id="banner-login-btn">Log in / Sign up</button></div>' : '';
-  var w1 = document.getElementById('guest-banner-wrap');
-  var w2 = document.getElementById('coll-guest-banner-wrap');
-  if (w1) w1.innerHTML = html;
-  if (w2) w2.innerHTML = html;
-  document.querySelectorAll('#banner-login-btn').forEach(function(b) {
-    b.addEventListener('click', function() { openAuthModal('signup'); });
-  });
+function renderGuestBanners(){
+  var html=!currentUser?'<div class="guest-banner"><span class="guest-banner-text">Playing as guest — <span>log in to save your collection</span></span><button class="guest-banner-btn" id="banner-btn">Log in / Sign up</button></div>':'';
+  var w1=document.getElementById('guest-banner-wrap');
+  var w2=document.getElementById('coll-guest-banner-wrap');
+  if(w1) w1.innerHTML=html;
+  if(w2) w2.innerHTML=html;
+  var bb=document.getElementById('banner-btn');
+  if(bb) bb.onclick=function(){openAuthModal('signup');};
 }
 
-function openAuthModal(mode) {
-  var isLogin = mode === 'login';
-  document.getElementById('auth-modal-inner').innerHTML =
-    '<div class="auth-modal">' +
-      '<div class="auth-modal-title">' + (isLogin ? 'Welcome back' : 'Create account') + '</div>' +
-      '<div class="auth-modal-sub">' + (isLogin ? 'Log in to access your collection' : 'Sign up to save your cards') + '</div>' +
-      '<div class="auth-error" id="auth-error" style="display:none"></div>' +
-      '<div class="auth-field"><label>Email</label><input type="email" id="auth-email" placeholder="you@example.com"></div>' +
-      '<div class="auth-field"><label>Password</label><input type="password" id="auth-password" placeholder="••••••••"></div>' +
-      '<button class="auth-submit" id="auth-submit-btn">' + (isLogin ? 'Log in' : 'Sign up') + '</button>' +
-      '<div class="auth-divider">or</div>' +
-      '<button class="google-btn" id="google-btn"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>Continue with Google</button>' +
-      '<div class="auth-switch">'+  (isLogin ? "Don't have an account? " : 'Already have an account? ') + '<button id="auth-switch-btn">' + (isLogin ? 'Sign up' : 'Log in') + '</button></div>' +
-      '<button class="auth-close" id="auth-close-btn">cancel</button>' +
+// ── AUTH ───────────────────────────────────────────────────────────────
+function openAuthModal(mode){
+  var isLogin=mode==='login';
+  document.getElementById('auth-modal-inner').innerHTML=
+    '<div class="auth-modal">'+
+    '<div class="auth-modal-title">'+(isLogin?'Welcome back':'Create account')+'</div>'+
+    '<div class="auth-modal-sub">'+(isLogin?'Log in to access your collection':'Sign up to save your cards')+'</div>'+
+    '<div class="auth-error" id="auth-error" style="display:none"></div>'+
+    '<div class="auth-field"><label>Email</label><input type="email" id="auth-email" placeholder="you@example.com"></div>'+
+    '<div class="auth-field"><label>Password</label><input type="password" id="auth-password" placeholder="••••••••"></div>'+
+    '<button class="auth-submit" id="auth-submit-btn">'+(isLogin?'Log in':'Sign up')+'</button>'+
+    '<div class="auth-divider">or</div>'+
+    '<button class="google-btn" id="google-btn"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>Continue with Google</button>'+
+    '<div class="auth-switch">'+(isLogin?"Don't have an account? ":"Already have an account? ")+'<button id="auth-switch-btn">'+(isLogin?'Sign up':'Log in')+'</button></div>'+
+    '<button class="auth-close" id="auth-close-btn">cancel</button>'+
     '</div>';
-
-  document.getElementById('auth-submit-btn').addEventListener('click', function() { handleAuth(isLogin); });
-  document.getElementById('auth-email').addEventListener('keydown', function(e) { if(e.key==='Enter') handleAuth(isLogin); });
-  document.getElementById('auth-password').addEventListener('keydown', function(e) { if(e.key==='Enter') handleAuth(isLogin); });
-  document.getElementById('google-btn').addEventListener('click', handleGoogleAuth);
-  document.getElementById('auth-switch-btn').addEventListener('click', function() { openAuthModal(isLogin ? 'signup' : 'login'); });
-  document.getElementById('auth-close-btn').addEventListener('click', closeAuthModal);
+  document.getElementById('auth-submit-btn').onclick=function(){handleAuth(isLogin);};
+  document.getElementById('google-btn').onclick=handleGoogleAuth;
+  document.getElementById('auth-switch-btn').onclick=function(){openAuthModal(isLogin?'signup':'login');};
+  document.getElementById('auth-close-btn').onclick=closeAuthModal;
   document.getElementById('auth-backdrop').classList.add('open');
 }
 
-async function handleAuth(isLogin) {
-  var email = document.getElementById('auth-email').value.trim();
-  var password = document.getElementById('auth-password').value;
-  var errEl = document.getElementById('auth-error');
-  errEl.style.display = 'none';
+function closeAuthModal(){document.getElementById('auth-backdrop').classList.remove('open');}
 
-  if (!email || !password) { errEl.textContent = 'Please fill in all fields'; errEl.style.display = 'block'; return; }
-
-  var result = isLogin
-    ? await sb.auth.signInWithPassword({ email, password })
-    : await sb.auth.signUp({ email, password });
-
-  if (result.error) {
-    errEl.textContent = result.error.message;
-    errEl.style.display = 'block';
-    return;
-  }
-
+async function handleAuth(isLogin){
+  var email=document.getElementById('auth-email').value.trim();
+  var password=document.getElementById('auth-password').value;
+  var errEl=document.getElementById('auth-error');
+  errEl.style.display='none';
+  if(!email||!password){errEl.textContent='Please fill in all fields';errEl.style.display='block';return;}
+  var result=isLogin?await sb.auth.signInWithPassword({email:email,password:password}):await sb.auth.signUp({email:email,password:password});
+  if(result.error){errEl.textContent=result.error.message;errEl.style.display='block';return;}
   closeAuthModal();
-  if (!isLogin) showToast('Account created! Check your email to confirm.');
+  if(!isLogin) showToast('Account created! Check your email to confirm.');
 }
 
-async function handleGoogleAuth() {
-  await sb.auth.signInWithOAuth({
-    provider: 'google',
-    options: { redirectTo: 'https://maps-gacha.christopherh16.workers.dev' }
-  });
+async function handleGoogleAuth(){
+  await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:'https://maps-gacha.christopherh16.workers.dev'}});
 }
 
-async function signOut() {
+async function signOut(){
   await sb.auth.signOut();
-  collection = [];
-  coins = 0;
-  currentUser = null;
-  updateNavForUser(null);
-  renderCollection();
+  collection=[];coins=0;currentUser=null;
+  dailyPremiumClaimed=null;dailyEliteClaimed=null;dailyPremiumClaimsLeft=2;
+  updateNavForUser(null);updateCoinDisplay();updateDailyUI();renderCollection();
   showToast('Signed out');
 }
 
-function closeAuthModal() {
-  document.getElementById('auth-backdrop').classList.remove('open');
-}
-
 // ── SUPABASE DB ────────────────────────────────────────────────────────
-async function loadCollection() {
-  if (!currentUser) return;
-  var { data: cards } = await sb.from('collections').select('*').eq('user_id', currentUser.id);
-  var { data: stats } = await sb.from('user_stats').select('*').eq('user_id', currentUser.id).single();
-
-  collection = (cards || []).map(function(r) {
-    return {
-      name: r.card_name, loc: r.loc, rarity: r.rarity,
-      rating: r.rating, reviews: r.reviews, atk: r.atk, def: r.def,
-      emoji: r.emoji, photoUrl: r.photo_url, copies: r.copies,
-      date: new Date(r.first_pulled).toLocaleDateString('en-US', {month:'short', day:'numeric'})
-    };
+async function loadCollection(){
+  if(!currentUser) return;
+  var res1=await sb.from('collections').select('*').eq('user_id',currentUser.id);
+  var res2=await sb.from('user_stats').select('*').eq('user_id',currentUser.id).single();
+  collection=(res1.data||[]).map(function(r){
+    return {name:r.card_name,loc:r.loc,rarity:r.rarity,rating:r.rating,reviews:r.reviews,
+      atk:r.atk,def:r.def,emoji:r.emoji,photoUrl:r.photo_url,copies:r.copies,
+      date:new Date(r.first_pulled).toLocaleDateString('en-US',{month:'short',day:'numeric'})};
   });
-  coins = stats ? stats.coins : 0;
-  dailyPremiumClaimed = stats && stats.daily_premium_claimed ? new Date(stats.daily_premium_claimed).getTime() : null;
-  dailyEliteClaimed = stats && stats.daily_elite_claimed ? new Date(stats.daily_elite_claimed).getTime() : null;
-  dailyPremiumClaimsLeft = stats && stats.daily_premium_claims_left !== null ? stats.daily_premium_claims_left : 2;
-  // Reset claims if 24h has passed
-  if (dailyPremiumClaimed && (Date.now() - dailyPremiumClaimed) >= 24*60*60*1000) dailyPremiumClaimsLeft = 2;
-  updateCoinDisplay();
-  updateDailyUI();
-  renderCollection();
+  var stats=res2.data;
+  coins=stats?stats.coins:0;
+  dailyPremiumClaimed=stats&&stats.daily_premium_claimed?new Date(stats.daily_premium_claimed).getTime():null;
+  dailyEliteClaimed=stats&&stats.daily_elite_claimed?new Date(stats.daily_elite_claimed).getTime():null;
+  dailyPremiumClaimsLeft=stats&&stats.daily_premium_claims_left!==null?stats.daily_premium_claims_left:2;
+  if(dailyPremiumClaimed&&(Date.now()-dailyPremiumClaimed)>=24*60*60*1000) dailyPremiumClaimsLeft=2;
+  updateCoinDisplay();updateDailyUI();renderCollection();
 }
 
-async function saveCard(card) {
-  if (!currentUser) return;
-  await sb.from('collections').upsert({
-    user_id: currentUser.id,
-    card_name: card.name,
-    loc: card.loc,
-    rarity: card.rarity,
-    rating: card.rating,
-    reviews: card.reviews,
-    atk: card.atk,
-    def: card.def,
-    emoji: card.emoji,
-    photo_url: card.photoUrl,
-    copies: card.copies,
-    first_pulled: card.date,
-    updated_at: new Date().toISOString()
-  }, { onConflict: 'user_id,card_name' });
+async function saveCard(card){
+  if(!currentUser) return;
+  await sb.from('collections').upsert({user_id:currentUser.id,card_name:card.name,loc:card.loc,rarity:card.rarity,
+    rating:card.rating,reviews:card.reviews,atk:card.atk,def:card.def,emoji:card.emoji,
+    photo_url:card.photoUrl,copies:card.copies,first_pulled:card.date,updated_at:new Date().toISOString()},
+    {onConflict:'user_id,card_name'});
 }
 
-async function deleteCard(cardName) {
-  if (!currentUser) return;
-  await sb.from('collections').delete().eq('user_id', currentUser.id).eq('card_name', cardName);
+async function deleteCard(cardName){
+  if(!currentUser) return;
+  await sb.from('collections').delete().eq('user_id',currentUser.id).eq('card_name',cardName);
 }
 
-async function saveCoins() {
-  if (!currentUser) return;
-  await sb.from('user_stats').upsert({ user_id: currentUser.id, coins: coins }, { onConflict: 'user_id' });
+async function saveCoins(){
+  if(!currentUser) return;
+  await sb.from('user_stats').upsert({user_id:currentUser.id,coins:coins,
+    daily_premium_claimed:dailyPremiumClaimed?new Date(dailyPremiumClaimed).toISOString():null,
+    daily_elite_claimed:dailyEliteClaimed?new Date(dailyEliteClaimed).toISOString():null,
+    daily_premium_claims_left:dailyPremiumClaimsLeft},{onConflict:'user_id'});
 }
 
-// ── PACK SELECTION ─────────────────────────────────────────────────────
-function selectPack(pack) {
-  selectedPack = pack;
-  document.querySelectorAll('.diff-btn').forEach(function(el) {
-    el.addEventListener('click', function() {
-      selectedDifficulty = el.dataset.diff;
-      document.querySelectorAll('.diff-btn').forEach(function(b) { b.classList.remove('selected'); });
-      el.classList.add('selected');
-    });
-  });
-  document.querySelectorAll('.pack-option').forEach(function(el) { el.classList.remove('selected'); });
-  document.querySelector('[data-pack="' + pack + '"]').classList.add('selected');
-  var btn = document.getElementById('pull-btn');
-  btn.className = 'pull-btn ' + PACK_BTN_CLASS[pack];
-  btn.textContent = 'Pull ' + PACK_LABELS[pack];
-  document.getElementById('not-enough').style.display = 'none';
+// ── DAILY REWARDS ──────────────────────────────────────────────────────
+function formatCountdown(ms){
+  var s=Math.floor(ms/1000);
+  var h=Math.floor(s/3600);var m=Math.floor((s%3600)/60);var sec=s%60;
+  return h+'h '+m+'m '+sec+'s';
 }
 
-// ── PULL ───────────────────────────────────────────────────────────────
-async function startPull() {
-  if (pulling) return;
-  var cost = PACK_COSTS[selectedPack];
-  if (coins < cost) { document.getElementById('not-enough').style.display = 'block'; return; }
-  document.getElementById('not-enough').style.display = 'none';
-  pulling = true;
-  document.getElementById('pull-btn').disabled = true;
-  document.getElementById('gacha-hint').textContent = 'Fetching places...';
+function updateDailyUI(){
+  var now=Date.now();
+  var pb=document.getElementById('claim-premium-btn');
+  var eb=document.getElementById('claim-elite-btn');
+  var pc=document.getElementById('premium-countdown');
+  var ec=document.getElementById('elite-countdown');
+  var ps=document.getElementById('premium-daily-sub');
+  var es=document.getElementById('elite-daily-sub');
+  if(!pb||!eb) return;
 
-  var cards;
-  try {
-    var res = await fetch(API_URL + '?pack=' + selectedPack);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    var data = await res.json();
-    cards = data.cards;
-  } catch(e) {
-    document.getElementById('gacha-hint').textContent = 'Error: ' + e.message;
-    pulling = false;
-    document.getElementById('pull-btn').disabled = false;
-    return;
+  var premReset=!dailyPremiumClaimed||(now-dailyPremiumClaimed)>=24*60*60*1000;
+  var claimsLeft=premReset?2:dailyPremiumClaimsLeft;
+  if(!currentUser){
+    pb.className='daily-claim-btn claimed';pb.textContent='Log in to claim';
+    if(pc) pc.textContent='';if(ps) ps.textContent='2 packs · free daily';
+  } else if(claimsLeft>0){
+    pb.className='daily-claim-btn can-claim-premium';pb.textContent='Claim ('+claimsLeft+' left)';
+    if(pc) pc.textContent='';if(ps) ps.textContent='2 packs · free daily';
+  } else {
+    var msLeft=24*60*60*1000-(now-dailyPremiumClaimed);
+    pb.className='daily-claim-btn claimed';pb.textContent='Claimed';
+    if(pc) pc.textContent=formatCountdown(msLeft);if(ps) ps.textContent='resets in';
   }
 
-  coins -= cost;
-  updateCoinDisplay();
-  if (currentUser) saveCoins();
-  document.getElementById('gacha-hint').textContent = '';
+  var eliteReset=!dailyEliteClaimed||(now-dailyEliteClaimed)>=24*60*60*1000;
+  if(!currentUser){
+    eb.className='daily-claim-btn claimed';eb.textContent='Log in to claim';
+    if(ec) ec.textContent='';if(es) es.textContent='1 pack · free daily';
+  } else if(eliteReset){
+    eb.className='daily-claim-btn can-claim-elite';eb.textContent='Claim';
+    if(ec) ec.textContent='';if(es) es.textContent='1 pack · free daily';
+  } else {
+    var msLeftE=24*60*60*1000-(now-dailyEliteClaimed);
+    eb.className='daily-claim-btn claimed';eb.textContent='Claimed';
+    if(ec) ec.textContent=formatCountdown(msLeftE);if(es) es.textContent='resets in';
+  }
+}
+
+async function claimPremiumDaily(){
+  if(!currentUser){openAuthModal('signup');return;}
+  var now=Date.now();
+  var premReset=!dailyPremiumClaimed||(now-dailyPremiumClaimed)>=24*60*60*1000;
+  if(premReset) dailyPremiumClaimsLeft=2;
+  if(dailyPremiumClaimsLeft<=0) return;
+  dailyPremiumClaimsLeft--;
+  if(dailyPremiumClaimsLeft===0) dailyPremiumClaimed=now;
+  await saveCoins();updateDailyUI();
+  showToast('Free Premium Pack!');
+  selectPack('premium');await startPull();
+}
+
+async function claimEliteDaily(){
+  if(!currentUser){openAuthModal('signup');return;}
+  var now=Date.now();
+  var eliteReset=!dailyEliteClaimed||(now-dailyEliteClaimed)>=24*60*60*1000;
+  if(!eliteReset) return;
+  dailyEliteClaimed=now;
+  await saveCoins();updateDailyUI();
+  showToast('Free Elite Pack!');
+  selectPack('elite');await startPull();
+}
+
+// ── PACK & PULL ────────────────────────────────────────────────────────
+function selectPack(pack){
+  selectedPack=pack;
+  document.querySelectorAll('.pack-option').forEach(function(el){el.classList.remove('selected');});
+  var opt=document.querySelector('[data-pack="'+pack+'"]');
+  if(opt) opt.classList.add('selected');
+  var btn=document.getElementById('pull-btn');
+  btn.className='pull-btn '+(PACK_BTN_CLASS[pack]||'');
+  btn.textContent='Pull '+PACK_LABELS[pack];
+  document.getElementById('not-enough').style.display='none';
+}
+
+async function startPull(){
+  if(pulling) return;
+  var cost=PACK_COSTS[selectedPack]||0;
+  if(coins<cost){document.getElementById('not-enough').style.display='block';return;}
+  document.getElementById('not-enough').style.display='none';
+  pulling=true;
+  document.getElementById('pull-btn').disabled=true;
+  document.getElementById('gacha-hint').textContent='Fetching places...';
+  var cards;
+  try{
+    var res=await fetch(API_URL+'?pack='+selectedPack);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    var data=await res.json();
+    cards=data.cards;
+  } catch(e){
+    document.getElementById('gacha-hint').textContent='Error: '+e.message;
+    pulling=false;document.getElementById('pull-btn').disabled=false;return;
+  }
+  coins-=cost;updateCoinDisplay();if(currentUser) saveCoins();
+  document.getElementById('gacha-hint').textContent='';
   showCards(cards);
 }
 
-function showCards(cards) {
-  var row = document.getElementById('cards-row');
-  row.style.display = 'flex';
-  row.innerHTML = '';
-
-  cards.forEach(function(card, i) {
-    var rot = (Math.random() * 6 - 3).toFixed(1);
-    var slot = document.createElement('div');
-    slot.className = 'card-slot';
-    slot.style.cssText = '--rot:' + rot + 'deg;opacity:0;';
-    var imgInner = card.photoUrl ? '<img src="' + card.photoUrl + '" alt="" onerror="this.style.display=\'none\'">' : card.emoji;
-    slot.innerHTML =
-      '<div class="card-inner">' +
-        '<div class="card-back"><div class="card-back-inner">🌍</div></div>' +
-        '<div class="card-front">' +
-          '<div class="card-rarity-bar rb-' + card.rarity + '">' + card.rarity.toUpperCase() + '</div>' +
-          '<div class="card-img-zone">' + imgInner + '</div>' +
-          '<div class="card-body-sm">' +
-            '<div><div class="card-nm">' + card.name + '</div><div class="card-loc-sm">' + card.loc + '</div></div>' +
-            '<div><div class="card-stats-row"><div class="cs cs-atk">ATK ' + card.atk.toLocaleString() + '</div><div class="cs cs-def">DEF ' + card.def.toLocaleString() + '</div></div>' +
-            '<div class="card-rating">' + card.rating + '★ · ' + card.reviews.toLocaleString() + ' reviews</div></div>' +
-          '</div>' +
-        '</div>' +
-      '</div>';
-
-    slot.addEventListener('click', function() {
-      var inner = slot.querySelector('.card-inner');
-      if (inner.classList.contains('flipped')) {
-        var query = encodeURIComponent(card.name + ' ' + card.loc);
-        window.open('https://www.google.com/maps/search/?api=1&query=' + query, '_blank');
+function showCards(cards){
+  var row=document.getElementById('cards-row');
+  row.style.display='flex';row.innerHTML='';
+  cards.forEach(function(card,i){
+    var rot=(Math.random()*6-3).toFixed(1);
+    var slot=document.createElement('div');
+    slot.className='card-slot';
+    slot.style.cssText='--rot:'+rot+'deg;opacity:0;';
+    var imgInner=card.photoUrl?'<img src="'+card.photoUrl+'" alt="" onerror="this.style.display=\'none\'">':card.emoji;
+    slot.innerHTML='<div class="card-inner">'+
+      '<div class="card-back"><div class="card-back-inner">🌍</div></div>'+
+      '<div class="card-front">'+
+        '<div class="card-rarity-bar rb-'+card.rarity+'">'+card.rarity.toUpperCase()+'</div>'+
+        '<div class="card-img-zone">'+imgInner+'</div>'+
+        '<div class="card-body-sm">'+
+          '<div><div class="card-nm">'+card.name+'</div><div class="card-loc-sm">'+card.loc+'</div></div>'+
+          '<div><div class="card-stats-row"><div class="cs cs-atk">ATK '+card.atk.toLocaleString()+'</div><div class="cs cs-def">DEF '+card.def.toLocaleString()+'</div></div>'+
+          '<div class="card-rating">'+card.rating+'★ · '+card.reviews.toLocaleString()+' reviews</div></div>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+    slot.onclick=function(){
+      var inner=slot.querySelector('.card-inner');
+      if(inner.classList.contains('flipped')){
+        window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(card.name+' '+card.loc),'_blank');
       } else {
-        flipCard(slot, card.rarity);
+        flipCard(slot,card.rarity);
       }
-    });
-
+    };
     row.appendChild(slot);
-    setTimeout(function() { slot.classList.add('falling'); slot.style.opacity = '1'; }, i * 130);
-
-    var existing = collection.find(function(c) { return c.name === card.name; });
-    if (existing) {
-      existing.copies++;
-      if (currentUser) saveCard(existing);
-    } else {
-      var copy = Object.assign({}, card);
-      copy.copies = 1;
-      copy.date = new Date().toLocaleDateString('en-US', {month:'short', day:'numeric'});
-      collection.push(copy);
-      if (currentUser) saveCard(copy);
-    }
+    setTimeout(function(){slot.classList.add('falling');slot.style.opacity='1';},i*130);
+    var existing=collection.find(function(c){return c.name===card.name;});
+    if(existing){existing.copies++;if(currentUser) saveCard(existing);}
+    else{var copy=Object.assign({},card);copy.copies=1;copy.date=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'});collection.push(copy);if(currentUser) saveCard(copy);}
   });
-
-  setTimeout(function() { document.getElementById('gacha-hint').textContent = 'Tap to reveal · Tap again to open in Google Maps'; }, cards.length * 130 + 250);
-  setTimeout(function() { document.getElementById('pull-again-btn').style.display = 'block'; document.getElementById('pull-btn').disabled = false; }, cards.length * 130 + 900);
+  setTimeout(function(){document.getElementById('gacha-hint').textContent='Tap to reveal · Tap again to open in Google Maps';},cards.length*130+250);
+  setTimeout(function(){document.getElementById('pull-again-btn').style.display='block';document.getElementById('pull-btn').disabled=false;},cards.length*130+900);
 }
 
-function flipCard(slot, rarity) {
-  var inner = slot.querySelector('.card-inner');
-  if (inner.classList.contains('flipped')) return;
+function flipCard(slot,rarity){
+  var inner=slot.querySelector('.card-inner');
+  if(inner.classList.contains('flipped')) return;
   inner.classList.add('flipped');
-  var flash = document.createElement('div');
-  flash.className = 'rarity-flash flash-' + rarity;
-  slot.style.position = 'relative';
-  slot.appendChild(flash);
-  setTimeout(function() { flash.remove(); }, 700);
+  var flash=document.createElement('div');flash.className='rarity-flash flash-'+rarity;
+  slot.style.position='relative';slot.appendChild(flash);
+  setTimeout(function(){flash.remove();},700);
 }
 
-function resetPull() {
-  pulling = false;
-  document.getElementById('cards-row').style.display = 'none';
-  document.getElementById('cards-row').innerHTML = '';
-  document.getElementById('pull-again-btn').style.display = 'none';
-  document.getElementById('gacha-hint').textContent = '';
+function resetPull(){
+  pulling=false;
+  document.getElementById('cards-row').style.display='none';document.getElementById('cards-row').innerHTML='';
+  document.getElementById('pull-again-btn').style.display='none';
+  document.getElementById('gacha-hint').textContent='';
   startPull();
 }
 
 // ── COLLECTION ─────────────────────────────────────────────────────────
-function setCollView(v) {
-  collView = v;
-  document.getElementById('vt-grid').classList.toggle('active', v==='grid');
-  document.getElementById('vt-list').classList.toggle('active', v==='list');
+function setCollView(v){
+  collView=v;
+  document.getElementById('vt-grid').classList.toggle('active',v==='grid');
+  document.getElementById('vt-list').classList.toggle('active',v==='list');
   renderCollection();
 }
 
-function setFilter(f, el) {
-  collFilter = f;
-  document.querySelectorAll('.fpill').forEach(function(p) { p.classList.remove('active'); });
-  el.classList.add('active');
-  renderCollection();
+function setFilter(f,el){
+  collFilter=f;
+  document.querySelectorAll('.fpill').forEach(function(p){p.classList.remove('active');});
+  el.classList.add('active');renderCollection();
 }
 
-function getSorted() {
-  var sort = document.getElementById('sort-sel').value;
-  var cards = collFilter === 'all' ? collection.slice() : collection.filter(function(c) { return c.rarity === collFilter; });
-  if (sort==='rarity') cards.sort(function(a,b) { return RARITY_ORD[b.rarity]-RARITY_ORD[a.rarity]; });
-  else if (sort==='atk') cards.sort(function(a,b) { return b.atk-a.atk; });
-  else if (sort==='def') cards.sort(function(a,b) { return b.def-a.def; });
-  else if (sort==='copies') cards.sort(function(a,b) { return b.copies-a.copies; });
-  else if (sort==='date') cards.sort(function(a,b) { return new Date(b.date)-new Date(a.date); });
+function getSorted(){
+  var sort=document.getElementById('sort-sel').value;
+  var cards=collFilter==='all'?collection.slice():collection.filter(function(c){return c.rarity===collFilter;});
+  if(sort==='rarity') cards.sort(function(a,b){return RARITY_ORD[b.rarity]-RARITY_ORD[a.rarity];});
+  else if(sort==='atk') cards.sort(function(a,b){return b.atk-a.atk;});
+  else if(sort==='def') cards.sort(function(a,b){return b.def-a.def;});
+  else if(sort==='copies') cards.sort(function(a,b){return b.copies-a.copies;});
+  else if(sort==='date') cards.sort(function(a,b){return new Date(b.date)-new Date(a.date);});
   return cards;
 }
 
-function renderCollection() {
-  document.getElementById('coll-subtitle').textContent = collection.length + ' cards';
+function renderCollection(){
+  document.getElementById('coll-subtitle').textContent=collection.length+' cards';
   updateCoinDisplay();
-  var cards = getSorted();
-  var container = document.getElementById('coll-container');
-  if (!currentUser) {
-    container.innerHTML = '<div class="empty-state"><div style="font-size:52px">🔒</div><p>Log in to save and view your collection</p></div>';
-    return;
-  }
-  if (!cards.length) {
-    container.innerHTML = '<div class="empty-state"><div style="font-size:52px">🌍</div><p>No cards yet — pull a pack!</p></div>';
-    return;
-  }
-  if (collView === 'grid') {
-    container.className = 'coll-grid';
-    container.innerHTML = cards.map(function(c) {
-      var imgHtml = c.photoUrl ? '<div class="cc-img"><img src="' + c.photoUrl + '" alt="" onerror="this.style.display=\'none\'"></div>' : '<div class="cc-img">' + c.emoji + '</div>';
-      return '<div class="coll-card" data-name="' + encodeURIComponent(c.name) + '">' +
-        (c.copies>1?'<div class="dupe-badge-cc">x'+c.copies+'</div>':'')+
-        '<div class="cc-rarity rb-'+c.rarity+'">'+c.rarity.toUpperCase()+'</div>'+
-        imgHtml+
+  var cards=getSorted();
+  var container=document.getElementById('coll-container');
+  if(!currentUser){container.innerHTML='<div class="empty-state"><div style="font-size:52px">🔒</div><p>Log in to save and view your collection</p></div>';return;}
+  if(!cards.length){container.innerHTML='<div class="empty-state"><div style="font-size:52px">🌍</div><p>No cards yet — pull a pack!</p></div>';return;}
+  if(collView==='grid'){
+    container.className='coll-grid';
+    container.innerHTML=cards.map(function(c){
+      var imgHtml=c.photoUrl?'<div class="cc-img"><img src="'+c.photoUrl+'" alt="" onerror="this.style.display=\'none\'"></div>':'<div class="cc-img">'+c.emoji+'</div>';
+      return '<div class="coll-card" data-name="'+encodeURIComponent(c.name)+'">'+(c.copies>1?'<div class="dupe-badge-cc">x'+c.copies+'</div>':'')+
+        '<div class="cc-rarity rb-'+c.rarity+'">'+c.rarity.toUpperCase()+'</div>'+imgHtml+
         '<div class="cc-info"><div class="cc-name">'+c.name+'</div><div class="cc-stats"><div class="cc-stat cs-atk">ATK '+c.atk.toLocaleString()+'</div><div class="cc-stat cs-def">DEF '+c.def.toLocaleString()+'</div></div></div>'+
-        '<div class="cc-footer"><span class="cc-date">'+c.date+'</span><span class="cc-copies">'+c.copies+' copy'+(c.copies!==1?'s':'')+'</span></div>'+
-      '</div>';
+        '<div class="cc-footer"><span class="cc-date">'+c.date+'</span><span class="cc-copies">'+c.copies+' copy'+(c.copies!==1?'s':'')+'</span></div></div>';
     }).join('');
-    container.querySelectorAll('.coll-card').forEach(function(el) {
-      el.addEventListener('click', function() { openModal(decodeURIComponent(el.dataset.name)); });
-    });
+    container.querySelectorAll('.coll-card').forEach(function(el){el.onclick=function(){openModal(decodeURIComponent(el.dataset.name));};});
   } else {
-    container.className = 'coll-list';
-    container.innerHTML = cards.map(function(c) {
-      return '<div class="list-item" data-name="' + encodeURIComponent(c.name) + '">' +
+    container.className='coll-list';
+    container.innerHTML=cards.map(function(c){
+      return '<div class="list-item" data-name="'+encodeURIComponent(c.name)+'">'+
         '<span class="li-emoji">'+c.emoji+'</span>'+
         '<div class="li-dot" style="background:var(--'+c.rarity+')"></div>'+
-        '<span class="li-name">'+c.name+'</span>'+
-        '<span class="li-loc">'+c.loc+'</span>'+
+        '<span class="li-name">'+c.name+'</span><span class="li-loc">'+c.loc+'</span>'+
         '<div class="li-stats"><span class="li-stat cs-atk">ATK '+c.atk.toLocaleString()+'</span><span class="li-stat cs-def">DEF '+c.def.toLocaleString()+'</span></div>'+
-        '<span class="li-copies">'+(c.copies>1?'x'+c.copies:'')+'</span>'+
-        '<span class="li-date">'+c.date+'</span>'+
-      '</div>';
+        '<span class="li-copies">'+(c.copies>1?'x'+c.copies:'')+'</span><span class="li-date">'+c.date+'</span></div>';
     }).join('');
-    container.querySelectorAll('.list-item').forEach(function(el) {
-      el.addEventListener('click', function() { openModal(decodeURIComponent(el.dataset.name)); });
-    });
+    container.querySelectorAll('.list-item').forEach(function(el){el.onclick=function(){openModal(decodeURIComponent(el.dataset.name));};});
   }
 }
 
 // ── CARD MODAL ─────────────────────────────────────────────────────────
-function openModal(name) {
-  var card = collection.find(function(c) { return c.name === name; });
-  if (!card) return;
-  var shards = card.copies - 1;
-  var coinVal = COIN_RATES[card.rarity];
-  var shardCost = SHARD_COSTS[card.rarity];
-  var canUpgrade = shards >= 3;
-  var imgHtml = card.photoUrl ? '<div class="modal-img"><img src="' + card.photoUrl + '" alt="" onerror="this.style.display=\'none\'"></div>' : '<div class="modal-img">' + card.emoji + '</div>';
-
-  document.getElementById('modal-inner').innerHTML =
-    '<div class="modal-rarity rb-' + card.rarity + '">' + card.rarity.toUpperCase() + '</div>' +
-    imgHtml +
-    '<div class="modal-body">' +
-      '<div class="modal-name">' + card.name + '</div>' +
-      '<div class="modal-loc">' + card.loc + '</div>' +
-      '<div class="modal-stats">' +
-        '<div class="modal-stat"><div class="msl">ATK</div><div class="msv">' + card.atk.toLocaleString() + '</div><div class="ms-bar"><div class="ms-fill" style="width:' + (card.atk/100) + '%;background:#D85A30"></div></div></div>' +
-        '<div class="modal-stat"><div class="msl">DEF</div><div class="msv">' + card.def.toLocaleString() + '</div><div class="ms-bar"><div class="ms-fill" style="width:' + (card.def/100) + '%;background:#1D9E75"></div></div></div>' +
-      '</div>' +
-      '<div class="modal-meta"><span>First pulled ' + card.date + '</span><span>' + card.rating + '★ · ' + card.reviews.toLocaleString() + ' reviews</span></div>' +
-      '<div class="shard-info">' +
-        '<div class="shard-row"><span class="shard-label">Copies</span><span class="shard-val">' + card.copies + '</span></div>' +
-        '<div class="shard-row"><span class="shard-label">Sell value (1 copy)</span><span class="shard-val">' + coinVal.toLocaleString() + ' coins</span></div>' +
-        (shards > 0 ? '<div class="shard-row"><span class="shard-label">Extra shards</span><span class="shard-val">' + shards + '</span></div>' : '') +
-      '</div>' +
-      '<div class="modal-section-title">UPGRADE & SELL</div>' +
-      '<div class="modal-actions">' +
-        '<button class="mact-btn mact-upgrade' + (canUpgrade?'':' mdisabled') + '" id="modal-upgrade-btn">Upgrade (3 shards)</button>' +
-        '<button class="mact-btn" id="modal-sell-one-btn">Sell 1 copy</button>' +
-        (shards > 0 ? '<button class="mact-btn" id="modal-convert-btn">Sell ' + shards + ' shards</button>' : '') +
-      '</div>' +
-      '<div class="modal-section-title">BUY SHARDS</div>' +
-      '<div class="buy-shards-grid">' +
-        '<div class="buy-shard-row"><span class="bsr-left">1 shard</span><span class="bsr-cost"><div class="coin-icon"></div>' + shardCost.toLocaleString() + '</span><button class="bsr-btn' + (coins>=shardCost?'':' mdisabled') + '" id="buy-1-btn">Buy</button></div>' +
-        '<div class="buy-shard-row"><span class="bsr-left">3 shards</span><span class="bsr-cost"><div class="coin-icon"></div>' + (shardCost*3).toLocaleString() + '</span><button class="bsr-btn' + (coins>=shardCost*3?'':' mdisabled') + '" id="buy-3-btn">Buy</button></div>' +
-      '</div>' +
-      '<button class="modal-close" id="modal-close-btn">close</button>' +
+function openModal(name){
+  var card=collection.find(function(c){return c.name===name;});
+  if(!card) return;
+  var shards=card.copies-1;
+  var coinVal=COIN_RATES[card.rarity];var shardCost=SHARD_COSTS[card.rarity];
+  var canUpgrade=shards>=3;
+  var imgHtml=card.photoUrl?'<div class="modal-img"><img src="'+card.photoUrl+'" alt="" onerror="this.style.display=\'none\'"></div>':'<div class="modal-img">'+card.emoji+'</div>';
+  document.getElementById('modal-inner').innerHTML=
+    '<div class="modal-rarity rb-'+card.rarity+'">'+card.rarity.toUpperCase()+'</div>'+imgHtml+
+    '<div class="modal-body">'+
+    '<div class="modal-name">'+card.name+'</div><div class="modal-loc">'+card.loc+'</div>'+
+    '<div class="modal-stats">'+
+      '<div class="modal-stat"><div class="msl">ATK</div><div class="msv">'+card.atk.toLocaleString()+'</div><div class="ms-bar"><div class="ms-fill" style="width:'+(card.atk/100)+'%;background:#D85A30"></div></div></div>'+
+      '<div class="modal-stat"><div class="msl">DEF</div><div class="msv">'+card.def.toLocaleString()+'</div><div class="ms-bar"><div class="ms-fill" style="width:'+(card.def/100)+'%;background:#1D9E75"></div></div></div>'+
+    '</div>'+
+    '<div class="modal-meta"><span>First pulled '+card.date+'</span><span>'+card.rating+'★ · '+card.reviews.toLocaleString()+' reviews</span></div>'+
+    '<div class="shard-info">'+
+      '<div class="shard-row"><span class="shard-label">Copies</span><span class="shard-val">'+card.copies+'</span></div>'+
+      '<div class="shard-row"><span class="shard-label">Sell value (1 copy)</span><span class="shard-val">'+coinVal.toLocaleString()+' coins</span></div>'+
+      (shards>0?'<div class="shard-row"><span class="shard-label">Extra shards</span><span class="shard-val">'+shards+'</span></div>':'')+
+    '</div>'+
+    '<div class="modal-section-title">UPGRADE & SELL</div>'+
+    '<div class="modal-actions">'+
+      '<button class="mact-btn mact-upgrade'+(canUpgrade?'':' mdisabled')+'" id="m-upgrade">Upgrade (3 shards)</button>'+
+      '<button class="mact-btn" id="m-sell-one">Sell 1 copy</button>'+
+      (shards>0?'<button class="mact-btn" id="m-sell-shards">Sell '+shards+' shards</button>':'')+
+    '</div>'+
+    '<div class="modal-section-title">BUY SHARDS</div>'+
+    '<div class="buy-shards-grid">'+
+      '<div class="buy-shard-row"><span class="bsr-left">1 shard</span><span class="bsr-cost"><div class="coin-icon"></div>'+shardCost.toLocaleString()+'</span><button class="bsr-btn'+(coins>=shardCost?'':' mdisabled')+'" id="m-buy1">Buy</button></div>'+
+      '<div class="buy-shard-row"><span class="bsr-left">3 shards</span><span class="bsr-cost"><div class="coin-icon"></div>'+(shardCost*3).toLocaleString()+'</span><button class="bsr-btn'+(coins>=shardCost*3?'':' mdisabled')+'" id="m-buy3">Buy</button></div>'+
+    '</div>'+
+    '<button class="modal-close" id="m-close">close</button>'+
     '</div>';
-
-  if (canUpgrade) document.getElementById('modal-upgrade-btn').addEventListener('click', function() { upgradeCard(name); });
-  document.getElementById('modal-sell-one-btn').addEventListener('click', function() { sellOneCard(name); });
-  if (shards > 0) document.getElementById('modal-convert-btn').addEventListener('click', function() { convertShards(name); });
-  if (coins >= shardCost) document.getElementById('buy-1-btn').addEventListener('click', function() { buyShards(name, 1); });
-  if (coins >= shardCost*3) document.getElementById('buy-3-btn').addEventListener('click', function() { buyShards(name, 3); });
-  document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+  if(canUpgrade) document.getElementById('m-upgrade').onclick=function(){upgradeCard(name);};
+  document.getElementById('m-sell-one').onclick=function(){sellOneCard(name);};
+  if(shards>0) document.getElementById('m-sell-shards').onclick=function(){convertShards(name);};
+  if(coins>=shardCost) document.getElementById('m-buy1').onclick=function(){buyShards(name,1);};
+  if(coins>=shardCost*3) document.getElementById('m-buy3').onclick=function(){buyShards(name,3);};
+  document.getElementById('m-close').onclick=closeModal;
   document.getElementById('modal-backdrop').classList.add('open');
 }
 
-function closeModal() { document.getElementById('modal-backdrop').classList.remove('open'); }
+function closeModal(){document.getElementById('modal-backdrop').classList.remove('open');}
 
-function upgradeCard(name) {
-  var card = collection.find(function(c) { return c.name === name; });
-  if (!card || card.copies < 4) return;
-  card.copies -= 3;
-  card.rating = Math.min(5.0, parseFloat((card.rating + 0.05).toFixed(2)));
-  var wr = (card.reviews * card.rating + C * GAVG) / (card.reviews + C);
-  card.def = Math.max(1, Math.min(10000, Math.round(((wr-3.5)/1.5)*10000)));
-  if (currentUser) saveCard(card);
-  showToast('Card upgraded! Rating +0.05★');
-  renderCollection(); openModal(name);
+function upgradeCard(name){
+  var card=collection.find(function(c){return c.name===name;});
+  if(!card||card.copies<4) return;
+  card.copies-=3;card.rating=Math.min(5.0,parseFloat((card.rating+0.05).toFixed(2)));
+  var wr=(card.reviews*card.rating+C*GAVG)/(card.reviews+C);
+  card.def=Math.max(1,Math.min(10000,Math.round(((wr-3.5)/1.5)*10000)));
+  if(currentUser) saveCard(card);showToast('Upgraded! Rating +0.05★');renderCollection();openModal(name);
 }
 
-function sellOneCard(name) {
-  var card = collection.find(function(c) { return c.name === name; });
-  if (!card) return;
-  var gained = COIN_RATES[card.rarity];
-  coins += gained;
-  if (card.copies > 1) {
-    card.copies--;
-    if (currentUser) saveCard(card);
-    showToast('+' + gained.toLocaleString() + ' coins — 1 copy sold');
-    renderCollection(); openModal(name);
-  } else {
-    collection = collection.filter(function(c) { return c.name !== name; });
-    if (currentUser) deleteCard(name);
-    showToast('+' + gained.toLocaleString() + ' coins — card sold');
-    renderCollection(); closeModal();
-  }
-  if (currentUser) saveCoins();
-  updateCoinDisplay();
+function sellOneCard(name){
+  var card=collection.find(function(c){return c.name===name;});if(!card) return;
+  var gained=COIN_RATES[card.rarity];coins+=gained;
+  if(card.copies>1){card.copies--;if(currentUser) saveCard(card);showToast('+'+gained.toLocaleString()+' coins');renderCollection();openModal(name);}
+  else{collection=collection.filter(function(c){return c.name!==name;});if(currentUser) deleteCard(name);showToast('+'+gained.toLocaleString()+' coins — card sold');renderCollection();closeModal();}
+  if(currentUser) saveCoins();updateCoinDisplay();
 }
 
-function convertShards(name) {
-  var card = collection.find(function(c) { return c.name === name; });
-  if (!card || card.copies < 2) return;
-  var shards = card.copies - 1;
-  var gained = shards * COIN_RATES[card.rarity];
-  coins += gained; card.copies = 1;
-  if (currentUser) { saveCard(card); saveCoins(); }
-  showToast('+' + gained.toLocaleString() + ' coins');
-  updateCoinDisplay(); renderCollection(); openModal(name);
+function convertShards(name){
+  var card=collection.find(function(c){return c.name===name;});if(!card||card.copies<2) return;
+  var shards=card.copies-1;var gained=shards*COIN_RATES[card.rarity];
+  coins+=gained;card.copies=1;if(currentUser){saveCard(card);saveCoins();}
+  showToast('+'+gained.toLocaleString()+' coins');updateCoinDisplay();renderCollection();openModal(name);
 }
 
-function buyShards(name, qty) {
-  var card = collection.find(function(c) { return c.name === name; });
-  if (!card) return;
-  var cost = SHARD_COSTS[card.rarity] * qty;
-  if (coins < cost) { showToast('Not enough coins!'); return; }
-  coins -= cost; card.copies += qty;
-  if (currentUser) { saveCard(card); saveCoins(); }
-  showToast('Bought ' + qty + ' shard' + (qty>1?'s':'') + ' for ' + cost.toLocaleString() + ' coins');
-  updateCoinDisplay(); renderCollection(); openModal(name);
+function buyShards(name,qty){
+  var card=collection.find(function(c){return c.name===name;});if(!card) return;
+  var cost=SHARD_COSTS[card.rarity]*qty;
+  if(coins<cost){showToast('Not enough coins!');return;}
+  coins-=cost;card.copies+=qty;if(currentUser){saveCard(card);saveCoins();}
+  showToast('Bought '+qty+' shard'+(qty>1?'s':'')+' for '+cost.toLocaleString()+' coins');
+  updateCoinDisplay();renderCollection();openModal(name);
 }
-
-
-// ── DAILY REWARDS ──────────────────────────────────────────────────────
-var dailyTimer = null;
-
-function formatCountdown(ms) {
-  if (ms <= 0) return '';
-  var totalSecs = Math.floor(ms / 1000);
-  var h = Math.floor(totalSecs / 3600);
-  var m = Math.floor((totalSecs % 3600) / 60);
-  var s = totalSecs % 60;
-  return h + 'h ' + m + 'm ' + s + 's';
-}
-
-function updateDailyUI() {
-  var now = Date.now();
-  var premiumBtn = document.getElementById('claim-premium-btn');
-  var eliteBtn = document.getElementById('claim-elite-btn');
-  var premiumCountdown = document.getElementById('premium-countdown');
-  var eliteCountdown = document.getElementById('elite-countdown');
-  var premiumSub = document.getElementById('premium-daily-sub');
-  var eliteSub = document.getElementById('elite-daily-sub');
-  if (!premiumBtn || !eliteBtn) return;
-
-  // Premium
-  var premiumReady = !dailyPremiumClaimed || (now - dailyPremiumClaimed) >= 24*60*60*1000;
-  var premiumClaimsLeft = dailyPremiumClaimsLeft !== null ? dailyPremiumClaimsLeft : 2;
-  if (!currentUser) {
-    premiumBtn.className = 'daily-claim-btn claimed';
-    premiumBtn.textContent = 'Log in to claim';
-    premiumCountdown.textContent = '';
-    premiumSub.textContent = '2 packs · free daily';
-  } else if (premiumReady || premiumClaimsLeft > 0) {
-    if (premiumClaimsLeft <= 0 && premiumReady) premiumClaimsLeft = 2;
-    premiumBtn.className = 'daily-claim-btn can-claim-premium';
-    premiumBtn.textContent = 'Claim (' + premiumClaimsLeft + ' left)';
-    premiumCountdown.textContent = '';
-    premiumSub.textContent = '2 packs · free daily';
-  } else {
-    var msLeft = 24*60*60*1000 - (now - dailyPremiumClaimed);
-    premiumBtn.className = 'daily-claim-btn claimed';
-    premiumBtn.textContent = 'Claimed';
-    premiumCountdown.textContent = formatCountdown(msLeft);
-    premiumSub.textContent = 'resets in';
-  }
-
-  // Elite
-  var eliteReady = !dailyEliteClaimed || (now - dailyEliteClaimed) >= 24*60*60*1000;
-  if (!currentUser) {
-    eliteBtn.className = 'daily-claim-btn claimed';
-    eliteBtn.textContent = 'Log in to claim';
-    eliteCountdown.textContent = '';
-    eliteSub.textContent = '1 pack · free daily';
-  } else if (eliteReady) {
-    eliteBtn.className = 'daily-claim-btn can-claim-elite';
-    eliteBtn.textContent = 'Claim';
-    eliteCountdown.textContent = '';
-    eliteSub.textContent = '1 pack · free daily';
-  } else {
-    var msLeftE = 24*60*60*1000 - (now - dailyEliteClaimed);
-    eliteBtn.className = 'daily-claim-btn claimed';
-    eliteBtn.textContent = 'Claimed';
-    eliteCountdown.textContent = formatCountdown(msLeftE);
-    eliteSub.textContent = 'resets in';
-  }
-}
-
-function startDailyTimer() {
-  if (dailyTimer) clearInterval(dailyTimer);
-  dailyTimer = setInterval(updateDailyUI, 1000);
-}
-
-async function claimPremiumDaily() {
-  if (!currentUser) { openAuthModal('signup'); return; }
-  var now = Date.now();
-  var premiumReady = !dailyPremiumClaimed || (now - dailyPremiumClaimed) >= 24*60*60*1000;
-  if (premiumReady) dailyPremiumClaimsLeft = 2;
-  if (dailyPremiumClaimsLeft <= 0) return;
-  dailyPremiumClaimsLeft--;
-  if (dailyPremiumClaimsLeft === 0) dailyPremiumClaimed = now;
-  await sb.from('user_stats').upsert({
-    user_id: currentUser.id,
-    coins: coins,
-    daily_premium_claimed: dailyPremiumClaimsLeft === 0 ? new Date(now).toISOString() : (dailyPremiumClaimed ? new Date(dailyPremiumClaimed).toISOString() : null),
-    daily_premium_claims_left: dailyPremiumClaimsLeft
-  }, { onConflict: 'user_id' });
-  updateDailyUI();
-  showToast('Free Premium Pack claimed!');
-  selectPack('premium');
-  await startPull();
-}
-
-async function claimEliteDaily() {
-  if (!currentUser) { openAuthModal('signup'); return; }
-  var now = Date.now();
-  var eliteReady = !dailyEliteClaimed || (now - dailyEliteClaimed) >= 24*60*60*1000;
-  if (!eliteReady) return;
-  dailyEliteClaimed = now;
-  await sb.from('user_stats').upsert({
-    user_id: currentUser.id,
-    coins: coins,
-    daily_elite_claimed: new Date(now).toISOString()
-  }, { onConflict: 'user_id' });
-  updateDailyUI();
-  showToast('Free Elite Pack claimed!');
-  selectPack('elite');
-  await startPull();
-}
-
-function showPage(p, tabEl) {
-  document.querySelectorAll('.page').forEach(function(x) { x.classList.remove('active'); });
-  document.querySelectorAll('.nav-tab').forEach(function(x) { x.classList.remove('active'); });
-  document.getElementById('page-' + p).classList.add('active');
-  tabEl.classList.add('active');
-  if (p === 'collection') renderCollection();
-}
-
 
 // ── BATTLE ─────────────────────────────────────────────────────────────
-const EXCLUSIVE_CARDS = [
-  { name:"Great Wall of China",  loc:"Beijing, China",      emoji:"🏯", rarity:"mythic",    rating:4.9, reviews:180000, atk:9200, def:9800 },
-  { name:"Burj Khalifa",         loc:"Dubai, UAE",          emoji:"🏙️", rarity:"mythic",    rating:4.8, reviews:95000,  atk:8800, def:9500 },
-  { name:"Angkor Wat",           loc:"Siem Reap, Cambodia", emoji:"🛕", rarity:"legendary", rating:4.9, reviews:72000,  atk:8200, def:9200 },
-  { name:"Machu Picchu",         loc:"Cusco, Peru",         emoji:"🏔️", rarity:"legendary", rating:4.9, reviews:143000, atk:8600, def:9000 },
-  { name:"Petra",                loc:"Ma'an, Jordan",       emoji:"🏛️", rarity:"legendary", rating:4.9, reviews:58000,  atk:7900, def:8800 },
-  { name:"Chichen Itza",         loc:"Yucatan, Mexico",     emoji:"🔺", rarity:"epic",      rating:4.7, reviews:49000,  atk:7400, def:8200 },
-  { name:"Colosseum",            loc:"Rome, Italy",         emoji:"🏟️", rarity:"epic",      rating:4.7, reviews:180000, atk:7800, def:8000 },
-  { name:"Sydney Opera House",   loc:"Sydney, Australia",   emoji:"🎭", rarity:"epic",      rating:4.7, reviews:88000,  atk:7200, def:7800 },
-];
-
-const DIFF_SETTINGS = {
-  easy:      { multiplier:0.7,  winCoins:100, loseCoins:20,  exclusiveChance:0    },
-  hard:      { multiplier:1.0,  winCoins:300, loseCoins:50,  exclusiveChance:0.15 },
-  legendary: { multiplier:1.4,  winCoins:750, loseCoins:100, exclusiveChance:0.40 },
-};
-
-let battleTeam = [null, null, null];
-let selectedDifficulty = 'easy';
-let pickingSlot = -1;
-let battleRunning = false;
-
-function initBattlePage() {
-  renderTeamSlots();
-  renderPickerGrid();
-}
-
-function renderTeamSlots() {
-  var count = battleTeam.filter(function(c) { return c !== null; }).length;
-  document.getElementById('team-count').textContent = count + '/3';
-  var btn = document.getElementById('battle-start-btn');
-  btn.disabled = count < 3;
-  btn.textContent = count < 3 ? 'Select ' + (3 - count) + ' more card' + (3-count!==1?'s':'') : 'Battle!';
-
-  for (var i = 0; i < 3; i++) {
-    var slot = document.getElementById('slot-' + i);
-    var card = battleTeam[i];
-    if (!card) {
-      slot.className = 'team-slot empty';
-      slot.innerHTML = '<div class="slot-plus">+</div><div class="slot-hint">Pick a card</div>';
-      slot.dataset.idx = i;
+function renderTeamSlots(){
+  var count=battleTeam.filter(function(c){return c!==null;}).length;
+  var countEl=document.getElementById('team-count');if(countEl) countEl.textContent=count+'/3';
+  var btn=document.getElementById('battle-start-btn');
+  if(btn){btn.disabled=count<3;btn.textContent=count<3?'Select '+(3-count)+' more card'+(3-count!==1?'s':''):'Battle!';}
+  for(var i=0;i<3;i++){
+    var slot=document.getElementById('slot-'+i);if(!slot) continue;
+    var card=battleTeam[i];
+    if(!card){
+      slot.className='team-slot empty';slot.innerHTML='<div class="slot-plus">+</div><div class="slot-hint">Pick a card</div>';
+      (function(idx){slot.onclick=function(){openPicker(idx);};})(i);
     } else {
-      slot.className = 'team-slot filled';
-      var imgHtml = card.photoUrl ? '<img src="' + card.photoUrl + '" alt="" onerror="this.style.display=\'none\'">' : card.emoji;
-      slot.innerHTML =
-        '<div class="slot-rarity rb-' + card.rarity + '">' + card.rarity.toUpperCase() + '</div>' +
-        '<div class="slot-img">' + imgHtml + '</div>' +
-        '<div class="slot-info">' +
-          '<div class="slot-name">' + card.name + '</div>' +
-          '<div class="slot-stats">' +
-            '<div class="slot-stat cs-atk">ATK ' + card.atk.toLocaleString() + '</div>' +
-            '<div class="slot-stat cs-def">DEF ' + card.def.toLocaleString() + '</div>' +
-          '</div>' +
-        '</div>' +
-        '<button class="slot-remove" data-idx="' + i + '">✕</button>';
-      slot.dataset.idx = i;
+      slot.className='team-slot filled';
+      var imgH=card.photoUrl?'<img src="'+card.photoUrl+'" alt="" onerror="this.style.display=\'none\'">':card.emoji;
+      slot.innerHTML='<div class="slot-rarity rb-'+card.rarity+'">'+card.rarity.toUpperCase()+'</div>'+
+        '<div class="slot-img">'+imgH+'</div>'+
+        '<div class="slot-info"><div class="slot-name">'+card.name+'</div>'+
+        '<div class="slot-stats"><div class="slot-stat cs-atk">ATK '+card.atk.toLocaleString()+'</div><div class="slot-stat cs-def">DEF '+card.def.toLocaleString()+'</div></div></div>'+
+        '<button class="slot-remove" data-idx="'+i+'">✕</button>';
+      slot.onclick=function(e){if(!e.target.classList.contains('slot-remove')) openPicker(i);};
+      (function(idx){slot.querySelector('.slot-remove').onclick=function(e){e.stopPropagation();battleTeam[idx]=null;renderTeamSlots();};})(i);
     }
   }
-
-  document.querySelectorAll('.team-slot.empty').forEach(function(el) {
-    el.addEventListener('click', function() { openPicker(parseInt(el.dataset.idx)); });
-  });
-  document.querySelectorAll('.slot-remove').forEach(function(btn) {
-    btn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      battleTeam[parseInt(btn.dataset.idx)] = null;
-      renderTeamSlots();
-      renderPickerGrid();
-    });
-  });
 }
 
-function renderPickerGrid() {
-  var grid = document.getElementById('picker-grid');
-  if (!grid) return;
-  if (!collection.length) {
-    grid.innerHTML = '<div style="color:var(--text2);font-size:13px;padding:2rem;text-align:center;">No cards in collection yet</div>';
-    return;
-  }
-  var sorted = collection.slice().sort(function(a,b) { return RARITY_ORD[b.rarity]-RARITY_ORD[a.rarity]; });
-  grid.innerHTML = sorted.map(function(c) {
-    var inTeam = battleTeam.some(function(t) { return t && t.name === c.name; });
-    var imgHtml = c.photoUrl ? '<img src="' + c.photoUrl + '" alt="" onerror="this.style.display=\'none\'">' : c.emoji;
-    return '<div class="picker-card' + (inTeam?' in-team':'') + '" data-name="' + encodeURIComponent(c.name) + '">' +
-      '<div class="pc-rarity rb-' + c.rarity + '">' + c.rarity.toUpperCase() + '</div>' +
-      '<div class="pc-img">' + imgHtml + '</div>' +
-      '<div class="pc-info">' +
-        '<div class="pc-name">' + c.name + '</div>' +
-        '<div class="pc-stats">' +
-          '<div class="pc-stat cs-atk">ATK ' + c.atk.toLocaleString() + '</div>' +
-          '<div class="pc-stat cs-def">DEF ' + c.def.toLocaleString() + '</div>' +
-        '</div>' +
-      '</div>' +
-    '</div>';
+function openPicker(idx){
+  pickingSlot=idx;
+  document.getElementById('battle-team-section').style.display='none';
+  document.getElementById('battle-picker').style.display='block';
+  var grid=document.getElementById('picker-grid');
+  if(!collection.length){grid.innerHTML='<div style="color:var(--text2);padding:2rem;text-align:center">Pull some cards first!</div>';return;}
+  var sorted=collection.slice().sort(function(a,b){return RARITY_ORD[b.rarity]-RARITY_ORD[a.rarity];});
+  grid.innerHTML=sorted.map(function(c){
+    var inTeam=battleTeam.some(function(t){return t&&t.name===c.name;});
+    var imgH=c.photoUrl?'<img src="'+c.photoUrl+'" alt="" onerror="this.style.display=\'none\'">':c.emoji;
+    return '<div class="picker-card'+(inTeam?' in-team':'')+'" data-name="'+encodeURIComponent(c.name)+'">'+
+      '<div class="pc-rarity rb-'+c.rarity+'">'+c.rarity.toUpperCase()+'</div>'+
+      '<div class="pc-img">'+imgH+'</div>'+
+      '<div class="pc-info"><div class="pc-name">'+c.name+'</div>'+
+      '<div class="pc-stats"><div class="pc-stat cs-atk">ATK '+c.atk.toLocaleString()+'</div><div class="pc-stat cs-def">DEF '+c.def.toLocaleString()+'</div></div></div></div>';
   }).join('');
-  grid.querySelectorAll('.picker-card:not(.in-team)').forEach(function(el) {
-    el.addEventListener('click', function() {
-      var card = collection.find(function(c) { return c.name === decodeURIComponent(el.dataset.name); });
-      if (card && pickingSlot >= 0) {
-        battleTeam[pickingSlot] = card;
-        closePicker();
-        renderTeamSlots();
-        renderPickerGrid();
-      }
-    });
+  grid.querySelectorAll('.picker-card:not(.in-team)').forEach(function(el){
+    el.onclick=function(){
+      var card=collection.find(function(c){return c.name===decodeURIComponent(el.dataset.name);});
+      if(card&&pickingSlot>=0){battleTeam[pickingSlot]=card;closePicker();}
+    };
   });
 }
 
-function openPicker(slotIdx) {
-  pickingSlot = slotIdx;
-  document.getElementById('battle-picker').style.display = 'block';
-  document.getElementById('battle-team-section').style.display = 'none';
-  renderPickerGrid();
+function closePicker(){
+  pickingSlot=-1;
+  document.getElementById('battle-picker').style.display='none';
+  document.getElementById('battle-team-section').style.display='flex';
+  renderTeamSlots();
 }
 
-function closePicker() {
-  pickingSlot = -1;
-  document.getElementById('battle-picker').style.display = 'none';
-  document.getElementById('battle-team-section').style.display = 'flex';
+function generateEnemyTeam(){
+  var m=DIFF_SETTINGS[selectedDifficulty].multiplier;
+  return [
+    {name:"Ancient Fortress",emoji:"🏰",rarity:"rare",      atk:Math.round(5000*m),def:Math.round(6000*m)},
+    {name:"Mountain Citadel",emoji:"⛰️", rarity:"epic",     atk:Math.round(6500*m),def:Math.round(7000*m)},
+    {name:"Lost Temple",     emoji:"🏛️",rarity:"legendary", atk:Math.round(7500*m),def:Math.round(8000*m)}
+  ].map(function(e){var hp=Math.round(e.def/10);return Object.assign({},e,{hp:hp,maxHp:hp});});
 }
 
-function generateEnemyTeam(difficulty) {
-  var settings = DIFF_SETTINGS[difficulty];
-  var mult = settings.multiplier;
-  var enemies = [
-    { name:"Ancient Fortress",   emoji:"🏰", rarity:"rare",      atk:Math.round(5000*mult), def:Math.round(6000*mult) },
-    { name:"Mountain Citadel",   emoji:"⛰️", rarity:"epic",      atk:Math.round(6500*mult), def:Math.round(7000*mult) },
-    { name:"Lost Temple",        emoji:"🏛️", rarity:"legendary", atk:Math.round(7500*mult), def:Math.round(8000*mult) },
-  ];
-  return enemies.map(function(e) {
-    return Object.assign({}, e, { hp: Math.round(e.def / 10), maxHp: Math.round(e.def / 10) });
-  });
+function sleep(ms){return new Promise(function(r){setTimeout(r,ms);});}
+
+function addLog(msg,cls){
+  var log=document.getElementById('battle-log');
+  var e=document.createElement('div');e.className='log-entry'+(cls?' '+cls:'');e.textContent=msg;
+  log.appendChild(e);log.scrollTop=log.scrollHeight;
 }
 
-function cardToArenaCard(card, isEnemy) {
-  var hp = Math.round((card.def || 5000) / 10);
-  return Object.assign({}, card, { hp: hp, maxHp: hp, isEnemy: isEnemy });
-}
-
-async function startBattle() {
-  if (battleRunning) return;
-  var filled = battleTeam.filter(function(c) { return c !== null; });
-  if (filled.length < 3) return;
-  battleRunning = true;
-
-  document.getElementById('battle-team-section').style.display = 'none';
-  document.getElementById('battle-arena').style.display = 'block';
-  document.getElementById('battle-result').style.display = 'none';
-  document.getElementById('battle-log').innerHTML = '';
-  document.getElementById('arena-title').textContent = 'Battle!';
-
-  var playerTeam = battleTeam.map(function(c) { return cardToArenaCard(c, false); });
-  var enemyTeam = generateEnemyTeam(selectedDifficulty);
-
-  renderArenaCards(playerTeam, enemyTeam);
-  await sleep(600);
-
-  var pIdx = 0, eIdx = 0;
-  var round = 0;
-  var maxRounds = 30;
-
-  while (pIdx < 3 && eIdx < 3 && round < maxRounds) {
-    round++;
-    var pCard = playerTeam[pIdx];
-    var eCard = enemyTeam[eIdx];
-
-    // Player attacks
-    var pDmg = Math.round((pCard.atk / 100) * (0.85 + Math.random() * 0.3));
-    eCard.hp = Math.max(0, eCard.hp - pDmg);
-    updateHpBar('enemy', eIdx, eCard.hp, eCard.maxHp);
-    showDamagePop('enemy', eIdx, pDmg);
-    highlightCard('player', pIdx, true);
-    highlightCard('enemy', eIdx, false);
-    addLog(pCard.name + ' attacks ' + eCard.name + ' for ' + pDmg + ' damage!', 'player-atk');
-    await sleep(700);
-    highlightCard('player', pIdx, false);
-
-    if (eCard.hp <= 0) {
-      defeatCard('enemy', eIdx);
-      addLog(eCard.name + ' is defeated!', '');
-      eIdx++;
-      await sleep(500);
-      if (eIdx < 3) { renderNextEnemyCard(enemyTeam, eIdx); await sleep(300); }
-      continue;
-    }
-
-    // Enemy attacks
-    var eDmg = Math.round((eCard.atk / 100) * (0.85 + Math.random() * 0.3));
-    pCard.hp = Math.max(0, pCard.hp - eDmg);
-    updateHpBar('player', pIdx, pCard.hp, pCard.maxHp);
-    showDamagePop('player', pIdx, eDmg);
-    highlightCard('enemy', eIdx, true);
-    highlightCard('player', pIdx, false);
-    addLog(eCard.name + ' retaliates for ' + eDmg + ' damage!', 'enemy-atk');
-    await sleep(700);
-    highlightCard('enemy', eIdx, false);
-
-    if (pCard.hp <= 0) {
-      defeatCard('player', pIdx);
-      addLog(pCard.name + ' is defeated!', '');
-      pIdx++;
-      await sleep(500);
-      if (pIdx < 3) { await sleep(300); }
-    }
-    await sleep(200);
-  }
-
-  var playerWon = eIdx >= 3;
-  await showBattleResult(playerWon);
-  battleRunning = false;
-}
-
-function renderArenaCards(playerTeam, enemyTeam) {
-  var pContainer = document.getElementById('player-arena-cards');
-  var eContainer = document.getElementById('enemy-arena-cards');
-  pContainer.innerHTML = playerTeam.map(function(c, i) { return buildArenaCardHTML(c, 'player', i); }).join('');
-  eContainer.innerHTML = enemyTeam.map(function(c, i) { return buildArenaCardHTML(c, 'enemy', i); }).join('');
-}
-
-function renderNextEnemyCard(enemyTeam, idx) {
-  var card = enemyTeam[idx];
-  var el = document.querySelector('.enemy-side .arena-cards .arena-card:nth-child(' + (idx+1) + ')');
-  if (el) el.classList.remove('defeated');
-}
-
-function buildArenaCardHTML(card, side, idx) {
-  var imgHtml = card.photoUrl ? '<img src="' + card.photoUrl + '" alt="" onerror="this.style.display=\'none\'">' : (card.emoji || '📍');
-  return '<div class="arena-card" id="arena-' + side + '-' + idx + '">' +
-    '<div class="ac-rarity rb-' + card.rarity + '">' + card.rarity.toUpperCase() + '</div>' +
-    '<div class="ac-img">' + imgHtml + '</div>' +
-    '<div class="ac-name">' + card.name + '</div>' +
-    '<div class="ac-hp-bar"><div class="ac-hp-fill" id="hp-' + side + '-' + idx + '" style="width:100%"></div></div>' +
-    '<div class="ac-hp-text" id="hpt-' + side + '-' + idx + '">' + card.hp + ' HP</div>' +
+function buildArenaCardHTML(card,side,idx){
+  var imgH=card.photoUrl?'<img src="'+card.photoUrl+'" alt="" onerror="this.style.display=\'none\'">':card.emoji||'📍';
+  return '<div class="arena-card" id="arena-'+side+'-'+idx+'">'+
+    '<div class="ac-rarity rb-'+card.rarity+'">'+card.rarity.toUpperCase()+'</div>'+
+    '<div class="ac-img">'+imgH+'</div>'+
+    '<div class="ac-name">'+card.name+'</div>'+
+    '<div class="ac-hp-bar"><div class="ac-hp-fill" id="hp-'+side+'-'+idx+'" style="width:100%"></div></div>'+
+    '<div class="ac-hp-text" id="hpt-'+side+'-'+idx+'">'+card.hp+' HP</div>'+
   '</div>';
 }
 
-function updateHpBar(side, idx, hp, maxHp) {
-  var pct = Math.max(0, (hp / maxHp) * 100);
-  var fill = document.getElementById('hp-' + side + '-' + idx);
-  var txt = document.getElementById('hpt-' + side + '-' + idx);
-  if (!fill) return;
-  fill.style.width = pct + '%';
-  fill.className = 'ac-hp-fill' + (pct < 25 ? ' critical' : pct < 50 ? ' low' : '');
-  if (txt) txt.textContent = hp + ' HP';
+function updateHpBar(side,idx,hp,maxHp){
+  var pct=Math.max(0,(hp/maxHp)*100);
+  var fill=document.getElementById('hp-'+side+'-'+idx);
+  var txt=document.getElementById('hpt-'+side+'-'+idx);
+  if(!fill) return;
+  fill.style.width=pct+'%';
+  fill.className='ac-hp-fill'+(pct<25?' critical':pct<50?' low':'');
+  if(txt) txt.textContent=hp+' HP';
 }
 
-function defeatCard(side, idx) {
-  var el = document.getElementById('arena-' + side + '-' + idx);
-  if (el) el.classList.add('defeated');
+function defeatCard(side,idx){var el=document.getElementById('arena-'+side+'-'+idx);if(el) el.classList.add('defeated');}
+
+function highlightCard(side,idx,attacking){
+  var el=document.getElementById('arena-'+side+'-'+idx);if(!el) return;
+  if(attacking){el.classList.add('attacking');el.classList.remove('hit');}
+  else{el.classList.remove('attacking');el.classList.add('hit');setTimeout(function(){el&&el.classList.remove('hit');},300);}
 }
 
-function highlightCard(side, idx, attacking) {
-  var el = document.getElementById('arena-' + side + '-' + idx);
-  if (!el) return;
-  if (attacking) { el.classList.add('attacking'); el.classList.remove('hit'); }
-  else { el.classList.remove('attacking'); el.classList.add('hit'); setTimeout(function() { el && el.classList.remove('hit'); }, 300); }
+function showDamagePop(side,idx,dmg){
+  var el=document.getElementById('arena-'+side+'-'+idx);if(!el) return;
+  var pop=document.createElement('div');pop.className='damage-pop';pop.textContent='-'+dmg;
+  el.appendChild(pop);setTimeout(function(){pop.remove();},800);
 }
 
-function showDamagePop(side, idx, dmg) {
-  var el = document.getElementById('arena-' + side + '-' + idx);
-  if (!el) return;
-  var pop = document.createElement('div');
-  pop.className = 'damage-pop';
-  pop.textContent = '-' + dmg;
-  el.appendChild(pop);
-  setTimeout(function() { pop.remove(); }, 800);
-}
+async function startBattle(){
+  if(battleRunning) return;
+  var filled=battleTeam.filter(function(c){return c!==null;});
+  if(filled.length<3) return;
+  battleRunning=true;
+  document.getElementById('battle-team-section').style.display='none';
+  document.getElementById('battle-arena').style.display='block';
+  document.getElementById('battle-result').style.display='none';
+  document.getElementById('battle-log').innerHTML='';
+  document.getElementById('arena-title').textContent='Battle!';
 
-function addLog(msg, cls) {
-  var log = document.getElementById('battle-log');
-  var entry = document.createElement('div');
-  entry.className = 'log-entry' + (cls ? ' ' + cls : '');
-  entry.textContent = msg;
-  log.appendChild(entry);
-  log.scrollTop = log.scrollHeight;
-}
+  var playerTeam=battleTeam.map(function(c){var hp=Math.round((c.def||5000)/10);return Object.assign({},c,{hp:hp,maxHp:hp});});
+  var enemyTeam=generateEnemyTeam();
 
-async function showBattleResult(playerWon) {
-  var settings = DIFF_SETTINGS[selectedDifficulty];
-  var coinsEarned = playerWon ? settings.winCoins : settings.loseCoins;
-  var exclusiveCard = null;
+  document.getElementById('player-arena-cards').innerHTML=playerTeam.map(function(c,i){return buildArenaCardHTML(c,'player',i);}).join('');
+  document.getElementById('enemy-arena-cards').innerHTML=enemyTeam.map(function(c,i){return buildArenaCardHTML(c,'enemy',i);}).join('');
 
-  if (playerWon && Math.random() < settings.exclusiveChance) {
-    var eligible = EXCLUSIVE_CARDS.filter(function(c) {
-      return !collection.find(function(owned) { return owned.name === c.name; });
-    });
-    if (eligible.length > 0) {
-      exclusiveCard = eligible[Math.floor(Math.random() * eligible.length)];
-    }
+  await sleep(600);
+  var pIdx=0,eIdx=0,round=0;
+  while(pIdx<3&&eIdx<3&&round<40){
+    round++;
+    var pCard=playerTeam[pIdx],eCard=enemyTeam[eIdx];
+    var pDmg=Math.round((pCard.atk/100)*(0.85+Math.random()*0.3));
+    eCard.hp=Math.max(0,eCard.hp-pDmg);
+    updateHpBar('enemy',eIdx,eCard.hp,eCard.maxHp);
+    showDamagePop('enemy',eIdx,pDmg);
+    highlightCard('player',pIdx,true);highlightCard('enemy',eIdx,false);
+    addLog(pCard.name+' attacks '+eCard.name+' for '+pDmg+' dmg!','player-atk');
+    await sleep(700);highlightCard('player',pIdx,false);
+    if(eCard.hp<=0){defeatCard('enemy',eIdx);addLog(eCard.name+' defeated!','');eIdx++;await sleep(400);continue;}
+    var eDmg=Math.round((eCard.atk/100)*(0.85+Math.random()*0.3));
+    pCard.hp=Math.max(0,pCard.hp-eDmg);
+    updateHpBar('player',pIdx,pCard.hp,pCard.maxHp);
+    showDamagePop('player',pIdx,eDmg);
+    highlightCard('enemy',eIdx,true);highlightCard('player',pIdx,false);
+    addLog(eCard.name+' retaliates for '+eDmg+' dmg!','enemy-atk');
+    await sleep(700);highlightCard('enemy',eIdx,false);
+    if(pCard.hp<=0){defeatCard('player',pIdx);addLog(pCard.name+' defeated!','');pIdx++;await sleep(400);}
+    await sleep(200);
   }
 
-  coins += coinsEarned;
-  updateCoinDisplay();
-  if (currentUser) saveCoins();
-
-  if (exclusiveCard) {
-    var copy = Object.assign({}, exclusiveCard);
-    copy.copies = 1;
-    copy.date = new Date().toLocaleDateString('en-US', {month:'short', day:'numeric'});
-    copy.photoUrl = null;
-    collection.push(copy);
-    if (currentUser) saveCard(copy);
-    addLog('🏆 EXCLUSIVE CARD UNLOCKED: ' + exclusiveCard.name + '!', 'exclusive');
+  var won=eIdx>=3;
+  var settings=DIFF_SETTINGS[selectedDifficulty];
+  var coinsEarned=won?settings.winCoins:settings.loseCoins;
+  var exclusiveCard=null;
+  if(won&&Math.random()<settings.exclusiveChance){
+    var eligible=EXCLUSIVE_CARDS.filter(function(c){return !collection.find(function(o){return o.name===c.name;});});
+    if(eligible.length>0) exclusiveCard=eligible[Math.floor(Math.random()*eligible.length)];
   }
-
-  var resultEl = document.getElementById('battle-result');
-  var titleEl = document.getElementById('result-title');
-  var rewardsEl = document.getElementById('result-rewards');
-
-  titleEl.textContent = playerWon ? 'Victory!' : 'Defeated';
-  titleEl.className = 'result-title ' + (playerWon ? 'win' : 'lose');
-
-  var rewardsHtml = '+' + coinsEarned.toLocaleString() + ' coins';
-  if (exclusiveCard) rewardsHtml += '<br>🏆 Unlocked: ' + exclusiveCard.name;
-  rewardsEl.innerHTML = rewardsHtml;
-
-  addLog(playerWon ? 'Victory! +' + coinsEarned + ' coins earned.' : 'Defeated. +' + coinsEarned + ' coins consolation.', playerWon ? 'result-win' : 'result-lose');
-
-  document.getElementById('arena-title').textContent = playerWon ? '🏆 Victory!' : '💀 Defeated';
-  resultEl.style.display = 'block';
+  coins+=coinsEarned;updateCoinDisplay();if(currentUser) saveCoins();
+  if(exclusiveCard){
+    var copy=Object.assign({},exclusiveCard,{copies:1,photoUrl:null,date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})});
+    collection.push(copy);if(currentUser) saveCard(copy);
+    addLog('EXCLUSIVE UNLOCKED: '+exclusiveCard.name+'!','exclusive');
+  }
+  document.getElementById('arena-title').textContent=won?'Victory!':'Defeated';
+  document.getElementById('result-title').textContent=won?'Victory!':'Defeated';
+  document.getElementById('result-title').className='result-title '+(won?'win':'lose');
+  document.getElementById('result-rewards').innerHTML='+'+coinsEarned.toLocaleString()+' coins'+(exclusiveCard?'<br>Unlocked: '+exclusiveCard.name:'');
+  addLog((won?'Victory! ':'Defeated. ')+('+'+coinsEarned+' coins'),won?'result-win':'result-lose');
+  document.getElementById('battle-result').style.display='block';
+  battleRunning=false;
 }
 
-function resetBattle() {
-  battleTeam = [null, null, null];
-  battleRunning = false;
-  document.getElementById('battle-arena').style.display = 'none';
-  document.getElementById('battle-team-section').style.display = 'flex';
-  document.getElementById('battle-result').style.display = 'none';
+function resetBattle(){
+  battleTeam=[null,null,null];battleRunning=false;
+  document.getElementById('battle-arena').style.display='none';
+  document.getElementById('battle-result').style.display='none';
+  document.getElementById('battle-team-section').style.display='flex';
   renderTeamSlots();
 }
 
-function sleep(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
-
 // ── INIT ───────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', async function() {
-  // Auth state listener
-  sb.auth.onAuthStateChange(async function(event, session) {
-    if (session && session.user) {
-      currentUser = session.user;
+document.addEventListener('DOMContentLoaded', function(){
+  // Nav tabs
+  document.getElementById('tab-gacha').onclick=function(){showPage('gacha');};
+  document.getElementById('tab-collection').onclick=function(){showPage('collection');};
+  document.getElementById('tab-battle').onclick=function(){showPage('battle');};
+
+  // Auth buttons — these are static in HTML so always exist
+  document.getElementById('btn-login').onclick=function(){openAuthModal('login');};
+  document.getElementById('btn-signup').onclick=function(){openAuthModal('signup');};
+  document.getElementById('btn-signout').onclick=signOut;
+
+  // Pull
+  document.getElementById('pull-btn').onclick=startPull;
+  document.getElementById('pull-again-btn').onclick=resetPull;
+
+  // Pack selector
+  document.querySelectorAll('.pack-option').forEach(function(el){
+    el.onclick=function(){selectPack(el.dataset.pack);};
+  });
+
+  // Daily rewards
+  document.getElementById('claim-premium-btn').onclick=claimPremiumDaily;
+  document.getElementById('claim-elite-btn').onclick=claimEliteDaily;
+  dailyTimer=setInterval(updateDailyUI,1000);
+  updateDailyUI();
+
+  // Collection controls
+  document.getElementById('sort-sel').onchange=renderCollection;
+  document.getElementById('vt-grid').onclick=function(){setCollView('grid');};
+  document.getElementById('vt-list').onclick=function(){setCollView('list');};
+  document.querySelectorAll('.fpill').forEach(function(btn){
+    btn.onclick=function(){setFilter(btn.dataset.filter,btn);};
+  });
+
+  // Battle
+  document.getElementById('battle-start-btn').onclick=startBattle;
+  document.getElementById('picker-close').onclick=closePicker;
+  document.getElementById('battle-again-btn').onclick=resetBattle;
+  document.querySelectorAll('.diff-btn').forEach(function(el){
+    el.onclick=function(){
+      selectedDifficulty=el.dataset.diff;
+      document.querySelectorAll('.diff-btn').forEach(function(b){b.classList.remove('selected');});
+      el.classList.add('selected');
+    };
+  });
+
+  // Modals
+  document.getElementById('modal-backdrop').onclick=function(e){if(e.target===this) closeModal();};
+  document.getElementById('auth-backdrop').onclick=function(e){if(e.target===this) closeAuthModal();};
+
+  // Timeout fallback
+  setTimeout(hideLoading, 3000);
+
+  // Auth state
+  sb.auth.onAuthStateChange(async function(event, session){
+    if(session&&session.user){
+      currentUser=session.user;
       updateNavForUser(session.user);
       await loadCollection();
-      updateDailyUI();
-      document.getElementById('coin-display') && (document.getElementById('coin-display').style.display = 'flex');
     } else {
-      currentUser = null;
-      collection = [];
-      coins = 0;
-      dailyPremiumClaimed = null;
-      dailyEliteClaimed = null;
-      dailyPremiumClaimsLeft = 2;
-      updateNavForUser(null);
-      updateDailyUI();
-      renderCollection();
+      currentUser=null;collection=[];coins=0;
+      dailyPremiumClaimed=null;dailyEliteClaimed=null;dailyPremiumClaimsLeft=2;
+      updateNavForUser(null);updateDailyUI();renderCollection();
     }
-    var _lo = document.getElementById('loading-overlay'); if(_lo){ _lo.style.opacity='0'; _lo.style.pointerEvents='none'; setTimeout(function(){ if(_lo.parentNode) _lo.parentNode.removeChild(_lo); },400); }
+    hideLoading();
   });
 
-  // Fallback: always hide loading after 3 seconds no matter what
-  setTimeout(function() {
-    var overlay = document.getElementById('loading-overlay');
-    if (overlay) { overlay.style.opacity = '0'; overlay.style.pointerEvents = 'none'; setTimeout(function(){ if(overlay.parentNode) overlay.parentNode.removeChild(overlay); }, 400); }
-  }, 3000);
-
-  // Check existing session
-  try {
-    var sessionRes = await sb.auth.getSession();
-    var session = sessionRes.data && sessionRes.data.session;
-    if (!session) {
-      updateNavForUser(null);
-      var _lo = document.getElementById('loading-overlay'); if(_lo){ _lo.style.opacity='0'; _lo.style.pointerEvents='none'; setTimeout(function(){ if(_lo.parentNode) _lo.parentNode.removeChild(_lo); },400); }
-    }
-  } catch(e) {
-    console.error('Session check failed:', e);
-    updateNavForUser(null);
-    var _lo = document.getElementById('loading-overlay'); if(_lo){ _lo.style.opacity='0'; _lo.style.pointerEvents='none'; setTimeout(function(){ if(_lo.parentNode) _lo.parentNode.removeChild(_lo); },400); }
-  }
-
-  // Wire up events
-  document.getElementById('pull-btn').addEventListener('click', startPull);
-  document.getElementById('battle-start-btn').addEventListener('click', startBattle);
-  document.getElementById('battle-again-btn') && document.getElementById('battle-again-btn').addEventListener('click', resetBattle);
-  document.getElementById('picker-close').addEventListener('click', closePicker);
-  document.getElementById('claim-premium-btn').addEventListener('click', claimPremiumDaily);
-  document.getElementById('claim-elite-btn').addEventListener('click', claimEliteDaily);
-  startDailyTimer();
-  document.getElementById('pull-again-btn').addEventListener('click', resetPull);
-  document.getElementById('tab-gacha').addEventListener('click', function() { showPage('gacha', this); });
-  document.getElementById('tab-collection').addEventListener('click', function() { showPage('collection', this); });
-  document.getElementById('tab-battle').addEventListener('click', function() { showPage('battle', this); initBattlePage(); });
-  document.getElementById('sort-sel').addEventListener('change', renderCollection);
-  document.getElementById('vt-grid').addEventListener('click', function() { setCollView('grid'); });
-  document.getElementById('vt-list').addEventListener('click', function() { setCollView('list'); });
-  document.getElementById('modal-backdrop').addEventListener('click', function(e) { if(e.target===this) closeModal(); });
-  document.getElementById('battle-ui').addEventListener('click', function(e) { if(e.target && e.target.id==='battle-again-btn') resetBattle(); });
-  document.getElementById('auth-backdrop').addEventListener('click', function(e) { if(e.target===this) closeAuthModal(); });
-  document.querySelectorAll('.diff-btn').forEach(function(el) {
-    el.addEventListener('click', function() {
-      selectedDifficulty = el.dataset.diff;
-      document.querySelectorAll('.diff-btn').forEach(function(b) { b.classList.remove('selected'); });
-      el.classList.add('selected');
-    });
-  });
-  document.querySelectorAll('.pack-option').forEach(function(el) {
-    el.addEventListener('click', function() { selectPack(el.dataset.pack); });
-  });
-  document.querySelectorAll('.fpill').forEach(function(btn) {
-    btn.addEventListener('click', function() { setFilter(this.dataset.filter, this); });
-  });
-  document.getElementById('btn-login') && document.getElementById('btn-login').addEventListener('click', function() { openAuthModal('login'); });
-  document.getElementById('btn-signup') && document.getElementById('btn-signup').addEventListener('click', function() { openAuthModal('signup'); });
+  sb.auth.getSession().then(function(res){
+    if(!res.data||!res.data.session) hideLoading();
+  }).catch(function(){hideLoading();});
 });
 </script>
 </body>
