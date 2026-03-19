@@ -699,6 +699,11 @@ var battleTeam=[null,null,null], selectedDifficulty='easy', pickingSlot=-1, batt
 var dailyPremiumClaimed=null, dailyEliteClaimed=null, dailyPremiumClaimsLeft=2;
 var dailyTimer=null;
 
+function fmtDate(d){
+  if(!d) return '';
+  var dt=new Date(d);
+  return dt.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
 function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2400);}
 function updateCoinDisplay(){var el=document.getElementById('nav-coins');if(el)el.textContent=coins.toLocaleString();}
 function hideLoading(){var o=document.getElementById('loading-overlay');if(o){o.style.opacity='0';o.style.pointerEvents='none';setTimeout(function(){if(o.parentNode)o.parentNode.removeChild(o);},400);}}
@@ -810,7 +815,7 @@ async function loadCollection(){
   collection=(res1.data||[]).map(function(r){
     return {name:r.card_name,loc:r.loc,rarity:r.rarity,rating:r.rating,reviews:r.reviews,
       atk:r.atk,def:r.def,emoji:r.emoji,photoUrl:r.photo_url,copies:r.copies,
-      date:new Date(r.first_pulled).toLocaleDateString('en-US',{month:'short',day:'numeric'})};
+      date:r.first_pulled?r.first_pulled.slice(0,10):new Date().toISOString().slice(0,10)};
   });
   var stats=res2.data;
   coins=stats?stats.coins:0;
@@ -984,7 +989,7 @@ function showCards(cards){
     setTimeout(function(){slot.classList.add('falling');slot.style.opacity='1';},i*130);
     var existing=collection.find(function(c){return c.name===card.name;});
     if(existing){existing.copies++;if(currentUser) saveCard(existing);}
-    else{var copy=Object.assign({},card);copy.copies=1;copy.date=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'});collection.push(copy);if(currentUser) saveCard(copy);}
+    else{var copy=Object.assign({},card);copy.copies=1;copy.date=new Date().toISOString().slice(0,10);collection.push(copy);if(currentUser) saveCard(copy);}
   });
   setTimeout(function(){document.getElementById('gacha-hint').textContent='Tap to reveal · Tap again to open in Google Maps';},cards.length*130+250);
   setTimeout(function(){document.getElementById('pull-again-btn').style.display='block';document.getElementById('pull-btn').disabled=false;},cards.length*130+900);
@@ -1302,7 +1307,7 @@ async function startBattle(){
   }
   coins+=coinsEarned;updateCoinDisplay();if(currentUser) saveCoins();
   if(exclusiveCard){
-    var copy=Object.assign({},exclusiveCard,{copies:1,photoUrl:null,date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})});
+    var copy=Object.assign({},exclusiveCard,{copies:1,photoUrl:null,date:new Date().toISOString().slice(0,10)});
     collection.push(copy);if(currentUser) saveCard(copy);
     addLog('EXCLUSIVE UNLOCKED: '+exclusiveCard.name+'!','exclusive');
   }
