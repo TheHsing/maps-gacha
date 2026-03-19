@@ -461,7 +461,7 @@ async function handleAuth(isLogin) {
 async function handleGoogleAuth() {
   await sb.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo: window.location.href }
+    options: { redirectTo: 'https://maps-gacha.christopherh16.workers.dev' }
   });
 }
 
