@@ -697,6 +697,7 @@ var collection=[], coins=0, collView='grid', collFilter='all';
 var pulling=false, selectedPack='standard', currentUser=null;
 var battleTeam=[null,null,null], selectedDifficulty='easy', pickingSlot=-1, battleRunning=false;
 var dailyPremiumClaimed=null, dailyEliteClaimed=null, dailyPremiumClaimsLeft=2;
+var lastPullWasFree=false;
 var dailyTimer=null;
 
 function fmtDate(d){
@@ -911,7 +912,7 @@ async function claimPremiumDaily(){
   if(dailyPremiumClaimed===null) dailyPremiumClaimed=now;
   await saveCoins();updateDailyUI();
   showToast('Free Premium Pack!');
-  selectPack('premium');startPull(true);
+  selectPack('premium');startPull(true).then(function(){selectPack('standard');});
 }
 
 async function claimEliteDaily(){
@@ -922,7 +923,7 @@ async function claimEliteDaily(){
   dailyEliteClaimed=now;
   await saveCoins();updateDailyUI();
   showToast('Free Elite Pack!');
-  selectPack('elite');startPull(true);
+  selectPack('elite');startPull(true).then(function(){selectPack('standard');});
 }
 
 // ── PACK & PULL ────────────────────────────────────────────────────────
@@ -942,6 +943,7 @@ async function startPull(free){
   if(pulling) return;
   var cost=free?0:(PACK_COSTS[selectedPack]||0);
   if(coins<cost){document.getElementById('not-enough').style.display='block';return;}
+  lastPullWasFree=!!free;
   document.getElementById('not-enough').style.display='none';
   pulling=true;
   document.getElementById('pull-btn').disabled=true;
@@ -1014,7 +1016,7 @@ function resetPull(){
   document.getElementById('cards-row').style.display='none';document.getElementById('cards-row').innerHTML='';
   document.getElementById('pull-again-btn').style.display='none';
   document.getElementById('gacha-hint').textContent='';
-  startPull();
+  startPull(lastPullWasFree);
 }
 
 // ── COLLECTION ─────────────────────────────────────────────────────────
