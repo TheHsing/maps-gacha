@@ -619,6 +619,15 @@ function updateNavForUser(user) {
     document.getElementById('btn-login').addEventListener('click', function() { openAuthModal('login'); });
     document.getElementById('btn-signup').addEventListener('click', function() { openAuthModal('signup'); });
   }
+
+  // Re-wire nav tabs every time nav is redrawn
+  var tabGacha = document.getElementById('tab-gacha');
+  var tabColl = document.getElementById('tab-collection');
+  var tabBattle = document.getElementById('tab-battle');
+  if (tabGacha) tabGacha.onclick = function() { showPage('gacha', this); };
+  if (tabColl) tabColl.onclick = function() { showPage('collection', this); };
+  if (tabBattle) tabBattle.onclick = function() { showPage('battle', this); initBattlePage(); };
+
   renderGuestBanners();
 }
 
