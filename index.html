@@ -254,6 +254,112 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:10px 20px;font-size:13px;color:var(--text);z-index:300;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);}
 .loading-overlay{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:500;font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text2);}
+
+/* BATTLE PAGE */
+.battle-page{min-height:calc(100vh - 56px);display:flex;flex-direction:column;align-items:center;padding:3rem 1rem 4rem;gap:2rem;max-width:900px;margin:0 auto;}
+.battle-header{text-align:center;}
+.battle-title{font-family:'Syne',sans-serif;font-weight:800;font-size:42px;line-height:1.1;margin-bottom:8px;}
+.battle-title span{color:var(--mythic);}
+.battle-sub{font-size:14px;color:var(--text2);}
+.battle-section{width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;}
+.battle-section-label{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:0.08em;font-family:'Syne',sans-serif;display:flex;align-items:center;gap:8px;}
+.battle-section-label span{color:var(--accent);}
+
+/* TEAM SLOTS */
+.battle-team-slots{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+.team-slot{width:140px;height:200px;border-radius:14px;border:1px dashed var(--border2);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;position:relative;overflow:hidden;}
+.team-slot.empty:hover{border-color:var(--accent);background:rgba(200,240,96,0.04);}
+.team-slot.filled{border-style:solid;background:var(--bg2);cursor:pointer;}
+.team-slot.filled:hover{border-color:var(--mythic);}
+.slot-plus{font-size:28px;color:var(--text3);margin-bottom:6px;}
+.slot-hint{font-size:11px;color:var(--text3);}
+.slot-rarity{padding:3px 0;font-size:7px;font-weight:700;letter-spacing:0.1em;text-align:center;width:100%;font-family:'Syne',sans-serif;flex-shrink:0;}
+.slot-img{width:100%;height:80px;display:flex;align-items:center;justify-content:center;font-size:28px;background:var(--bg3);overflow:hidden;flex-shrink:0;}
+.slot-img img{width:100%;height:100%;object-fit:cover;}
+.slot-info{padding:6px 8px;flex:1;display:flex;flex-direction:column;justify-content:space-between;width:100%;}
+.slot-name{font-size:9px;font-weight:600;font-family:'Syne',sans-serif;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.slot-stats{display:flex;gap:3px;margin-top:4px;}
+.slot-stat{flex:1;font-size:7px;font-weight:500;padding:2px 3px;border-radius:3px;text-align:center;}
+.slot-remove{position:absolute;top:4px;right:4px;background:rgba(226,75,74,0.2);border:none;border-radius:50%;width:18px;height:18px;font-size:9px;cursor:pointer;color:var(--mythic);display:flex;align-items:center;justify-content:center;}
+
+/* DIFFICULTY */
+.difficulty-selector{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+.diff-btn{padding:14px 16px;border-radius:12px;background:var(--bg3);border:1px solid var(--border2);cursor:pointer;transition:all 0.15s;text-align:center;min-width:130px;}
+.diff-btn:hover{transform:translateY(-2px);}
+.diff-btn.selected{border-color:var(--accent);background:rgba(200,240,96,0.06);}
+.diff-btn[data-diff="hard"].selected{border-color:var(--rare);background:rgba(55,138,221,0.06);}
+.diff-btn[data-diff="legendary"].selected{border-color:var(--legendary);background:rgba(239,159,39,0.06);}
+.diff-name{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--text);margin-bottom:4px;}
+.diff-reward{font-size:11px;color:var(--accent);font-weight:500;}
+.diff-btn[data-diff="hard"] .diff-reward{color:var(--rare);}
+.diff-btn[data-diff="legendary"] .diff-reward{color:var(--legendary);}
+.diff-odds{font-size:10px;color:var(--text2);margin-top:2px;}
+
+/* BATTLE BTN */
+.battle-start-btn{padding:13px 40px;border-radius:100px;background:var(--mythic);border:none;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:#fff;cursor:pointer;transition:all 0.15s;margin-top:8px;}
+.battle-start-btn:hover:not(:disabled){transform:scale(1.03);background:#C73E3E;}
+.battle-start-btn:disabled{opacity:0.4;cursor:default;transform:none;}
+
+/* PICKER */
+.battle-picker{width:100%;}
+.picker-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.picker-close-btn{background:none;border:1px solid var(--border2);border-radius:8px;padding:4px 10px;color:var(--text2);cursor:pointer;font-size:13px;}
+.picker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;max-height:400px;overflow-y:auto;}
+.picker-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:all 0.15s;}
+.picker-card:hover{transform:translateY(-2px);border-color:var(--accent);}
+.picker-card.in-team{opacity:0.35;cursor:default;pointer-events:none;}
+.pc-rarity{padding:3px 0;font-size:7px;font-weight:700;letter-spacing:0.1em;text-align:center;font-family:'Syne',sans-serif;}
+.pc-img{height:55px;display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--bg3);overflow:hidden;}
+.pc-img img{width:100%;height:100%;object-fit:cover;}
+.pc-info{padding:5px 6px;}
+.pc-name{font-size:8px;font-weight:600;font-family:'Syne',sans-serif;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;}
+.pc-stats{display:flex;gap:2px;}
+.pc-stat{flex:1;font-size:7px;font-weight:500;padding:2px 0;border-radius:3px;text-align:center;}
+
+/* ARENA */
+.battle-arena{width:100%;}
+.arena-header{text-align:center;margin-bottom:1.5rem;}
+.arena-title{font-family:'Syne',sans-serif;font-weight:700;font-size:20px;color:var(--text);}
+.arena-field{display:flex;align-items:flex-start;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem;}
+.arena-side{display:flex;flex-direction:column;align-items:center;gap:10px;flex:1;min-width:200px;}
+.arena-label{font-size:10px;font-weight:600;color:var(--text2);letter-spacing:0.08em;font-family:'Syne',sans-serif;}
+.arena-cards{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+.arena-card{width:90px;border-radius:10px;background:var(--bg2);border:1px solid var(--border2);overflow:hidden;transition:all 0.3s;position:relative;}
+.arena-card.defeated{opacity:0.3;filter:grayscale(1);}
+.arena-card.attacking{transform:scale(1.08);border-color:var(--accent);z-index:2;}
+.arena-card.hit{animation:cardHit 0.3s ease;}
+.enemy-side .arena-card.attacking{border-color:var(--mythic);}
+@keyframes cardHit{0%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(4px)}100%{transform:translateX(0)}}
+.ac-rarity{padding:2px 0;font-size:7px;font-weight:700;letter-spacing:0.08em;text-align:center;font-family:'Syne',sans-serif;}
+.ac-img{height:55px;display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--bg3);overflow:hidden;}
+.ac-img img{width:100%;height:100%;object-fit:cover;}
+.ac-name{font-size:8px;font-weight:600;font-family:'Syne',sans-serif;color:var(--text);padding:4px 5px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ac-hp-bar{height:4px;background:var(--border);margin:0 5px 5px;border-radius:2px;overflow:hidden;}
+.ac-hp-fill{height:100%;border-radius:2px;background:#1D9E75;transition:width 0.4s ease;}
+.ac-hp-fill.low{background:#EF9F27;}
+.ac-hp-fill.critical{background:var(--mythic);}
+.ac-hp-text{font-size:7px;color:var(--text2);text-align:center;padding-bottom:4px;}
+.damage-pop{position:absolute;top:10px;left:50%;transform:translateX(-50%);font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:var(--mythic);pointer-events:none;animation:damagePop 0.8s ease forwards;z-index:10;}
+.heal-pop{color:var(--uncommon);}
+@keyframes damagePop{0%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}100%{opacity:0;transform:translateX(-50%) translateY(-30px) scale(1.3)}}
+.arena-vs{font-family:'Syne',sans-serif;font-weight:800;font-size:24px;color:var(--text3);align-self:center;}
+
+/* BATTLE LOG */
+.battle-log{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;max-height:160px;overflow-y:auto;font-size:12px;color:var(--text2);line-height:1.8;width:100%;}
+.log-entry{padding:1px 0;}
+.log-entry.player-atk{color:var(--accent);}
+.log-entry.enemy-atk{color:var(--mythic);}
+.log-entry.result-win{color:var(--uncommon);font-weight:600;}
+.log-entry.result-lose{color:var(--mythic);font-weight:600;}
+.log-entry.exclusive{color:var(--legendary);font-weight:600;}
+
+/* RESULT */
+.battle-result{text-align:center;padding:1.5rem 0;}
+.result-title{font-family:'Syne',sans-serif;font-weight:800;font-size:32px;margin-bottom:12px;}
+.result-title.win{color:var(--accent);}
+.result-title.lose{color:var(--mythic);}
+.result-rewards{font-size:14px;color:var(--text2);margin-bottom:20px;line-height:1.8;}
+
 </style>
 </head>
 <body>
@@ -265,6 +371,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
   <div class="nav-tabs">
     <button class="nav-tab active" id="tab-gacha">Pull</button>
     <button class="nav-tab" id="tab-collection">Collection</button>
+    <button class="nav-tab" id="tab-battle">Battle</button>
   </div>
   <div class="nav-right" id="nav-right">
     <div class="coin-display" id="coin-display" style="display:none"><div class="coin-icon"></div><span id="nav-coins">0</span></div>
@@ -369,6 +476,81 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
       <button class="fpill fm" data-filter="mythic">Mythic</button>
     </div>
     <div id="coll-container"></div>
+  </div>
+</div>
+
+
+<!-- BATTLE PAGE -->
+<div class="page" id="page-battle">
+  <div class="battle-page">
+    <div class="battle-header">
+      <div class="battle-title">Battle<span>.</span></div>
+      <div class="battle-sub">Build your team · choose your difficulty · fight for rewards</div>
+    </div>
+
+    <div id="battle-ui">
+      <!-- TEAM SELECTION -->
+      <div class="battle-section" id="battle-team-section">
+        <div class="battle-section-label">YOUR TEAM <span id="team-count">0/3</span></div>
+        <div class="battle-team-slots" id="team-slots">
+          <div class="team-slot empty" id="slot-0"><div class="slot-plus">+</div><div class="slot-hint">Pick a card</div></div>
+          <div class="team-slot empty" id="slot-1"><div class="slot-plus">+</div><div class="slot-hint">Pick a card</div></div>
+          <div class="team-slot empty" id="slot-2"><div class="slot-plus">+</div><div class="slot-hint">Pick a card</div></div>
+        </div>
+        <div class="battle-section-label" style="margin-top:1.5rem">CHOOSE DIFFICULTY</div>
+        <div class="difficulty-selector">
+          <div class="diff-btn selected" data-diff="easy">
+            <div class="diff-name">Easy</div>
+            <div class="diff-reward">+100 coins</div>
+            <div class="diff-odds">Win rate: high</div>
+          </div>
+          <div class="diff-btn" data-diff="hard">
+            <div class="diff-name">Hard</div>
+            <div class="diff-reward">+300 coins</div>
+            <div class="diff-odds">Exclusive card chance</div>
+          </div>
+          <div class="diff-btn" data-diff="legendary">
+            <div class="diff-name">Legendary</div>
+            <div class="diff-reward">+750 coins</div>
+            <div class="diff-odds">High exclusive chance</div>
+          </div>
+        </div>
+        <button class="battle-start-btn" id="battle-start-btn" disabled>Select 3 cards to battle</button>
+      </div>
+
+      <!-- CARD PICKER -->
+      <div class="battle-picker" id="battle-picker" style="display:none">
+        <div class="picker-header">
+          <div class="battle-section-label">SELECT A CARD</div>
+          <button class="picker-close-btn" id="picker-close">✕</button>
+        </div>
+        <div class="picker-grid" id="picker-grid"></div>
+      </div>
+
+      <!-- BATTLE ARENA -->
+      <div class="battle-arena" id="battle-arena" style="display:none">
+        <div class="arena-header">
+          <div class="arena-title" id="arena-title">Battle starting...</div>
+        </div>
+        <div class="arena-field">
+          <div class="arena-side player-side">
+            <div class="arena-label">YOUR TEAM</div>
+            <div class="arena-cards" id="player-arena-cards"></div>
+          </div>
+          <div class="arena-vs">VS</div>
+          <div class="arena-side enemy-side">
+            <div class="arena-label">OPPONENT</div>
+            <div class="arena-cards" id="enemy-arena-cards"></div>
+          </div>
+        </div>
+        <div class="battle-log" id="battle-log"></div>
+        <div class="battle-result" id="battle-result" style="display:none">
+          <div class="result-title" id="result-title"></div>
+          <div class="result-rewards" id="result-rewards"></div>
+          <button class="battle-start-btn" id="battle-again-btn">Battle Again</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -577,6 +759,13 @@ async function saveCoins() {
 // ── PACK SELECTION ─────────────────────────────────────────────────────
 function selectPack(pack) {
   selectedPack = pack;
+  document.querySelectorAll('.diff-btn').forEach(function(el) {
+    el.addEventListener('click', function() {
+      selectedDifficulty = el.dataset.diff;
+      document.querySelectorAll('.diff-btn').forEach(function(b) { b.classList.remove('selected'); });
+      el.classList.add('selected');
+    });
+  });
   document.querySelectorAll('.pack-option').forEach(function(el) { el.classList.remove('selected'); });
   document.querySelector('[data-pack="' + pack + '"]').classList.add('selected');
   var btn = document.getElementById('pull-btn');
@@ -984,6 +1173,341 @@ function showPage(p, tabEl) {
   if (p === 'collection') renderCollection();
 }
 
+
+// ── BATTLE ─────────────────────────────────────────────────────────────
+const EXCLUSIVE_CARDS = [
+  { name:"Great Wall of China",  loc:"Beijing, China",      emoji:"🏯", rarity:"mythic",    rating:4.9, reviews:180000, atk:9200, def:9800 },
+  { name:"Burj Khalifa",         loc:"Dubai, UAE",          emoji:"🏙️", rarity:"mythic",    rating:4.8, reviews:95000,  atk:8800, def:9500 },
+  { name:"Angkor Wat",           loc:"Siem Reap, Cambodia", emoji:"🛕", rarity:"legendary", rating:4.9, reviews:72000,  atk:8200, def:9200 },
+  { name:"Machu Picchu",         loc:"Cusco, Peru",         emoji:"🏔️", rarity:"legendary", rating:4.9, reviews:143000, atk:8600, def:9000 },
+  { name:"Petra",                loc:"Ma'an, Jordan",       emoji:"🏛️", rarity:"legendary", rating:4.9, reviews:58000,  atk:7900, def:8800 },
+  { name:"Chichen Itza",         loc:"Yucatan, Mexico",     emoji:"🔺", rarity:"epic",      rating:4.7, reviews:49000,  atk:7400, def:8200 },
+  { name:"Colosseum",            loc:"Rome, Italy",         emoji:"🏟️", rarity:"epic",      rating:4.7, reviews:180000, atk:7800, def:8000 },
+  { name:"Sydney Opera House",   loc:"Sydney, Australia",   emoji:"🎭", rarity:"epic",      rating:4.7, reviews:88000,  atk:7200, def:7800 },
+];
+
+const DIFF_SETTINGS = {
+  easy:      { multiplier:0.7,  winCoins:100, loseCoins:20,  exclusiveChance:0    },
+  hard:      { multiplier:1.0,  winCoins:300, loseCoins:50,  exclusiveChance:0.15 },
+  legendary: { multiplier:1.4,  winCoins:750, loseCoins:100, exclusiveChance:0.40 },
+};
+
+let battleTeam = [null, null, null];
+let selectedDifficulty = 'easy';
+let pickingSlot = -1;
+let battleRunning = false;
+
+function initBattlePage() {
+  renderTeamSlots();
+  renderPickerGrid();
+}
+
+function renderTeamSlots() {
+  var count = battleTeam.filter(function(c) { return c !== null; }).length;
+  document.getElementById('team-count').textContent = count + '/3';
+  var btn = document.getElementById('battle-start-btn');
+  btn.disabled = count < 3;
+  btn.textContent = count < 3 ? 'Select ' + (3 - count) + ' more card' + (3-count!==1?'s':'') : 'Battle!';
+
+  for (var i = 0; i < 3; i++) {
+    var slot = document.getElementById('slot-' + i);
+    var card = battleTeam[i];
+    if (!card) {
+      slot.className = 'team-slot empty';
+      slot.innerHTML = '<div class="slot-plus">+</div><div class="slot-hint">Pick a card</div>';
+      slot.dataset.idx = i;
+    } else {
+      slot.className = 'team-slot filled';
+      var imgHtml = card.photoUrl ? '<img src="' + card.photoUrl + '" alt="" onerror="this.style.display='none'">' : card.emoji;
+      slot.innerHTML =
+        '<div class="slot-rarity rb-' + card.rarity + '">' + card.rarity.toUpperCase() + '</div>' +
+        '<div class="slot-img">' + imgHtml + '</div>' +
+        '<div class="slot-info">' +
+          '<div class="slot-name">' + card.name + '</div>' +
+          '<div class="slot-stats">' +
+            '<div class="slot-stat cs-atk">ATK ' + card.atk.toLocaleString() + '</div>' +
+            '<div class="slot-stat cs-def">DEF ' + card.def.toLocaleString() + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<button class="slot-remove" data-idx="' + i + '">✕</button>';
+      slot.dataset.idx = i;
+    }
+  }
+
+  document.querySelectorAll('.team-slot.empty').forEach(function(el) {
+    el.addEventListener('click', function() { openPicker(parseInt(el.dataset.idx)); });
+  });
+  document.querySelectorAll('.slot-remove').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      battleTeam[parseInt(btn.dataset.idx)] = null;
+      renderTeamSlots();
+      renderPickerGrid();
+    });
+  });
+}
+
+function renderPickerGrid() {
+  var grid = document.getElementById('picker-grid');
+  if (!grid) return;
+  if (!collection.length) {
+    grid.innerHTML = '<div style="color:var(--text2);font-size:13px;padding:2rem;text-align:center;">No cards in collection yet</div>';
+    return;
+  }
+  var sorted = collection.slice().sort(function(a,b) { return RARITY_ORD[b.rarity]-RARITY_ORD[a.rarity]; });
+  grid.innerHTML = sorted.map(function(c) {
+    var inTeam = battleTeam.some(function(t) { return t && t.name === c.name; });
+    var imgHtml = c.photoUrl ? '<img src="' + c.photoUrl + '" alt="" onerror="this.style.display='none'">' : c.emoji;
+    return '<div class="picker-card' + (inTeam?' in-team':'') + '" data-name="' + encodeURIComponent(c.name) + '">' +
+      '<div class="pc-rarity rb-' + c.rarity + '">' + c.rarity.toUpperCase() + '</div>' +
+      '<div class="pc-img">' + imgHtml + '</div>' +
+      '<div class="pc-info">' +
+        '<div class="pc-name">' + c.name + '</div>' +
+        '<div class="pc-stats">' +
+          '<div class="pc-stat cs-atk">ATK ' + c.atk.toLocaleString() + '</div>' +
+          '<div class="pc-stat cs-def">DEF ' + c.def.toLocaleString() + '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+  grid.querySelectorAll('.picker-card:not(.in-team)').forEach(function(el) {
+    el.addEventListener('click', function() {
+      var card = collection.find(function(c) { return c.name === decodeURIComponent(el.dataset.name); });
+      if (card && pickingSlot >= 0) {
+        battleTeam[pickingSlot] = card;
+        closePicker();
+        renderTeamSlots();
+        renderPickerGrid();
+      }
+    });
+  });
+}
+
+function openPicker(slotIdx) {
+  pickingSlot = slotIdx;
+  document.getElementById('battle-picker').style.display = 'block';
+  document.getElementById('battle-team-section').style.display = 'none';
+  renderPickerGrid();
+}
+
+function closePicker() {
+  pickingSlot = -1;
+  document.getElementById('battle-picker').style.display = 'none';
+  document.getElementById('battle-team-section').style.display = 'flex';
+}
+
+function generateEnemyTeam(difficulty) {
+  var settings = DIFF_SETTINGS[difficulty];
+  var mult = settings.multiplier;
+  var enemies = [
+    { name:"Ancient Fortress",   emoji:"🏰", rarity:"rare",      atk:Math.round(5000*mult), def:Math.round(6000*mult) },
+    { name:"Mountain Citadel",   emoji:"⛰️", rarity:"epic",      atk:Math.round(6500*mult), def:Math.round(7000*mult) },
+    { name:"Lost Temple",        emoji:"🏛️", rarity:"legendary", atk:Math.round(7500*mult), def:Math.round(8000*mult) },
+  ];
+  return enemies.map(function(e) {
+    return Object.assign({}, e, { hp: Math.round(e.def / 10), maxHp: Math.round(e.def / 10) });
+  });
+}
+
+function cardToArenaCard(card, isEnemy) {
+  var hp = Math.round((card.def || 5000) / 10);
+  return Object.assign({}, card, { hp: hp, maxHp: hp, isEnemy: isEnemy });
+}
+
+async function startBattle() {
+  if (battleRunning) return;
+  var filled = battleTeam.filter(function(c) { return c !== null; });
+  if (filled.length < 3) return;
+  battleRunning = true;
+
+  document.getElementById('battle-team-section').style.display = 'none';
+  document.getElementById('battle-arena').style.display = 'block';
+  document.getElementById('battle-result').style.display = 'none';
+  document.getElementById('battle-log').innerHTML = '';
+  document.getElementById('arena-title').textContent = 'Battle!';
+
+  var playerTeam = battleTeam.map(function(c) { return cardToArenaCard(c, false); });
+  var enemyTeam = generateEnemyTeam(selectedDifficulty);
+
+  renderArenaCards(playerTeam, enemyTeam);
+  await sleep(600);
+
+  var pIdx = 0, eIdx = 0;
+  var round = 0;
+  var maxRounds = 30;
+
+  while (pIdx < 3 && eIdx < 3 && round < maxRounds) {
+    round++;
+    var pCard = playerTeam[pIdx];
+    var eCard = enemyTeam[eIdx];
+
+    // Player attacks
+    var pDmg = Math.round((pCard.atk / 100) * (0.85 + Math.random() * 0.3));
+    eCard.hp = Math.max(0, eCard.hp - pDmg);
+    updateHpBar('enemy', eIdx, eCard.hp, eCard.maxHp);
+    showDamagePop('enemy', eIdx, pDmg);
+    highlightCard('player', pIdx, true);
+    highlightCard('enemy', eIdx, false);
+    addLog(pCard.name + ' attacks ' + eCard.name + ' for ' + pDmg + ' damage!', 'player-atk');
+    await sleep(700);
+    highlightCard('player', pIdx, false);
+
+    if (eCard.hp <= 0) {
+      defeatCard('enemy', eIdx);
+      addLog(eCard.name + ' is defeated!', '');
+      eIdx++;
+      await sleep(500);
+      if (eIdx < 3) { renderNextEnemyCard(enemyTeam, eIdx); await sleep(300); }
+      continue;
+    }
+
+    // Enemy attacks
+    var eDmg = Math.round((eCard.atk / 100) * (0.85 + Math.random() * 0.3));
+    pCard.hp = Math.max(0, pCard.hp - eDmg);
+    updateHpBar('player', pIdx, pCard.hp, pCard.maxHp);
+    showDamagePop('player', pIdx, eDmg);
+    highlightCard('enemy', eIdx, true);
+    highlightCard('player', pIdx, false);
+    addLog(eCard.name + ' retaliates for ' + eDmg + ' damage!', 'enemy-atk');
+    await sleep(700);
+    highlightCard('enemy', eIdx, false);
+
+    if (pCard.hp <= 0) {
+      defeatCard('player', pIdx);
+      addLog(pCard.name + ' is defeated!', '');
+      pIdx++;
+      await sleep(500);
+      if (pIdx < 3) { await sleep(300); }
+    }
+    await sleep(200);
+  }
+
+  var playerWon = eIdx >= 3;
+  await showBattleResult(playerWon);
+  battleRunning = false;
+}
+
+function renderArenaCards(playerTeam, enemyTeam) {
+  var pContainer = document.getElementById('player-arena-cards');
+  var eContainer = document.getElementById('enemy-arena-cards');
+  pContainer.innerHTML = playerTeam.map(function(c, i) { return buildArenaCardHTML(c, 'player', i); }).join('');
+  eContainer.innerHTML = enemyTeam.map(function(c, i) { return buildArenaCardHTML(c, 'enemy', i); }).join('');
+}
+
+function renderNextEnemyCard(enemyTeam, idx) {
+  var card = enemyTeam[idx];
+  var el = document.querySelector('.enemy-side .arena-cards .arena-card:nth-child(' + (idx+1) + ')');
+  if (el) el.classList.remove('defeated');
+}
+
+function buildArenaCardHTML(card, side, idx) {
+  var imgHtml = card.photoUrl ? '<img src="' + card.photoUrl + '" alt="" onerror="this.style.display='none'">' : (card.emoji || '📍');
+  return '<div class="arena-card" id="arena-' + side + '-' + idx + '">' +
+    '<div class="ac-rarity rb-' + card.rarity + '">' + card.rarity.toUpperCase() + '</div>' +
+    '<div class="ac-img">' + imgHtml + '</div>' +
+    '<div class="ac-name">' + card.name + '</div>' +
+    '<div class="ac-hp-bar"><div class="ac-hp-fill" id="hp-' + side + '-' + idx + '" style="width:100%"></div></div>' +
+    '<div class="ac-hp-text" id="hpt-' + side + '-' + idx + '">' + card.hp + ' HP</div>' +
+  '</div>';
+}
+
+function updateHpBar(side, idx, hp, maxHp) {
+  var pct = Math.max(0, (hp / maxHp) * 100);
+  var fill = document.getElementById('hp-' + side + '-' + idx);
+  var txt = document.getElementById('hpt-' + side + '-' + idx);
+  if (!fill) return;
+  fill.style.width = pct + '%';
+  fill.className = 'ac-hp-fill' + (pct < 25 ? ' critical' : pct < 50 ? ' low' : '');
+  if (txt) txt.textContent = hp + ' HP';
+}
+
+function defeatCard(side, idx) {
+  var el = document.getElementById('arena-' + side + '-' + idx);
+  if (el) el.classList.add('defeated');
+}
+
+function highlightCard(side, idx, attacking) {
+  var el = document.getElementById('arena-' + side + '-' + idx);
+  if (!el) return;
+  if (attacking) { el.classList.add('attacking'); el.classList.remove('hit'); }
+  else { el.classList.remove('attacking'); el.classList.add('hit'); setTimeout(function() { el && el.classList.remove('hit'); }, 300); }
+}
+
+function showDamagePop(side, idx, dmg) {
+  var el = document.getElementById('arena-' + side + '-' + idx);
+  if (!el) return;
+  var pop = document.createElement('div');
+  pop.className = 'damage-pop';
+  pop.textContent = '-' + dmg;
+  el.appendChild(pop);
+  setTimeout(function() { pop.remove(); }, 800);
+}
+
+function addLog(msg, cls) {
+  var log = document.getElementById('battle-log');
+  var entry = document.createElement('div');
+  entry.className = 'log-entry' + (cls ? ' ' + cls : '');
+  entry.textContent = msg;
+  log.appendChild(entry);
+  log.scrollTop = log.scrollHeight;
+}
+
+async function showBattleResult(playerWon) {
+  var settings = DIFF_SETTINGS[selectedDifficulty];
+  var coinsEarned = playerWon ? settings.winCoins : settings.loseCoins;
+  var exclusiveCard = null;
+
+  if (playerWon && Math.random() < settings.exclusiveChance) {
+    var eligible = EXCLUSIVE_CARDS.filter(function(c) {
+      return !collection.find(function(owned) { return owned.name === c.name; });
+    });
+    if (eligible.length > 0) {
+      exclusiveCard = eligible[Math.floor(Math.random() * eligible.length)];
+    }
+  }
+
+  coins += coinsEarned;
+  updateCoinDisplay();
+  if (currentUser) saveCoins();
+
+  if (exclusiveCard) {
+    var copy = Object.assign({}, exclusiveCard);
+    copy.copies = 1;
+    copy.date = new Date().toLocaleDateString('en-US', {month:'short', day:'numeric'});
+    copy.photoUrl = null;
+    collection.push(copy);
+    if (currentUser) saveCard(copy);
+    addLog('🏆 EXCLUSIVE CARD UNLOCKED: ' + exclusiveCard.name + '!', 'exclusive');
+  }
+
+  var resultEl = document.getElementById('battle-result');
+  var titleEl = document.getElementById('result-title');
+  var rewardsEl = document.getElementById('result-rewards');
+
+  titleEl.textContent = playerWon ? 'Victory!' : 'Defeated';
+  titleEl.className = 'result-title ' + (playerWon ? 'win' : 'lose');
+
+  var rewardsHtml = '+' + coinsEarned.toLocaleString() + ' coins';
+  if (exclusiveCard) rewardsHtml += '<br>🏆 Unlocked: ' + exclusiveCard.name;
+  rewardsEl.innerHTML = rewardsHtml;
+
+  addLog(playerWon ? 'Victory! +' + coinsEarned + ' coins earned.' : 'Defeated. +' + coinsEarned + ' coins consolation.', playerWon ? 'result-win' : 'result-lose');
+
+  document.getElementById('arena-title').textContent = playerWon ? '🏆 Victory!' : '💀 Defeated';
+  resultEl.style.display = 'block';
+}
+
+function resetBattle() {
+  battleTeam = [null, null, null];
+  battleRunning = false;
+  document.getElementById('battle-arena').style.display = 'none';
+  document.getElementById('battle-team-section').style.display = 'flex';
+  document.getElementById('battle-result').style.display = 'none';
+  renderTeamSlots();
+}
+
+function sleep(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
+
 // ── INIT ───────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async function() {
   // Auth state listener
@@ -1017,17 +1541,29 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   // Wire up events
   document.getElementById('pull-btn').addEventListener('click', startPull);
+  document.getElementById('battle-start-btn').addEventListener('click', startBattle);
+  document.getElementById('battle-again-btn') && document.getElementById('battle-again-btn').addEventListener('click', resetBattle);
+  document.getElementById('picker-close').addEventListener('click', closePicker);
   document.getElementById('claim-premium-btn').addEventListener('click', claimPremiumDaily);
   document.getElementById('claim-elite-btn').addEventListener('click', claimEliteDaily);
   startDailyTimer();
   document.getElementById('pull-again-btn').addEventListener('click', resetPull);
   document.getElementById('tab-gacha').addEventListener('click', function() { showPage('gacha', this); });
   document.getElementById('tab-collection').addEventListener('click', function() { showPage('collection', this); });
+  document.getElementById('tab-battle').addEventListener('click', function() { showPage('battle', this); initBattlePage(); });
   document.getElementById('sort-sel').addEventListener('change', renderCollection);
   document.getElementById('vt-grid').addEventListener('click', function() { setCollView('grid'); });
   document.getElementById('vt-list').addEventListener('click', function() { setCollView('list'); });
   document.getElementById('modal-backdrop').addEventListener('click', function(e) { if(e.target===this) closeModal(); });
+  document.getElementById('battle-ui').addEventListener('click', function(e) { if(e.target && e.target.id==='battle-again-btn') resetBattle(); });
   document.getElementById('auth-backdrop').addEventListener('click', function(e) { if(e.target===this) closeAuthModal(); });
+  document.querySelectorAll('.diff-btn').forEach(function(el) {
+    el.addEventListener('click', function() {
+      selectedDifficulty = el.dataset.diff;
+      document.querySelectorAll('.diff-btn').forEach(function(b) { b.classList.remove('selected'); });
+      el.classList.add('selected');
+    });
+  });
   document.querySelectorAll('.pack-option').forEach(function(el) {
     el.addEventListener('click', function() { selectPack(el.dataset.pack); });
   });
