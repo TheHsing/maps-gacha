@@ -780,17 +780,57 @@ const DAILY_QUESTS = [
   {id:'rareplus', icon:'⭐', title:'Pull a Rare or better', desc:'Get a Rare, Epic, Legendary or Mythic', target:1, reward:30,  stat:'dailyRarePulls'},
   {id:'battle1',  icon:'⚔️', title:'Win a battle',          desc:'Defeat an opponent in battle',          target:1, reward:75,  stat:'dailyBattleWins'},
 ];
-const MILESTONE_QUESTS = [
-  {id:'m_first',    icon:'🌍', title:'First card',       desc:'Pull your very first card',      target:1,   reward:50,  stat:'totalCards'},
-  {id:'m_10',       icon:'📦', title:'Collector I',      desc:'Collect 10 cards',               target:10,  reward:100, stat:'totalCards'},
-  {id:'m_50',       icon:'📦', title:'Collector II',     desc:'Collect 50 cards',               target:50,  reward:300, stat:'totalCards'},
-  {id:'m_100',      icon:'📦', title:'Collector III',    desc:'Collect 100 cards',              target:100, reward:500, stat:'totalCards'},
-  {id:'m_legendary',icon:'👑', title:'Legendary pull',   desc:'Pull your first Legendary card', target:1,   reward:200, stat:'totalLegendary'},
-  {id:'m_mythic',   icon:'🔴', title:'Mythic pull',      desc:'Pull your first Mythic card',    target:1,   reward:500, stat:'totalMythic'},
-  {id:'m_battle1',  icon:'🏆', title:'First victory',    desc:'Win your first battle',          target:1,   reward:150, stat:'totalBattleWins'},
-  {id:'m_battle5',  icon:'🏆', title:'Veteran',          desc:'Win 5 battles',                  target:5,   reward:250, stat:'totalBattleWins'},
-  {id:'m_battle10', icon:'🏆', title:'Champion',         desc:'Win 10 battles',                 target:10,  reward:400, stat:'totalBattleWins'},
+const MILESTONE_CHAINS = [
+  {
+    id:'chain_collector', icon:'📦',
+    quests:[
+      {id:'m_first',   title:'First card',      desc:'Pull your very first card', target:1,    reward:50,  stat:'totalCards'},
+      {id:'m_10',      title:'Collector I',     desc:'Collect 10 cards',          target:10,   reward:100, stat:'totalCards'},
+      {id:'m_50',      title:'Collector II',    desc:'Collect 50 cards',          target:50,   reward:300, stat:'totalCards'},
+      {id:'m_100',     title:'Collector III',   desc:'Collect 100 cards',         target:100,  reward:500, stat:'totalCards'},
+      {id:'m_250',     title:'Collector IV',    desc:'Collect 250 cards',         target:250,  reward:800, stat:'totalCards'},
+      {id:'m_500',     title:'Collector V',     desc:'Collect 500 cards',         target:500,  reward:1500,stat:'totalCards'},
+      {id:'m_1000',    title:'Collector VI',    desc:'Collect 1000 cards',        target:1000, reward:3000,stat:'totalCards'},
+    ]
+  },
+  {
+    id:'chain_battle', icon:'🏆',
+    quests:[
+      {id:'m_battle1',  title:'First victory', desc:'Win your first battle', target:1,  reward:150, stat:'totalBattleWins'},
+      {id:'m_battle5',  title:'Veteran',       desc:'Win 5 battles',         target:5,  reward:250, stat:'totalBattleWins'},
+      {id:'m_battle10', title:'Champion',      desc:'Win 10 battles',        target:10, reward:400, stat:'totalBattleWins'},
+      {id:'m_battle25', title:'Warlord',       desc:'Win 25 battles',        target:25, reward:700, stat:'totalBattleWins'},
+      {id:'m_battle50', title:'Legend',        desc:'Win 50 battles',        target:50, reward:1200,stat:'totalBattleWins'},
+    ]
+  },
+  {
+    id:'chain_legendary', icon:'👑',
+    quests:[
+      {id:'m_leg1',  title:'Legendary pull',    desc:'Pull your first Legendary', target:1,  reward:200, stat:'totalLegendary'},
+      {id:'m_leg5',  title:'Legendary hunter',  desc:'Pull 5 Legendaries',        target:5,  reward:400, stat:'totalLegendary'},
+      {id:'m_leg10', title:'Legendary master',  desc:'Pull 10 Legendaries',       target:10, reward:700, stat:'totalLegendary'},
+      {id:'m_leg25', title:'Legendary hoarder', desc:'Pull 25 Legendaries',       target:25, reward:1200,stat:'totalLegendary'},
+    ]
+  },
+  {
+    id:'chain_mythic', icon:'🔴',
+    quests:[
+      {id:'m_myth1',  title:'Mythic pull',    desc:'Pull your first Mythic', target:1,  reward:500,  stat:'totalMythic'},
+      {id:'m_myth3',  title:'Mythic hunter',  desc:'Pull 3 Mythics',         target:3,  reward:900,  stat:'totalMythic'},
+      {id:'m_myth10', title:'Mythic master',  desc:'Pull 10 Mythics',        target:10, reward:2000, stat:'totalMythic'},
+    ]
+  },
 ];
+
+// Get the current active quest for each chain - only call at render time
+function getActiveChainQuest(chain){
+  for(var i=0;i<chain.quests.length;i++){
+    var q=chain.quests[i];
+    var claimed=questStats.milestoneClaimed&&questStats.milestoneClaimed[q.id];
+    if(!claimed) return {quest:q, icon:chain.icon, chainId:chain.id, isLast:i===chain.quests.length-1};
+  }
+  return null;
+}
 
 var questStats = {
   dailyPulls:0, dailyRarePulls:0, dailyBattleWins:0,
@@ -837,12 +877,22 @@ function renderQuests(){
     dl.innerHTML+=renderQuestCard(q,progress,done,claimed,'daily');
   });
   ml.innerHTML='';
-  MILESTONE_QUESTS.forEach(function(q){
-    var progress=Math.min(questStats[q.stat]||0,q.target);
-    var done=progress>=q.target;
-    var claimed=questStats.milestoneClaimed&&questStats.milestoneClaimed[q.id];
-    ml.innerHTML+=renderQuestCard(q,progress,done,claimed,'milestone');
-  });
+  // Rebuild active milestone quests dynamically
+  var activeMilestones=MILESTONE_CHAINS.reduce(function(acc,chain){
+    var active=getActiveChainQuest(chain);
+    if(active) acc.push(Object.assign({},active.quest,{icon:chain.icon}));
+    return acc;
+  },[]);
+  if(activeMilestones.length===0){
+    ml.innerHTML='<div style="text-align:center;color:var(--text3);font-size:13px;padding:2rem;">All milestones complete!</div>';
+  } else {
+    activeMilestones.forEach(function(q){
+      var progress=Math.min(questStats[q.stat]||0,q.target);
+      var done=progress>=q.target;
+      var claimed=questStats.milestoneClaimed&&questStats.milestoneClaimed[q.id];
+      ml.innerHTML+=renderQuestCard(q,progress,done,claimed,'milestone');
+    });
+  }
   document.querySelectorAll('.quest-claim-btn[data-quest-id]').forEach(function(btn){
     btn.onclick=function(){claimQuest(btn.dataset.questId,btn.dataset.questType);};
   });
@@ -873,7 +923,8 @@ function renderQuestCard(q,progress,done,claimed,type){
 
 async function claimQuest(id,type){
   if(!currentUser) return;
-  var q=[...DAILY_QUESTS,...MILESTONE_QUESTS].find(function(x){return x.id===id;});
+  var allMilestones=MILESTONE_CHAINS.reduce(function(acc,chain){return acc.concat(chain.quests);}, []);
+  var q=[...DAILY_QUESTS,...allMilestones].find(function(x){return x.id===id;});
   if(!q) return;
   if(type==='daily'){
     if(!questStats.dailyQuestsClaimed) questStats.dailyQuestsClaimed={};
