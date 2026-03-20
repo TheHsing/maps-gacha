@@ -896,6 +896,23 @@ const MILESTONE_CHAINS = [
 ];
 
 // Get the current active quest for each chain - only call at render time
+
+function getUpgradeStyle(rarity, upgrades){
+  if(!upgrades||upgrades<=0) return {cls:'',col:'',glow:''};
+  var cols={
+    common:   {col:'rgba(200,200,200,0.8)', glow:'rgba(200,200,200,0.2)'},
+    uncommon: {col:'rgba(29,158,117,0.9)',  glow:'rgba(29,158,117,0.25)'},
+    rare:     {col:'rgba(55,138,221,0.9)',  glow:'rgba(55,138,221,0.25)'},
+    epic:     {col:'rgba(127,119,221,0.9)', glow:'rgba(127,119,221,0.3)'},
+    legendary:{col:'rgba(239,159,39,0.95)', glow:'rgba(239,159,39,0.35)'},
+    mythic:   {col:'rgba(226,75,74,0.95)',  glow:'rgba(226,75,74,0.35)'},
+  };
+  var c=cols[rarity]||cols.common;
+  var cls=upgrades>=10?'upg-max':upgrades>=5?'upg-5':upgrades>=3?'upg-3':'upg-1';
+  var label=upgrades>=10?'MAX':'+'+upgrades;
+  return {cls:cls, col:c.col, glow:c.glow, label:label};
+}
+
 function getActiveChainQuest(chain){
   for(var i=0;i<chain.quests.length;i++){
     var q=chain.quests[i];
@@ -936,6 +953,8 @@ function loadQuestStats(data){
   questStats.totalCards=collection.length;
   questStats.totalLegendary=collection.filter(function(c){return c.rarity==='legendary';}).length;
   questStats.totalMythic=collection.filter(function(c){return c.rarity==='mythic';}).length;
+  questStats.totalFiveStars=collection.filter(function(c){return c.rating>=5.0;}).length;
+  questStats.totalPopular=collection.filter(function(c){return (c.reviews||0)>=100000;}).length;
 }
 
 function renderQuests(){
@@ -1029,8 +1048,10 @@ function trackQuestPull(cards, packType){
   cards.forEach(function(c){
     if(c.rarity==='legendary') questStats.totalLegendary=(questStats.totalLegendary||0)+1;
     if(c.rarity==='mythic') questStats.totalMythic=(questStats.totalMythic||0)+1;
-    if(c.rating>=5.0) questStats.totalFiveStars=(questStats.totalFiveStars||0)+1;
-    if((c.reviews||0)>=100000) questStats.totalPopular=(questStats.totalPopular||0)+1;
+    // Only count unique cards for 5-star and popular
+    var isNew=!collection.find(function(x){return x.name===c.name;});
+    if(isNew&&c.rating>=5.0) questStats.totalFiveStars=(questStats.totalFiveStars||0)+1;
+    if(isNew&&(c.reviews||0)>=100000) questStats.totalPopular=(questStats.totalPopular||0)+1;
   });
   questStats.totalCards=collection.length;
   if(!questStats.dailyQuestsReset) questStats.dailyQuestsReset=Date.now();
@@ -1336,7 +1357,7 @@ async function startPull(free){
       document.getElementById('gacha-hint').textContent='Error: '+e.message;
       pulling=false;document.getElementById('pull-btn').disabled=false;return;
   }
-  coins-=cost;updateCoinDisplay();if(currentUser) saveCoins();
+  coins-=cost;if(cost>0){questStats.totalCoinsSpent=(questStats.totalCoinsSpent||0)+cost;saveQuestStats();}updateCoinDisplay();if(currentUser) saveCoins();
   document.getElementById('gacha-hint').textContent='';
   showCards(cards);
 }
@@ -1517,7 +1538,10 @@ function renderCollection(){
     container.className='coll-grid';
     container.innerHTML=cards.map(function(c){
       var imgHtml=c.photoUrl?'<div class="cc-img"><img src="'+c.photoUrl+'" alt="" onerror="this.style.display=\'none\'"></div>':'<div class="cc-img">'+c.emoji+'</div>';
-      return '<div class="coll-card" data-name="'+encodeURIComponent(c.name)+'">'+(c.copies>1?'<div class="dupe-badge-cc">x'+c.copies+'</div>':'')+
+      var us=getUpgradeStyle(c.rarity,c.upgrades||0);
+      var upgStyle=us.cls?(' style="--upg-col:'+us.col+';--upg-glow:'+us.glow+'"'):'';
+      var upgBadge=us.label?'<div class="upg-badge" style="--upg-col:'+us.col+'">'+us.label+'</div>':'';
+      return '<div class="coll-card '+us.cls+'" data-name="'+encodeURIComponent(c.name)+'"'+upgStyle+'>'+upgBadge+(c.copies>1?'<div class="dupe-badge-cc">x'+c.copies+'</div>':'')+
         '<div class="cc-rarity rb-'+c.rarity+'">'+c.rarity.toUpperCase()+'</div>'+imgHtml+
         '<div class="cc-info"><div class="cc-name">'+c.name+'</div><div class="cc-stats"><div class="cc-stat cs-atk">ATK '+c.atk.toLocaleString()+'</div><div class="cc-stat cs-def">DEF '+c.def.toLocaleString()+'</div></div></div>'+
         '<div class="cc-footer"><span class="cc-date">'+c.date+'</span><span class="cc-copies">'+c.copies+' copy'+(c.copies!==1?'s':'')+'</span></div></div>';
@@ -1589,12 +1613,13 @@ function upgradeCard(name){
   card.copies-=3;card.rating=Math.min(5.0,parseFloat((card.rating+0.05).toFixed(2)));
   var wr=(card.reviews*card.rating+C*GAVG)/(card.reviews+C);
   card.def=Math.max(1,Math.min(10000,Math.round(((wr-3.5)/1.5)*10000)));
-  if(currentUser) saveCard(card);showToast('Upgraded! Rating +0.05★');renderCollection();openModal(name);
+  if(currentUser) saveCard(card);questStats.totalUpgrades=(questStats.totalUpgrades||0)+1;saveQuestStats();showToast('Upgraded! Rating +0.05★');renderCollection();openModal(name);
 }
 
 function sellOneCard(name){
   var card=collection.find(function(c){return c.name===name;});if(!card) return;
   var gained=COIN_RATES[card.rarity];coins+=gained;
+  questStats.totalSells=(questStats.totalSells||0)+1;questStats.totalCoinsEarned=(questStats.totalCoinsEarned||0)+gained;saveQuestStats();
   if(card.copies>1){card.copies--;if(currentUser) saveCard(card);showToast('+'+gained.toLocaleString()+' coins');renderCollection();openModal(name);}
   else{collection=collection.filter(function(c){return c.name!==name;});if(currentUser) deleteCard(name);showToast('+'+gained.toLocaleString()+' coins — card sold');renderCollection();closeModal();}
   if(currentUser) saveCoins();updateCoinDisplay();
@@ -1774,7 +1799,7 @@ async function startBattle(){
     var eligible=EXCLUSIVE_CARDS.filter(function(c){return !collection.find(function(o){return o.name===c.name;});});
     if(eligible.length>0) exclusiveCard=eligible[Math.floor(Math.random()*eligible.length)];
   }
-  coins+=coinsEarned;updateCoinDisplay();if(currentUser) saveCoins();
+  coins+=coinsEarned;questStats.totalCoinsEarned=(questStats.totalCoinsEarned||0)+coinsEarned;updateCoinDisplay();if(currentUser) saveCoins();
   if(exclusiveCard){
     var copy=Object.assign({},exclusiveCard,{copies:1,photoUrl:null,date:new Date().toISOString().slice(0,10)});
     collection.push(copy);if(currentUser) saveCard(copy);
