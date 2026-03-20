@@ -1090,6 +1090,7 @@ const EXCLUSIVE_CARDS = [
 const C=2000,GAVG=4.4;
 var collection=[], coins=0, collView='grid', collFilter='all';
 var pulling=false, selectedPack='standard', currentUser=null;
+var currentDifficulty='easy';
 var battleTeam=[null,null,null], selectedDifficulty='easy', pickingSlot=-1, battleRunning=false;
 var dailyPremiumClaimed=null, dailyEliteClaimed=null, dailyPremiumClaimsLeft=2;
 var lastPullWasFree=false;
@@ -1213,7 +1214,7 @@ async function loadCollection(){
   } catch(e) { console.error('user_stats fetch threw:', e); res2 = {data: null}; }
   collection=(res1.data||[]).map(function(r){
     return {name:r.card_name,loc:r.loc,rarity:r.rarity,rating:r.rating,reviews:r.reviews,
-      atk:r.atk,def:r.def,emoji:r.emoji,photoUrl:r.photo_url,copies:r.copies,
+      atk:r.atk,def:r.def,emoji:r.emoji,photoUrl:r.photo_url,copies:r.copies,upgrades:r.upgrades||0,
       date:r.first_pulled?r.first_pulled.slice(0,10):new Date().toISOString().slice(0,10)};
   });
   var stats=res2.data;
@@ -1230,7 +1231,7 @@ async function saveCard(card){
   console.log('saveCard:', card.name, 'token:', sb._token ? 'present' : 'MISSING');
   var result = await sb.from('collections').upsert({user_id:currentUser.id,card_name:card.name,loc:card.loc,rarity:card.rarity,
     rating:card.rating,reviews:card.reviews,atk:card.atk,def:card.def,emoji:card.emoji,
-    photo_url:card.photoUrl,copies:card.copies,first_pulled:card.date,updated_at:new Date().toISOString()},
+    photo_url:card.photoUrl,upgrades:card.upgrades||0,copies:card.copies,first_pulled:card.date,updated_at:new Date().toISOString()},
     {onConflict:'user_id,card_name'});
   console.log('saveCard result:', result.error ? 'ERROR: '+JSON.stringify(result.error) : 'OK');
 }
@@ -1610,7 +1611,7 @@ function closeModal(){document.getElementById('modal-backdrop').classList.remove
 function upgradeCard(name){
   var card=collection.find(function(c){return c.name===name;});
   if(!card||card.copies<4) return;
-  card.copies-=3;card.rating=Math.min(5.0,parseFloat((card.rating+0.05).toFixed(2)));
+  card.copies-=3;card.upgrades=(card.upgrades||0)+1;card.rating=Math.min(5.0,parseFloat((card.rating+0.05).toFixed(2)));
   var wr=(card.reviews*card.rating+C*GAVG)/(card.reviews+C);
   card.def=Math.max(1,Math.min(10000,Math.round(((wr-3.5)/1.5)*10000)));
   if(currentUser) saveCard(card);questStats.totalUpgrades=(questStats.totalUpgrades||0)+1;saveQuestStats();showToast('Upgraded! Rating +0.05★');renderCollection();openModal(name);
@@ -1810,16 +1811,21 @@ async function startBattle(){
   document.getElementById('result-title').className='result-title '+(won?'win':'lose');
   document.getElementById('result-rewards').innerHTML='+'+coinsEarned.toLocaleString()+' coins'+(exclusiveCard?'<br>Unlocked: '+exclusiveCard.name:'');
   addLog((won?'Victory! ':'Defeated. ')+('+'+coinsEarned+' coins'),won?'result-win':'result-lose');
-  if(won) trackQuestBattleWin(currentDifficulty);
+  if(won) trackQuestBattleWin(selectedDifficulty);
   document.getElementById('battle-result').style.display='block';
   battleRunning=false;
 }
 
 function resetBattle(){
-  battleTeam=[null,null,null];battleRunning=false;
+  battleTeam=[null,null,null];
+  battleRunning=false;
+  currentDifficulty=selectedDifficulty;
   document.getElementById('battle-arena').style.display='none';
   document.getElementById('battle-result').style.display='none';
   document.getElementById('battle-team-section').style.display='flex';
+  document.getElementById('battle-log').innerHTML='';
+  var hpBars=document.querySelectorAll('.hp-fill');
+  hpBars.forEach(function(b){b.style.width='100%';});
   renderTeamSlots();
 }
 
