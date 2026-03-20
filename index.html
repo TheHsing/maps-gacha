@@ -406,24 +406,12 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
       <div class="gacha-sub">Pull packs · collect places · upgrade cards</div>
     </div>
     <div id="guest-banner-wrap"></div>
-    <div style="display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;max-width:600px;">
-      <div class="daily-section-label">DAILY REWARDS</div>
-      <div class="daily-rewards">
-        <div class="daily-card premium-daily">
-          <div style="font-size:28px">🧭</div>
-          <div class="daily-card-title">2x Premium Pack</div>
-          <div class="daily-card-sub" id="premium-daily-sub">Free daily</div>
-          <button class="daily-claim-btn claimed" id="claim-premium-btn">Loading...</button>
-          <div class="daily-countdown" id="premium-countdown"></div>
-        </div>
-        <div class="daily-card elite-daily">
-          <div style="font-size:28px">👑</div>
-          <div class="daily-card-title">1x Elite Pack</div>
-          <div class="daily-card-sub" id="elite-daily-sub">Free daily</div>
-          <button class="daily-claim-btn claimed" id="claim-elite-btn">Loading...</button>
-          <div class="daily-countdown" id="elite-countdown"></div>
-        </div>
-      </div>
+    <div class="daily-banner">
+      <span class="daily-banner-label">DAILY</span>
+      <div class="daily-banner-divider"></div>
+      <button class="daily-claim-btn claimed" id="claim-premium-btn">Loading...</button>
+      <button class="daily-claim-btn claimed" id="claim-elite-btn">Loading...</button>
+      <div class="daily-countdown" id="daily-countdown"></div>
     </div>
     <div class="pack-selector">
       <div class="pack-option pack-standard selected" data-pack="standard">
