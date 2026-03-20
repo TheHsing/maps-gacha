@@ -1209,6 +1209,7 @@ function showCards(cards){
   row.style.display='flex';row.innerHTML='';
   document.getElementById('reveal-all-btn').style.visibility='visible';
   document.getElementById('pull-again-btn').style.visibility='visible';
+  trackQuestPull(cards);
   cards.forEach(function(card,i){
     var rot=(Math.random()*6-3).toFixed(1);
     var slot=document.createElement('div');
@@ -1647,6 +1648,7 @@ async function startBattle(){
   document.getElementById('result-title').className='result-title '+(won?'win':'lose');
   document.getElementById('result-rewards').innerHTML='+'+coinsEarned.toLocaleString()+' coins'+(exclusiveCard?'<br>Unlocked: '+exclusiveCard.name:'');
   addLog((won?'Victory! ':'Defeated. ')+('+'+coinsEarned+' coins'),won?'result-win':'result-lose');
+  if(won) trackQuestBattleWin();
   document.getElementById('battle-result').style.display='block';
   battleRunning=false;
 }
