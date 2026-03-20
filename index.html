@@ -1912,19 +1912,24 @@ document.addEventListener('DOMContentLoaded', function(){
   document.getElementById('tab-collection').onclick=function(){showPage('collection');};
   document.getElementById('tab-battle').onclick=function(){showPage('battle');};
   document.getElementById('tab-quests').onclick=function(){showPage('quests');};
-  document.getElementById('bulk-select-btn').onclick=toggleBulkMode;
-  document.getElementById('bulk-cancel-btn').onclick=toggleBulkMode;
-  document.getElementById('bulk-select-all-btn').onclick=function(){
+  var bsb=document.getElementById('bulk-select-btn');
+  if(bsb) bsb.onclick=toggleBulkMode;
+  var bcb=document.getElementById('bulk-cancel-btn');
+  if(bcb) bcb.onclick=toggleBulkMode;
+  var bsab=document.getElementById('bulk-select-all-btn');
+  if(bsab) bsab.onclick=function(){
     collection.forEach(function(c){bulkSelected.add(c.name);});
     updateBulkBar();
     document.querySelectorAll('.coll-card').forEach(function(el){el.classList.add('selected-bulk');});
   };
-  document.getElementById('bulk-deselect-btn').onclick=function(){
+  var bdeb=document.getElementById('bulk-deselect-btn');
+  if(bdeb) bdeb.onclick=function(){
     bulkSelected.clear();
     updateBulkBar();
     document.querySelectorAll('.coll-card').forEach(function(el){el.classList.remove('selected-bulk');});
   };
-  document.getElementById('bulk-sell-btn').onclick=bulkSellSelected;
+  var bselb=document.getElementById('bulk-sell-btn');
+  if(bselb) bselb.onclick=bulkSellSelected;
 
   // Auth buttons — these are static in HTML so always exist
   document.getElementById('btn-login').onclick=function(){openAuthModal('login');};
