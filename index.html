@@ -411,6 +411,20 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 
 .coll-search{width:100%;padding:8px 12px;border-radius:10px;background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:12px;box-sizing:border-box;}
 .coll-search:focus{border-color:var(--accent);}
+
+.energy-display{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--text);font-family:'Syne',sans-serif;}
+.energy-icon{width:14px;height:14px;position:relative;}
+.energy-icon::before{content:'';position:absolute;inset:0;background:var(--accent);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);}
+.energy-count{color:var(--accent);}
+.energy-max{color:var(--text3);}
+.energy-regen{font-size:10px;color:var(--text3);font-weight:400;}
+.ad-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:600;display:flex;align-items:center;justify-content:center;}
+.ad-modal{background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:28px 24px;max-width:320px;width:90%;text-align:center;}
+.ad-modal-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--text);margin-bottom:8px;}
+.ad-modal-sub{font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.5;}
+.ad-modal-btn{width:100%;padding:12px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;border:none;background:var(--accent);color:#0e0e12;font-family:'Syne',sans-serif;margin-bottom:8px;}
+.ad-modal-skip{font-size:12px;color:var(--text3);cursor:pointer;background:none;border:none;padding:4px;}
+.ad-modal-skip:hover{color:var(--text2);}
 </style>
 </head>
 <body>
@@ -451,6 +465,11 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
       <button class="daily-claim-btn claimed" id="claim-premium-btn">Loading...</button>
       <button class="daily-claim-btn claimed" id="claim-elite-btn">Loading...</button>
       <div class="daily-countdown" id="daily-countdown"></div>
+    </div>
+    <div class="energy-display" id="energy-display" style="display:none;">
+      <div class="energy-icon"></div>
+      <span><span class="energy-count" id="energy-count">10</span><span class="energy-max">/10</span></span>
+      <span class="energy-regen" id="energy-regen"></span>
     </div>
     <div class="pack-selector">
       <div class="pack-option pack-standard selected" data-pack="standard">
@@ -598,6 +617,14 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 
 <div class="modal-backdrop" id="modal-backdrop"><div class="modal" id="modal-inner"></div></div>
 <div class="modal-backdrop" id="auth-backdrop"><div class="modal" id="auth-modal-inner"></div></div>
+<div class="ad-modal-backdrop" id="ad-modal" style="display:none;">
+  <div class="ad-modal">
+    <div class="ad-modal-title">Out of pulls!</div>
+    <div class="ad-modal-sub">Watch a short ad to refill your 10 standard pulls instantly.</div>
+    <button class="ad-modal-btn" id="ad-watch-btn">Watch ad to refill</button>
+    <button class="ad-modal-skip" id="ad-skip-btn">Maybe later</button>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 <footer class="disclaimer-footer">
   This service is unofficial and not affiliated with Google Maps or any location data providers.<br>
@@ -950,6 +977,113 @@ function getUpgradeStyle(rarity, upgrades){
 }
 
 
+
+// -- ENERGY SYSTEM --
+var MAX_ENERGY = 10;
+var REGEN_MS = 60 * 1000; // 1 minute
+var energy = MAX_ENERGY;
+var lastEnergyTime = Date.now();
+var energyTimer = null;
+
+function saveEnergy(){
+  if(!currentUser) return;
+  return sb.from('user_stats').upsert({
+    user_id:currentUser.id,
+    energy:energy,
+    last_energy_time:new Date(lastEnergyTime).toISOString()
+  },{onConflict:'user_id'});
+}
+
+function loadEnergy(data){
+  if(data && data.energy !== undefined && data.energy !== null){
+    var saved = parseInt(data.energy) || 0;
+    var savedTime = data.last_energy_time ? new Date(data.last_energy_time).getTime() : Date.now();
+    var elapsed = Date.now() - savedTime;
+    var regenned = Math.floor(elapsed / REGEN_MS);
+    energy = Math.min(MAX_ENERGY, saved + regenned);
+    if(saved < MAX_ENERGY){
+      var usedTime = regenned * REGEN_MS;
+      lastEnergyTime = savedTime + usedTime;
+    } else {
+      lastEnergyTime = Date.now();
+    }
+  }
+  startEnergyRegen();
+  updateEnergyDisplay();
+}
+
+function startEnergyRegen(){
+  if(energyTimer) clearInterval(energyTimer);
+  energyTimer = setInterval(function(){
+    if(energy < MAX_ENERGY){
+      var now = Date.now();
+      var elapsed = now - lastEnergyTime;
+      if(elapsed >= REGEN_MS){
+        energy = Math.min(MAX_ENERGY, energy + 1);
+        lastEnergyTime = now;
+        updateEnergyDisplay();
+        saveEnergy();
+        if(energy === MAX_ENERGY) updatePullBtn();
+      }
+    }
+    updateEnergyDisplay();
+  }, 1000);
+}
+
+function updateEnergyDisplay(){
+  var el = document.getElementById('energy-display');
+  var ec = document.getElementById('energy-count');
+  var er = document.getElementById('energy-regen');
+  if(!el) return;
+  if(currentUser){
+    el.style.display = 'flex';
+  }
+  if(ec) ec.textContent = energy;
+  if(er){
+    if(energy < MAX_ENERGY){
+      var msLeft = REGEN_MS - (Date.now() - lastEnergyTime);
+      if(msLeft < 0) msLeft = 0;
+      var secs = Math.ceil(msLeft / 1000);
+      er.textContent = '+ 1 in ' + secs + 's';
+    } else {
+      er.textContent = 'full';
+    }
+  }
+  updatePullBtn();
+}
+
+function updatePullBtn(){
+  var btn = document.getElementById('pull-btn');
+  if(!btn) return;
+  if(selectedPack === 'standard' && currentUser && energy <= 0){
+    btn.disabled = true;
+    btn.style.opacity = '0.5';
+  } else {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+  }
+}
+
+function openAdModal(){
+  var m = document.getElementById('ad-modal');
+  if(m) m.style.display = 'flex';
+}
+
+function closeAdModal(){
+  var m = document.getElementById('ad-modal');
+  if(m) m.style.display = 'none';
+}
+
+function watchAd(){
+  // Placeholder — real rewarded ad goes here once AdSense approved
+  closeAdModal();
+  energy = MAX_ENERGY;
+  lastEnergyTime = Date.now();
+  updateEnergyDisplay();
+  saveEnergy();
+  showToast('Pulls refilled!');
+}
+
 // -- BULK SELECT --
 var bulkMode = false;
 var bulkSelected = new Set();
@@ -1210,6 +1344,8 @@ function updateNavForUser(user){
   var btnSignout=document.getElementById('btn-signout');
   if(user){
     if(coinDisplay) coinDisplay.style.display='flex';
+    var ed=document.getElementById('energy-display');if(ed)ed.style.display='flex';
+    startEnergyRegen();
     if(userDisplay){userDisplay.textContent=(user.email||'').split('@')[0];userDisplay.style.display='inline';}
     if(btnLogin) btnLogin.style.display='none';
     if(btnSignup) btnSignup.style.display='none';
@@ -1297,6 +1433,7 @@ async function loadCollection(){
     res2 = await sb.from('user_stats').select('*').eq('user_id', currentUser.id).single();
     console.log('user_stats result:', res2.data, 'error:', res2.error);
   loadQuestStats(res2.data);
+  loadEnergy(res2.data);
   } catch(e) { console.error('user_stats fetch threw:', e); res2 = {data: null}; }
   collection=(res1.data||[]).map(function(r){
     return {name:r.card_name,loc:r.loc,rarity:r.rarity,rating:r.rating,reviews:r.reviews,
@@ -1428,6 +1565,15 @@ async function startPull(free){
   if(pulling) return;
   var cost=free?0:(PACK_COSTS[selectedPack]||0);
   if(coins<cost){document.getElementById('not-enough').style.display='block';return;}
+  // Energy check for standard pack
+  if(!free && selectedPack==='standard' && currentUser){
+    if(energy<=0){openAdModal();return;}
+    energy--;
+    lastEnergyTime = energy < MAX_ENERGY ? lastEnergyTime : Date.now();
+    if(energy === MAX_ENERGY - 1) lastEnergyTime = Date.now();
+    updateEnergyDisplay();
+    saveEnergy();
+  }
   lastPullWasFree=!!free;
   console.log('cost check: free='+free+' cost='+cost+' coins='+coins+' PACK_COSTS='+JSON.stringify(PACK_COSTS)+' selectedPack='+selectedPack);
   document.getElementById('not-enough').style.display='none';
@@ -1936,6 +2082,10 @@ document.addEventListener('DOMContentLoaded', function(){
   document.getElementById('tab-quests').onclick=function(){showPage('quests');};
   var searchInput=document.getElementById('coll-search');
   if(searchInput) searchInput.oninput=function(){searchQuery=this.value.toLowerCase();renderCollection();};
+  var adWatchBtn=document.getElementById('ad-watch-btn');
+  if(adWatchBtn) adWatchBtn.onclick=watchAd;
+  var adSkipBtn=document.getElementById('ad-skip-btn');
+  if(adSkipBtn) adSkipBtn.onclick=closeAdModal;
   var bsb=document.getElementById('bulk-select-btn');
   if(bsb) bsb.onclick=toggleBulkMode;
   var bcb=document.getElementById('bulk-cancel-btn');
