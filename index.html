@@ -408,6 +408,9 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .bulk-sell-info{font-size:13px;color:var(--text2);}
 .bulk-sell-info span{color:var(--accent);font-weight:700;}
 .bulk-sell-btn{padding:8px 20px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:#E24B4A;color:#fff;font-family:'Syne',sans-serif;}
+
+.coll-search{width:100%;padding:8px 12px;border-radius:10px;background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:12px;box-sizing:border-box;}
+.coll-search:focus{border-color:var(--accent);}
 </style>
 </head>
 <body>
@@ -520,6 +523,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
       <button class="fpill fl" data-filter="legendary">Legendary</button>
       <button class="fpill fm" data-filter="mythic">Mythic</button>
     </div>
+    <input type="text" class="coll-search" id="coll-search" placeholder="Search cards...">
     <div class="bulk-bar" id="bulk-bar">
       <button class="bulk-btn" id="bulk-select-all-btn">Select all</button>
       <button class="bulk-btn" id="bulk-deselect-btn">Deselect all</button>
@@ -949,6 +953,7 @@ function getUpgradeStyle(rarity, upgrades){
 // -- BULK SELECT --
 var bulkMode = false;
 var bulkSelected = new Set();
+var searchQuery = '';
 
 function toggleBulkMode(){
   bulkMode = !bulkMode;
@@ -1612,7 +1617,7 @@ function getSorted(){
 function renderCollection(){
   document.getElementById('coll-subtitle').textContent=collection.length+' cards';
   updateCoinDisplay();
-  var cards=getSorted();
+  var cards=getSorted().filter(function(c){return !searchQuery||c.name.toLowerCase().includes(searchQuery)||c.loc.toLowerCase().includes(searchQuery);});
   var container=document.getElementById('coll-container');
   if(!currentUser){container.innerHTML='<div class="empty-state"><div style="font-size:52px">🔒</div><p>Log in to save and view your collection</p></div>';return;}
   if(!cards.length){container.innerHTML='<div class="empty-state"><div style="font-size:52px">🌍</div><p>No cards yet — pull a pack!</p></div>';return;}
@@ -1929,15 +1934,20 @@ document.addEventListener('DOMContentLoaded', function(){
   document.getElementById('tab-collection').onclick=function(){showPage('collection');};
   document.getElementById('tab-battle').onclick=function(){showPage('battle');};
   document.getElementById('tab-quests').onclick=function(){showPage('quests');};
+  var searchInput=document.getElementById('coll-search');
+  if(searchInput) searchInput.oninput=function(){searchQuery=this.value.toLowerCase();renderCollection();};
   var bsb=document.getElementById('bulk-select-btn');
   if(bsb) bsb.onclick=toggleBulkMode;
   var bcb=document.getElementById('bulk-cancel-btn');
   if(bcb) bcb.onclick=toggleBulkMode;
   var bsab=document.getElementById('bulk-select-all-btn');
   if(bsab) bsab.onclick=function(){
-    collection.forEach(function(c){bulkSelected.add(c.name);});
+    document.querySelectorAll('.coll-card').forEach(function(el){
+      var name=decodeURIComponent(el.dataset.name);
+      bulkSelected.add(name);
+      el.classList.add('selected-bulk');
+    });
     updateBulkBar();
-    document.querySelectorAll('.coll-card').forEach(function(el){el.classList.add('selected-bulk');});
   };
   var bdeb=document.getElementById('bulk-deselect-btn');
   if(bdeb) bdeb.onclick=function(){
