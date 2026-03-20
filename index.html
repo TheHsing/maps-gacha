@@ -448,9 +448,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
         <div class="pack-cost pack-cost-coins"><div class="coin-icon"></div>2,000 coins</div>
         <div class="pack-rates">Common <span>10%</span><br>Uncommon <span>15%</span><br>Rare <span>25%</span><br>Epic <span>25%</span><br>Legendary <span>18%</span><br>Mythic <span>7%</span></div>
       </div>
-      <div class="pack-option" data-pack="test" style="border-color:rgba(200,240,96,0.4)">
-        <div style="font-size:40px">🧪</div>
-        <div class="pack-name">Test</div>
+      <div class="pack-name">Test</div>
         <div class="pack-cost pack-cost-free">Free</div>
         <div class="pack-rates">One of <span>each</span><br>rarity tier<br><br><br><br></div>
       </div>
@@ -764,9 +762,9 @@ const sb = {
 const COIN_RATES  = {common:10,uncommon:25,rare:75,epic:200,legendary:500,mythic:1500};
 const SHARD_COSTS = {common:30,uncommon:75,rare:225,epic:600,legendary:1500,mythic:4500};
 const RARITY_ORD  = {common:0,uncommon:1,rare:2,epic:3,legendary:4,mythic:5};
-const PACK_COSTS  = {standard:0,premium:500,elite:2000,test:0};
-const PACK_BTN_CLASS = {standard:'',premium:'premium-btn',elite:'elite-btn',test:''};
-const PACK_LABELS = {standard:'Standard Pack',premium:'Premium Pack',elite:'Elite Pack',test:'Test Pack'};
+const PACK_COSTS  = {standard:0,premium:500,elite:2000};
+const PACK_BTN_CLASS = {standard:'',premium:'premium-btn',elite:'elite-btn'};
+const PACK_LABELS = {standard:'Standard Pack',premium:'Premium Pack',elite:'Elite Pack'};
 const DIFF_SETTINGS = {
   easy:      {multiplier:0.7, winCoins:100, loseCoins:20,  exclusiveChance:0},
   hard:      {multiplier:1.0, winCoins:300, loseCoins:50,  exclusiveChance:0.15},
@@ -1041,19 +1039,7 @@ async function startPull(free){
   document.getElementById('pull-btn').disabled=true;
   document.getElementById('gacha-hint').textContent='Fetching places...';
   var cards;
-  if(selectedPack==='test'){
-    var testCards=[
-      {name:"Test Common",    loc:"Test City",  emoji:"📍",rarity:"common",    rating:4.0,reviews:50,   atk:1200,def:3200,photoUrl:null},
-      {name:"Test Uncommon",  loc:"Test City",  emoji:"📍",rarity:"uncommon",  rating:4.4,reviews:200,  atk:3500,def:5800,photoUrl:null},
-      {name:"Test Rare",      loc:"Test City",  emoji:"📍",rarity:"rare",      rating:4.5,reviews:2000, atk:5800,def:7200,photoUrl:null},
-      {name:"Test Epic",      loc:"Test City",  emoji:"📍",rarity:"epic",      rating:4.7,reviews:15000,atk:7400,def:8500,photoUrl:null},
-      {name:"Test Legendary", loc:"Test City",  emoji:"📍",rarity:"legendary", rating:4.8,reviews:80000,atk:8800,def:9200,photoUrl:null},
-      {name:"Test Mythic",    loc:"Test City",  emoji:"📍",rarity:"mythic",    rating:4.9,reviews:200000,atk:9500,def:9800,photoUrl:null}
-    ];
-    for(var i=testCards.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=testCards[i];testCards[i]=testCards[j];testCards[j]=tmp;}
-    cards=testCards;
-  } else {
-    try{
+  try{
       var res=await fetch(API_URL+'?pack='+selectedPack);
       if(!res.ok) throw new Error('HTTP '+res.status);
       var data=await res.json();
@@ -1061,7 +1047,6 @@ async function startPull(free){
     } catch(e){
       document.getElementById('gacha-hint').textContent='Error: '+e.message;
       pulling=false;document.getElementById('pull-btn').disabled=false;return;
-    }
   }
   coins-=cost;updateCoinDisplay();if(currentUser) saveCoins();
   document.getElementById('gacha-hint').textContent='';
