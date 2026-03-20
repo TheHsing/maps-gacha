@@ -196,6 +196,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .coll-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;}
 .coll-card{background:var(--bg2);border:2px solid transparent;border-radius:14px;overflow:hidden;cursor:pointer;transition:transform 0.15s,border-color 0.15s,box-shadow 0.15s;position:relative;}
 .coll-card:hover{transform:translateY(-3px);}
+.cc-upg-bar{padding:2px 0;font-size:9px;font-weight:800;text-align:center;color:#EF9F27;background:rgba(239,159,39,0.08);border-bottom:1px solid rgba(239,159,39,0.15);letter-spacing:0.05em;}
 .cc-rarity{padding:5px 0;font-size:9px;font-weight:700;letter-spacing:0.1em;text-align:center;font-family:'Syne',sans-serif;}
 .cc-img{width:100%;height:100px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:40px;overflow:hidden;}
 .cc-img img{width:100%;height:100%;object-fit:cover;}
@@ -492,6 +493,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
         <span class="coll-subtitle" id="coll-subtitle">0 cards</span>
       </div>
       <div class="coll-controls">
+        <button class="bulk-btn" id="bulk-select-btn">Select</button>
         <select class="ctrl-select" id="sort-sel">
           <option value="rarity">Sort: rarity</option>
           <option value="atk">Sort: ATK</option>
@@ -1619,7 +1621,7 @@ function renderCollection(){
       var imgHtml=c.photoUrl?'<div class="cc-img"><img src="'+c.photoUrl+'" alt="" onerror="this.style.display=\'none\'"></div>':'<div class="cc-img">'+c.emoji+'</div>';
       var us=getUpgradeStyle(c.rarity,c.upgrades||0);
       return '<div class="coll-card" data-name="'+encodeURIComponent(c.name)+'">'+ 
-        '<div class="cc-rarity rb-'+c.rarity+'">'+c.rarity.toUpperCase()+(us.label?' <span style="font-size:9px;font-weight:800;opacity:0.9;">'+us.label+'</span>':'')+'</div>'+imgHtml+
+        '<div class="cc-rarity rb-'+c.rarity+'">'+c.rarity.toUpperCase()+'</div>'+(us.label?'<div class="cc-upg-bar">'+us.label+'</div>':'')+imgHtml+
         '<div class="cc-info"><div class="cc-name">'+c.name+'</div><div class="cc-stats"><div class="cc-stat cs-atk">ATK '+c.atk.toLocaleString()+'</div><div class="cc-stat cs-def">DEF '+c.def.toLocaleString()+'</div></div></div>'+
         '<div class="cc-footer"><span class="cc-date">'+c.date+'</span><span class="cc-copies">'+c.copies+' copy'+(c.copies!==1?'s':'')+'</span></div></div>';
     }).join('');
