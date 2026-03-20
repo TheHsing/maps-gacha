@@ -194,8 +194,8 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .fpill.active.fl{background:var(--legendary-bg);border-color:var(--legendary);color:var(--legendary-light);}
 .fpill.active.fm{background:var(--mythic-bg);border-color:var(--mythic);color:var(--mythic-light);}
 .coll-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;}
-.coll-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform 0.15s,border-color 0.15s;position:relative;}
-.coll-card:hover{transform:translateY(-3px);border-color:var(--border2);}
+.coll-card{background:var(--bg2);border:2px solid transparent;border-radius:14px;overflow:hidden;cursor:pointer;transition:transform 0.15s,border-color 0.15s,box-shadow 0.15s;position:relative;}
+.coll-card:hover{transform:translateY(-3px);}
 .cc-rarity{padding:5px 0;font-size:9px;font-weight:700;letter-spacing:0.1em;text-align:center;font-family:'Syne',sans-serif;}
 .cc-img{width:100%;height:100px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:40px;overflow:hidden;}
 .cc-img img{width:100%;height:100%;object-fit:cover;}
