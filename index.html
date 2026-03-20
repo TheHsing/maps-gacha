@@ -415,7 +415,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
   </div>
 </nav>
 
-<div class="page active" id="page-gacha">
+<div class="page active" id="page-gacha" class="page active">
   <div class="gacha-page">
     <div>
       <div class="gacha-title">Find your next<br><span>destination.</span></div>
@@ -464,7 +464,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
   </div>
 </div>
 
-<div class="page" id="page-collection">
+<div class="page" id="page-collection" class="page">
   <div class="coll-page">
     <div id="coll-guest-banner-wrap"></div>
     <div class="coll-top">
@@ -515,7 +515,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
     </div>
   </div>
 </div>
-<div id="page-battle">
+<div id="page-battle" class="page">
   <div class="battle-page">
     <div class="battle-header">
       <div class="battle-title">Battle<span>.</span></div>
@@ -1665,6 +1665,7 @@ document.addEventListener('DOMContentLoaded', function(){
   document.getElementById('tab-gacha').onclick=function(){showPage('gacha');};
   document.getElementById('tab-collection').onclick=function(){showPage('collection');};
   document.getElementById('tab-battle').onclick=function(){showPage('battle');};
+  document.getElementById('tab-quests').onclick=function(){showPage('quests');};
 
   // Auth buttons — these are static in HTML so always exist
   document.getElementById('btn-login').onclick=function(){openAuthModal('login');};
