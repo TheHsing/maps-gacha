@@ -425,6 +425,22 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .ad-modal-btn{width:100%;padding:12px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;border:none;background:var(--accent);color:#0e0e12;font-family:'Syne',sans-serif;margin-bottom:8px;}
 .ad-modal-skip{font-size:12px;color:var(--text3);cursor:pointer;background:none;border:none;padding:4px;}
 .ad-modal-skip:hover{color:var(--text2);}
+
+.coins-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:600;display:flex;align-items:center;justify-content:center;}
+.coins-modal{background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:28px 24px;max-width:320px;width:90%;text-align:center;}
+.coins-modal-title{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--text);margin-bottom:6px;}
+.coins-modal-sub{font-size:13px;color:var(--text2);margin-bottom:20px;}
+.coins-option{background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px 16px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;gap:14px;text-align:left;width:100%;transition:border-color 0.15s;}
+.coins-option:hover{border-color:var(--accent);}
+.coins-option-icon{width:36px;height:36px;border-radius:10px;background:var(--bg2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;}
+.coins-option-info{flex:1;}
+.coins-option-title{font-size:13px;font-weight:700;color:var(--text);font-family:'Syne',sans-serif;}
+.coins-option-desc{font-size:11px;color:var(--text2);margin-top:2px;}
+.coins-option-reward{font-size:13px;font-weight:700;color:var(--accent);font-family:'Syne',sans-serif;flex-shrink:0;}
+.coins-modal-close{font-size:12px;color:var(--text3);cursor:pointer;background:none;border:none;margin-top:4px;padding:4px;}
+.coins-modal-close:hover{color:var(--text2);}
+.coin-plus-btn{background:none;border:none;cursor:pointer;color:var(--accent);font-size:16px;font-weight:700;padding:0 2px;line-height:1;opacity:0.8;transition:opacity 0.15s;}
+.coin-plus-btn:hover{opacity:1;}
 </style>
 </head>
 <body>
@@ -444,7 +460,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>
       Ko-fi
     </a>
-    <div class="coin-display" id="coin-display" style="display:none"><div class="coin-icon"></div><span id="nav-coins">0</span></div>
+    <div class="coin-display" id="coin-display" style="display:none"><div class="coin-icon"></div><span id="nav-coins">0</span><button class="coin-plus-btn" id="coin-plus-btn">+</button></div>
     <span class="user-display" id="user-display" style="display:none"></span>
     <button class="auth-btn" id="btn-login">Log in</button>
     <button class="auth-btn primary" id="btn-signup">Sign up</button>
@@ -617,6 +633,29 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 
 <div class="modal-backdrop" id="modal-backdrop"><div class="modal" id="modal-inner"></div></div>
 <div class="modal-backdrop" id="auth-backdrop"><div class="modal" id="auth-modal-inner"></div></div>
+<div class="coins-modal-backdrop" id="coins-modal" style="display:none;">
+  <div class="coins-modal">
+    <div class="coins-modal-title">Get coins</div>
+    <div class="coins-modal-sub">Earn more coins to pull Premium and Elite packs.</div>
+    <button class="coins-option" id="coins-ad-btn">
+      <div class="coins-option-icon">📺</div>
+      <div class="coins-option-info">
+        <div class="coins-option-title">Watch an ad</div>
+        <div class="coins-option-desc">Watch a short video ad</div>
+      </div>
+      <div class="coins-option-reward">+100</div>
+    </button>
+    <button class="coins-option" onclick="window.open('https://ko-fi.com/thehsing','_blank')">
+      <div class="coins-option-icon">☕</div>
+      <div class="coins-option-info">
+        <div class="coins-option-title">Support on Ko-fi</div>
+        <div class="coins-option-desc">Buy me a coffee</div>
+      </div>
+      <div class="coins-option-reward" style="color:var(--text3);">♥</div>
+    </button>
+    <button class="coins-modal-close" id="coins-modal-close">Close</button>
+  </div>
+</div>
 <div class="ad-modal-backdrop" id="ad-modal" style="display:none;">
   <div class="ad-modal">
     <div class="ad-modal-title">Out of pulls!</div>
@@ -1062,6 +1101,18 @@ function updatePullBtn(){
     btn.disabled = false;
     btn.style.opacity = '1';
   }
+}
+
+
+function openCoinsModal(){ var m=document.getElementById('coins-modal');if(m)m.style.display='flex'; }
+function closeCoinsModal(){ var m=document.getElementById('coins-modal');if(m)m.style.display='none'; }
+function watchAdForCoins(){
+  closeCoinsModal();
+  // Placeholder — real rewarded ad goes here once AdSense approved
+  coins+=100;
+  updateCoinDisplay();
+  if(currentUser) saveCoins();
+  showToast('+100 coins!');
 }
 
 function openAdModal(){
@@ -2082,6 +2133,12 @@ document.addEventListener('DOMContentLoaded', function(){
   document.getElementById('tab-quests').onclick=function(){showPage('quests');};
   var searchInput=document.getElementById('coll-search');
   if(searchInput) searchInput.oninput=function(){searchQuery=this.value.toLowerCase();renderCollection();};
+  var coinPlusBtn=document.getElementById('coin-plus-btn');
+  if(coinPlusBtn) coinPlusBtn.onclick=openCoinsModal;
+  var coinsAdBtn=document.getElementById('coins-ad-btn');
+  if(coinsAdBtn) coinsAdBtn.onclick=watchAdForCoins;
+  var coinsCloseBtn=document.getElementById('coins-modal-close');
+  if(coinsCloseBtn) coinsCloseBtn.onclick=closeCoinsModal;
   var adWatchBtn=document.getElementById('ad-watch-btn');
   if(adWatchBtn) adWatchBtn.onclick=watchAd;
   var adSkipBtn=document.getElementById('ad-skip-btn');
