@@ -796,20 +796,29 @@ const MILESTONE_CHAINS = [
   {
     id:'chain_battle', icon:'🏆',
     quests:[
-      {id:'m_battle1',  title:'First victory', desc:'Win your first battle', target:1,  reward:150, stat:'totalBattleWins'},
-      {id:'m_battle5',  title:'Veteran',       desc:'Win 5 battles',         target:5,  reward:250, stat:'totalBattleWins'},
-      {id:'m_battle10', title:'Champion',      desc:'Win 10 battles',        target:10, reward:400, stat:'totalBattleWins'},
-      {id:'m_battle25', title:'Warlord',       desc:'Win 25 battles',        target:25, reward:700, stat:'totalBattleWins'},
-      {id:'m_battle50', title:'Legend',        desc:'Win 50 battles',        target:50, reward:1200,stat:'totalBattleWins'},
+      {id:'m_battle1',  title:'First victory', desc:'Win your first battle',   target:1,  reward:150,  stat:'totalBattleWins'},
+      {id:'m_battle5',  title:'Veteran',       desc:'Win 5 battles',           target:5,  reward:250,  stat:'totalBattleWins'},
+      {id:'m_battle10', title:'Champion',      desc:'Win 10 battles',          target:10, reward:400,  stat:'totalBattleWins'},
+      {id:'m_battle25', title:'Warlord',       desc:'Win 25 battles',          target:25, reward:700,  stat:'totalBattleWins'},
+      {id:'m_battle50', title:'Legend',        desc:'Win 50 battles',          target:50, reward:1200, stat:'totalBattleWins'},
+    ]
+  },
+  {
+    id:'chain_hard', icon:'⚔️',
+    quests:[
+      {id:'m_hard1',  title:'Hard mode',       desc:'Win a battle on Hard difficulty',       target:1,  reward:200, stat:'hardWins'},
+      {id:'m_hard5',  title:'Hard mode II',    desc:'Win 5 battles on Hard difficulty',      target:5,  reward:400, stat:'hardWins'},
+      {id:'m_legend1',title:'Legendary mode',  desc:'Win a battle on Legendary difficulty',  target:1,  reward:400, stat:'legendaryWins'},
+      {id:'m_legend5',title:'Legendary mode II',desc:'Win 5 battles on Legendary difficulty',target:5,  reward:800, stat:'legendaryWins'},
     ]
   },
   {
     id:'chain_legendary', icon:'👑',
     quests:[
-      {id:'m_leg1',  title:'Legendary pull',    desc:'Pull your first Legendary', target:1,  reward:200, stat:'totalLegendary'},
-      {id:'m_leg5',  title:'Legendary hunter',  desc:'Pull 5 Legendaries',        target:5,  reward:400, stat:'totalLegendary'},
-      {id:'m_leg10', title:'Legendary master',  desc:'Pull 10 Legendaries',       target:10, reward:700, stat:'totalLegendary'},
-      {id:'m_leg25', title:'Legendary hoarder', desc:'Pull 25 Legendaries',       target:25, reward:1200,stat:'totalLegendary'},
+      {id:'m_leg1',  title:'Legendary pull',    desc:'Pull your first Legendary', target:1,  reward:200,  stat:'totalLegendary'},
+      {id:'m_leg5',  title:'Legendary hunter',  desc:'Pull 5 Legendaries',        target:5,  reward:400,  stat:'totalLegendary'},
+      {id:'m_leg10', title:'Legendary master',  desc:'Pull 10 Legendaries',       target:10, reward:700,  stat:'totalLegendary'},
+      {id:'m_leg25', title:'Legendary hoarder', desc:'Pull 25 Legendaries',       target:25, reward:1200, stat:'totalLegendary'},
     ]
   },
   {
@@ -818,6 +827,70 @@ const MILESTONE_CHAINS = [
       {id:'m_myth1',  title:'Mythic pull',    desc:'Pull your first Mythic', target:1,  reward:500,  stat:'totalMythic'},
       {id:'m_myth3',  title:'Mythic hunter',  desc:'Pull 3 Mythics',         target:3,  reward:900,  stat:'totalMythic'},
       {id:'m_myth10', title:'Mythic master',  desc:'Pull 10 Mythics',        target:10, reward:2000, stat:'totalMythic'},
+    ]
+  },
+  {
+    id:'chain_packs', icon:'🎴',
+    quests:[
+      {id:'m_packs10',  title:'Pack opener',    desc:'Pull 10 packs total',  target:10,  reward:100, stat:'totalPulls'},
+      {id:'m_packs50',  title:'Pack addict',    desc:'Pull 50 packs total',  target:50,  reward:300, stat:'totalPulls'},
+      {id:'m_packs100', title:'Pack master',    desc:'Pull 100 packs total', target:100, reward:600, stat:'totalPulls'},
+      {id:'m_packs500', title:'Pack legend',    desc:'Pull 500 packs total', target:500, reward:2000,stat:'totalPulls'},
+    ]
+  },
+  {
+    id:'chain_elite', icon:'👑',
+    quests:[
+      {id:'m_elite1',  title:'Elite opener',   desc:'Pull 1 Elite pack',   target:1,  reward:100, stat:'totalElitePulls'},
+      {id:'m_elite5',  title:'Elite regular',  desc:'Pull 5 Elite packs',  target:5,  reward:300, stat:'totalElitePulls'},
+      {id:'m_elite10', title:'Elite master',   desc:'Pull 10 Elite packs', target:10, reward:600, stat:'totalElitePulls'},
+    ]
+  },
+  {
+    id:'chain_coins', icon:'🧭',
+    quests:[
+      {id:'m_coins1k',  title:'Coin earner',   desc:'Earn 1,000 coins total',  target:1000,  reward:100, stat:'totalCoinsEarned'},
+      {id:'m_coins5k',  title:'Coin collector',desc:'Earn 5,000 coins total',  target:5000,  reward:300, stat:'totalCoinsEarned'},
+      {id:'m_coins25k', title:'Coin hoarder',  desc:'Earn 25,000 coins total', target:25000, reward:1000,stat:'totalCoinsEarned'},
+    ]
+  },
+  {
+    id:'chain_spend', icon:'💸',
+    quests:[
+      {id:'m_spend1',  title:'Big spender',    desc:'Spend 500 coins on a pack',   target:500,   reward:50,  stat:'totalCoinsSpent'},
+      {id:'m_spend2',  title:'Spender II',     desc:'Spend 5,000 coins total',     target:5000,  reward:200, stat:'totalCoinsSpent'},
+      {id:'m_spend3',  title:'Whale',          desc:'Spend 25,000 coins total',    target:25000, reward:800, stat:'totalCoinsSpent'},
+    ]
+  },
+  {
+    id:'chain_upgrade', icon:'⬆️',
+    quests:[
+      {id:'m_upg1',  title:'Upgrader',      desc:'Upgrade a card 5 times',   target:5,  reward:100, stat:'totalUpgrades'},
+      {id:'m_upg2',  title:'Upgrader II',   desc:'Upgrade a card 25 times',  target:25, reward:300, stat:'totalUpgrades'},
+      {id:'m_upg3',  title:'Upgrader III',  desc:'Upgrade a card 100 times', target:100,reward:800, stat:'totalUpgrades'},
+    ]
+  },
+  {
+    id:'chain_sell', icon:'💰',
+    quests:[
+      {id:'m_sell1',  title:'Seller',      desc:'Sell 10 cards',   target:10,  reward:75,  stat:'totalSells'},
+      {id:'m_sell2',  title:'Seller II',   desc:'Sell 50 cards',   target:50,  reward:200, stat:'totalSells'},
+      {id:'m_sell3',  title:'Seller III',  desc:'Sell 200 cards',  target:200, reward:600, stat:'totalSells'},
+    ]
+  },
+  {
+    id:'chain_fivestar', icon:'⭐',
+    quests:[
+      {id:'m_5star1',  title:'5-star finder',  desc:'Collect a card with a 5.0 rating',    target:1,  reward:150, stat:'totalFiveStars'},
+      {id:'m_5star5',  title:'5-star hunter',  desc:'Collect 5 cards with a 5.0 rating',   target:5,  reward:400, stat:'totalFiveStars'},
+      {id:'m_5star10', title:'5-star master',  desc:'Collect 10 cards with a 5.0 rating',  target:10, reward:800, stat:'totalFiveStars'},
+    ]
+  },
+  {
+    id:'chain_popular', icon:'🌟',
+    quests:[
+      {id:'m_pop1',  title:'Trending',      desc:'Collect a card with 100k+ reviews',  target:1,  reward:200, stat:'totalPopular'},
+      {id:'m_pop5',  title:'Viral',         desc:'Collect 5 cards with 100k+ reviews', target:5,  reward:500, stat:'totalPopular'},
     ]
   },
 ];
@@ -835,7 +908,12 @@ function getActiveChainQuest(chain){
 var questStats = {
   dailyPulls:0, dailyRarePulls:0, dailyBattleWins:0,
   dailyQuestsClaimed:{}, dailyQuestsReset:null,
-  totalCards:0, totalLegendary:0, totalMythic:0, totalBattleWins:0,
+  totalCards:0, totalLegendary:0, totalMythic:0,
+  totalBattleWins:0, hardWins:0, legendaryWins:0,
+  totalPulls:0, totalElitePulls:0,
+  totalCoinsEarned:0, totalCoinsSpent:0,
+  totalUpgrades:0, totalSells:0,
+  totalFiveStars:0, totalPopular:0,
   milestoneClaimed:{}
 };
 
@@ -934,6 +1012,7 @@ async function claimQuest(id,type){
     questStats.milestoneClaimed[id]=true;
   }
   coins+=q.reward;
+  questStats.totalCoinsEarned=(questStats.totalCoinsEarned||0)+q.reward;
   updateCoinDisplay();
   await saveCoins();
   await saveQuestStats();
@@ -941,13 +1020,17 @@ async function claimQuest(id,type){
   showToast('+'+q.reward+' coins!');
 }
 
-function trackQuestPull(cards){
+function trackQuestPull(cards, packType){
   questStats.dailyPulls=(questStats.dailyPulls||0)+1;
+  questStats.totalPulls=(questStats.totalPulls||0)+1;
+  if(packType==='elite') questStats.totalElitePulls=(questStats.totalElitePulls||0)+1;
   var hasRarePlus=cards.some(function(c){return ['rare','epic','legendary','mythic'].includes(c.rarity);});
   if(hasRarePlus) questStats.dailyRarePulls=(questStats.dailyRarePulls||0)+1;
   cards.forEach(function(c){
     if(c.rarity==='legendary') questStats.totalLegendary=(questStats.totalLegendary||0)+1;
     if(c.rarity==='mythic') questStats.totalMythic=(questStats.totalMythic||0)+1;
+    if(c.rating>=5.0) questStats.totalFiveStars=(questStats.totalFiveStars||0)+1;
+    if((c.reviews||0)>=100000) questStats.totalPopular=(questStats.totalPopular||0)+1;
   });
   questStats.totalCards=collection.length;
   if(!questStats.dailyQuestsReset) questStats.dailyQuestsReset=Date.now();
@@ -955,9 +1038,11 @@ function trackQuestPull(cards){
   renderQuests();
 }
 
-function trackQuestBattleWin(){
+function trackQuestBattleWin(difficulty){
   questStats.dailyBattleWins=(questStats.dailyBattleWins||0)+1;
   questStats.totalBattleWins=(questStats.totalBattleWins||0)+1;
+  if(difficulty==='hard') questStats.hardWins=(questStats.hardWins||0)+1;
+  if(difficulty==='legendary') questStats.legendaryWins=(questStats.legendaryWins||0)+1;
   saveQuestStats();
   renderQuests();
 }
@@ -1137,6 +1222,7 @@ async function deleteCard(cardName){
 async function saveCoins(){
   if(!currentUser) return;
   console.log('saveCoins:', coins, 'premiumLeft:', dailyPremiumClaimsLeft, 'token:', sb._token ? 'present' : 'MISSING');
+  // tracked externally
   var result = await sb.from('user_stats').upsert({user_id:currentUser.id,coins:coins,
     daily_premium_claimed:dailyPremiumClaimed?new Date(dailyPremiumClaimed).toISOString():null,
     daily_elite_claimed:dailyEliteClaimed?new Date(dailyEliteClaimed).toISOString():null,
@@ -1260,7 +1346,7 @@ function showCards(cards){
   row.style.display='flex';row.innerHTML='';
   document.getElementById('reveal-all-btn').style.visibility='visible';
   document.getElementById('pull-again-btn').style.visibility='visible';
-  trackQuestPull(cards);
+  trackQuestPull(cards, selectedPack);
   cards.forEach(function(card,i){
     var rot=(Math.random()*6-3).toFixed(1);
     var slot=document.createElement('div');
@@ -1699,7 +1785,7 @@ async function startBattle(){
   document.getElementById('result-title').className='result-title '+(won?'win':'lose');
   document.getElementById('result-rewards').innerHTML='+'+coinsEarned.toLocaleString()+' coins'+(exclusiveCard?'<br>Unlocked: '+exclusiveCard.name:'');
   addLog((won?'Victory! ':'Defeated. ')+('+'+coinsEarned+' coins'),won?'result-win':'result-lose');
-  if(won) trackQuestBattleWin();
+  if(won) trackQuestBattleWin(currentDifficulty);
   document.getElementById('battle-result').style.display='block';
   battleRunning=false;
 }
