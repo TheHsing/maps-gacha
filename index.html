@@ -832,7 +832,7 @@ function renderGuestBanners(){
   if(bb) bb.onclick=function(){openAuthModal('signup');};
 }
 
-// ── AUTH ───────────────────────────────────────────────────────────────
+// -- AUTH --
 function openAuthModal(mode){
   var isLogin=mode==='login';
   document.getElementById('auth-modal-inner').innerHTML=
@@ -881,7 +881,7 @@ async function signOut(){
   showToast('Signed out');
 }
 
-// ── SUPABASE DB ────────────────────────────────────────────────────────
+// -- SUPABASE DB --
 async function loadCollection(){
   if(!currentUser) return;
   console.log('loadCollection called for user:', currentUser.id);
@@ -933,7 +933,7 @@ async function saveCoins(){
   console.log('saveCoins result:', result.error ? 'ERROR: '+JSON.stringify(result.error) : 'OK');
 }
 
-// ── DAILY REWARDS ──────────────────────────────────────────────────────
+// -- DAILY REWARDS --
 function formatCountdown(ms){
   var s=Math.floor(ms/1000);
   var h=Math.floor(s/3600);var m=Math.floor((s%3600)/60);var sec=s%60;
@@ -1006,7 +1006,7 @@ async function claimEliteDaily(){
   selectPack('elite');startPull(true).then(function(){selectPack('standard');});
 }
 
-// ── PACK & PULL ────────────────────────────────────────────────────────
+// -- PACK & PULL --
 function selectPack(pack){
   selectedPack=pack;
   document.querySelectorAll('.pack-option').forEach(function(el){el.classList.remove('selected');});
@@ -1183,7 +1183,7 @@ function resetPull(){
   startPull(lastPullWasFree);
 }
 
-// ── COLLECTION ─────────────────────────────────────────────────────────
+// -- COLLECTION --
 function setCollView(v){
   collView=v;
   document.getElementById('vt-grid').classList.toggle('active',v==='grid');
@@ -1239,7 +1239,7 @@ function renderCollection(){
   }
 }
 
-// ── CARD MODAL ─────────────────────────────────────────────────────────
+// -- CARD MODAL --
 function openModal(name){
   var card=collection.find(function(c){return c.name===name;});
   if(!card) return;
@@ -1318,7 +1318,7 @@ function buyShards(name,qty){
   updateCoinDisplay();renderCollection();openModal(name);
 }
 
-// ── BATTLE ─────────────────────────────────────────────────────────────
+// -- BATTLE --
 function renderTeamSlots(){
   var count=battleTeam.filter(function(c){return c!==null;}).length;
   var countEl=document.getElementById('team-count');if(countEl) countEl.textContent=count+'/3';
@@ -1499,7 +1499,7 @@ function resetBattle(){
   renderTeamSlots();
 }
 
-// ── INIT ───────────────────────────────────────────────────────────────
+// -- INIT --
 document.addEventListener('DOMContentLoaded', function(){
   // Nav tabs
   document.getElementById('tab-gacha').onclick=function(){showPage('gacha');};
@@ -1579,4 +1579,10 @@ document.addEventListener('DOMContentLoaded', function(){
       hideLoading();
     } else if(!session){
       updateNavForUser(null);
-   
+      hideLoading();
+    }
+  });
+});
+</script>
+</body>
+</html> 
