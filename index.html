@@ -364,6 +364,9 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .empty-state p{font-size:14px;margin-top:8px;}
 .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:10px 20px;font-size:13px;color:var(--text);z-index:300;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);white-space:nowrap;}
 .toast.show{transform:translateX(-50%) translateY(0);}
+.disclaimer-footer{text-align:center;padding:1.5rem 1rem;border-top:1px solid var(--border);position:relative;z-index:10;background:var(--bg);font-size:11px;color:var(--text3);line-height:2;}
+.disclaimer-footer a{color:var(--text3);text-decoration:none;transition:color 0.15s;}
+.disclaimer-footer a:hover{color:var(--text2);}
 .loading-overlay{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:500;font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--text2);}
 .kofi-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;background:transparent;border:1px solid var(--border);font-size:11px;color:var(--text2);cursor:pointer;text-decoration:none;transition:all 0.15s;font-family:'DM Sans',sans-serif;}
 .kofi-btn:hover{border-color:var(--border2);color:var(--text);}
@@ -388,6 +391,10 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
     <button class="nav-tab" id="tab-battle">Battle</button>
   </div>
   <div class="nav-right" id="nav-right">
+    <a href="https://ko-fi.com/thehsing" target="_blank" class="kofi-btn" style="flex-shrink:0">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>
+      Ko-fi
+    </a>
     <div class="coin-display" id="coin-display" style="display:none"><div class="coin-icon"></div><span id="nav-coins">0</span></div>
     <span class="user-display" id="user-display" style="display:none"></span>
     <button class="auth-btn" id="btn-login">Log in</button>
@@ -546,12 +553,11 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 <div class="modal-backdrop" id="modal-backdrop"><div class="modal" id="modal-inner"></div></div>
 <div class="modal-backdrop" id="auth-backdrop"><div class="modal" id="auth-modal-inner"></div></div>
 <div class="toast" id="toast"></div>
-<footer class="site-footer">
-  <a href="https://ko-fi.com/thehsing" target="_blank" class="kofi-btn">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
-    Support on Ko-fi
-  </a>
+<footer class="disclaimer-footer">
+  This service is unofficial and not affiliated with Google Maps or any location data providers.<br>
+  <a href="/privacy.html">Privacy Policy</a> · <a href="/terms.html">Terms of Service</a> · <a href="mailto:christopherh16@gmail.com">Contact</a>
 </footer>
+
 
 <script>
 const SUPABASE_URL = 'https://xaazwommyeepwoencncb.supabase.co';
