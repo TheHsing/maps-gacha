@@ -388,6 +388,25 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
 .quest-claim-btn{padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;border:none;font-family:'Syne',sans-serif;background:var(--accent);color:#0e0e12;transition:all 0.15s;}
 .quest-claim-btn:disabled{background:var(--bg2);color:var(--text3);cursor:default;border:1px solid var(--border);}
 .quest-claimed-badge{font-size:10px;color:var(--text3);font-family:'Syne',sans-serif;}
+
+.bulk-bar{display:none;align-items:center;gap:10px;padding:10px 0;flex-wrap:wrap;}
+.bulk-bar.active{display:flex;}
+.bulk-btn{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-family:'Syne',sans-serif;transition:all 0.15s;}
+.bulk-btn:hover{border-color:var(--accent);color:var(--accent);}
+.bulk-btn.danger{border-color:rgba(226,75,74,0.5);color:#F09595;}
+.bulk-btn.danger:hover{background:rgba(226,75,74,0.1);}
+.bulk-count{font-size:12px;color:var(--text2);margin-left:auto;}
+.coll-card.bulk-mode{cursor:pointer;}
+.coll-card.bulk-mode:hover .bulk-check{opacity:1;}
+.bulk-check{position:absolute;top:8px;left:8px;width:18px;height:18px;border-radius:4px;border:2px solid rgba(255,255,255,0.4);background:rgba(0,0,0,0.5);z-index:4;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.15s;}
+.coll-card.selected-bulk .bulk-check{opacity:1;background:var(--accent);border-color:var(--accent);}
+.coll-card.selected-bulk .bulk-check::after{content:'';width:5px;height:9px;border:2px solid #0e0e12;border-top:none;border-left:none;transform:rotate(45deg);margin-top:-2px;}
+.coll-card.selected-bulk{outline:2px solid var(--accent);}
+.bulk-sell-bar{display:none;position:sticky;bottom:1rem;left:0;right:0;background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:12px 16px;margin-top:1rem;align-items:center;justify-content:space-between;gap:10px;z-index:10;}
+.bulk-sell-bar.active{display:flex;}
+.bulk-sell-info{font-size:13px;color:var(--text2);}
+.bulk-sell-info span{color:var(--accent);font-weight:700;}
+.bulk-sell-btn{padding:8px 20px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;border:none;background:#E24B4A;color:#fff;font-family:'Syne',sans-serif;}
 </style>
 </head>
 <body>
@@ -495,6 +514,12 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
       <button class="fpill fl" data-filter="legendary">Legendary</button>
       <button class="fpill fm" data-filter="mythic">Mythic</button>
     </div>
+    <div class="bulk-bar" id="bulk-bar">
+      <button class="bulk-btn" id="bulk-select-all-btn">Select all</button>
+      <button class="bulk-btn" id="bulk-deselect-btn">Deselect all</button>
+      <button class="bulk-btn danger" id="bulk-cancel-btn">Cancel</button>
+      <span class="bulk-count" id="bulk-count">0 selected</span>
+    </div>
     <div id="coll-container"></div>
   </div>
 </div>
@@ -513,7 +538,11 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
       <div style="font-size:11px;font-weight:600;color:var(--text2);letter-spacing:0.08em;font-family:'Syne',sans-serif;margin-bottom:12px;">MILESTONES</div>
       <div id="milestone-quests-list" style="display:flex;flex-direction:column;gap:10px;"></div>
     </div>
-  </div>
+    <div class="bulk-sell-bar" id="bulk-sell-bar">
+      <div class="bulk-sell-info">Sell <span id="bulk-sell-count">0</span> cards for <span id="bulk-sell-coins">0</span> <div class="coin-icon" style="width:10px;height:10px;display:inline-block;vertical-align:middle;"></div></div>
+      <button class="bulk-sell-btn" id="bulk-sell-btn">Sell selected</button>
+    </div>
+</div>
 </div>
 <div id="page-battle" class="page">
   <div class="battle-page">
@@ -911,6 +940,55 @@ function getUpgradeStyle(rarity, upgrades){
   var cls=upgrades>=10?'upg-max':upgrades>=5?'upg-5':upgrades>=3?'upg-3':'upg-1';
   var label=upgrades>=10?'MAX':'+'+upgrades;
   return {cls:cls, col:c.col, glow:c.glow, label:label};
+}
+
+
+// -- BULK SELECT --
+var bulkMode = false;
+var bulkSelected = new Set();
+
+function toggleBulkMode(){
+  bulkMode = !bulkMode;
+  bulkSelected.clear();
+  document.getElementById('bulk-bar').classList.toggle('active', bulkMode);
+  document.getElementById('bulk-sell-bar').classList.toggle('active', false);
+  document.getElementById('bulk-select-btn').textContent = bulkMode ? 'Done' : 'Select';
+  renderCollection();
+}
+
+function updateBulkBar(){
+  var count = bulkSelected.size;
+  document.getElementById('bulk-count').textContent = count + ' selected';
+  var total = 0;
+  bulkSelected.forEach(function(name){
+    var card = collection.find(function(c){return c.name===name;});
+    if(card) total += COIN_RATES[card.rarity]||0;
+  });
+  document.getElementById('bulk-sell-count').textContent = count;
+  document.getElementById('bulk-sell-coins').textContent = total.toLocaleString();
+  document.getElementById('bulk-sell-bar').classList.toggle('active', count > 0);
+}
+
+function bulkSellSelected(){
+  if(!bulkSelected.size) return;
+  var total = 0;
+  bulkSelected.forEach(function(name){
+    var card = collection.find(function(c){return c.name===name;});
+    if(!card) return;
+    total += COIN_RATES[card.rarity]||0;
+    questStats.totalSells=(questStats.totalSells||0)+1;
+    questStats.totalCoinsEarned=(questStats.totalCoinsEarned||0)+(COIN_RATES[card.rarity]||0);
+    if(card.copies>1){ card.copies--; if(currentUser) saveCard(card); }
+    else { collection=collection.filter(function(c){return c.name!==name;}); if(currentUser) deleteCard(name); }
+  });
+  coins+=total;
+  updateCoinDisplay();
+  if(currentUser) saveCoins();
+  saveQuestStats();
+  showToast('Sold '+bulkSelected.size+' cards for '+total.toLocaleString()+' coins!');
+  bulkSelected.clear();
+  updateBulkBar();
+  renderCollection();
 }
 
 function getActiveChainQuest(chain){
@@ -1540,10 +1618,8 @@ function renderCollection(){
     container.innerHTML=cards.map(function(c){
       var imgHtml=c.photoUrl?'<div class="cc-img"><img src="'+c.photoUrl+'" alt="" onerror="this.style.display=\'none\'"></div>':'<div class="cc-img">'+c.emoji+'</div>';
       var us=getUpgradeStyle(c.rarity,c.upgrades||0);
-      var upgStyle=us.cls?(' style="--upg-col:'+us.col+';--upg-glow:'+us.glow+'"'):'';
-      var upgBadge=us.label?'<div class="upg-badge" style="--upg-col:'+us.col+'">'+us.label+'</div>':'';
-      return '<div class="coll-card '+us.cls+'" data-name="'+encodeURIComponent(c.name)+'"'+upgStyle+'>'+upgBadge+
-        '<div class="cc-rarity rb-'+c.rarity+'">'+c.rarity.toUpperCase()+'</div>'+imgHtml+
+      return '<div class="coll-card" data-name="'+encodeURIComponent(c.name)+'">'+ 
+        '<div class="cc-rarity rb-'+c.rarity+'">'+c.rarity.toUpperCase()+(us.label?' <span style="font-size:9px;font-weight:800;opacity:0.9;">'+us.label+'</span>':'')+'</div>'+imgHtml+
         '<div class="cc-info"><div class="cc-name">'+c.name+'</div><div class="cc-stats"><div class="cc-stat cs-atk">ATK '+c.atk.toLocaleString()+'</div><div class="cc-stat cs-def">DEF '+c.def.toLocaleString()+'</div></div></div>'+
         '<div class="cc-footer"><span class="cc-date">'+c.date+'</span><span class="cc-copies">'+c.copies+' copy'+(c.copies!==1?'s':'')+'</span></div></div>';
     }).join('');
@@ -1836,6 +1912,19 @@ document.addEventListener('DOMContentLoaded', function(){
   document.getElementById('tab-collection').onclick=function(){showPage('collection');};
   document.getElementById('tab-battle').onclick=function(){showPage('battle');};
   document.getElementById('tab-quests').onclick=function(){showPage('quests');};
+  document.getElementById('bulk-select-btn').onclick=toggleBulkMode;
+  document.getElementById('bulk-cancel-btn').onclick=toggleBulkMode;
+  document.getElementById('bulk-select-all-btn').onclick=function(){
+    collection.forEach(function(c){bulkSelected.add(c.name);});
+    updateBulkBar();
+    document.querySelectorAll('.coll-card').forEach(function(el){el.classList.add('selected-bulk');});
+  };
+  document.getElementById('bulk-deselect-btn').onclick=function(){
+    bulkSelected.clear();
+    updateBulkBar();
+    document.querySelectorAll('.coll-card').forEach(function(el){el.classList.remove('selected-bulk');});
+  };
+  document.getElementById('bulk-sell-btn').onclick=bulkSellSelected;
 
   // Auth buttons — these are static in HTML so always exist
   document.getElementById('btn-login').onclick=function(){openAuthModal('login');};
