@@ -400,6 +400,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
     <button class="nav-tab active" id="tab-gacha">Pull</button>
     <button class="nav-tab" id="tab-collection">Collection</button>
     <button class="nav-tab" id="tab-battle">Battle</button>
+    <button class="nav-tab" id="tab-quests" data-page="quests">Quests</button>
   </div>
   <div class="nav-right" id="nav-right">
     <a href="https://ko-fi.com/thehsing" target="_blank" class="kofi-btn" style="flex-shrink:0">
@@ -498,7 +499,23 @@ nav{position:sticky;top:0;z-index:100;background:rgba(14,14,18,0.9);backdrop-fil
   </div>
 </div>
 
-<div class="page" id="page-battle">
+<div class="page" id="page-quests" class="page">
+  <div class="coll-page">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
+      <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:22px;">Quests</h2>
+      <div id="quests-reset-timer" style="font-size:12px;color:var(--text2);"></div>
+    </div>
+    <div style="margin-bottom:2rem;">
+      <div style="font-size:11px;font-weight:600;color:var(--text2);letter-spacing:0.08em;font-family:'Syne',sans-serif;margin-bottom:12px;">DAILY</div>
+      <div id="daily-quests-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:600;color:var(--text2);letter-spacing:0.08em;font-family:'Syne',sans-serif;margin-bottom:12px;">MILESTONES</div>
+      <div id="milestone-quests-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+    </div>
+  </div>
+</div>
+<div id="page-battle">
   <div class="battle-page">
     <div class="battle-header">
       <div class="battle-title">Battle<span>.</span></div>
@@ -757,6 +774,143 @@ const sb = {
 const COIN_RATES  = {common:10,uncommon:25,rare:75,epic:200,legendary:500,mythic:1500};
 const SHARD_COSTS = {common:30,uncommon:75,rare:225,epic:600,legendary:1500,mythic:4500};
 const RARITY_ORD  = {common:0,uncommon:1,rare:2,epic:3,legendary:4,mythic:5};
+
+const DAILY_QUESTS = [
+  {id:'pull3',    icon:'🎴', title:'Pull 3 packs',         desc:'Open any 3 packs today',                target:3, reward:50,  stat:'dailyPulls'},
+  {id:'rareplus', icon:'⭐', title:'Pull a Rare or better', desc:'Get a Rare, Epic, Legendary or Mythic', target:1, reward:30,  stat:'dailyRarePulls'},
+  {id:'battle1',  icon:'⚔️', title:'Win a battle',          desc:'Defeat an opponent in battle',          target:1, reward:75,  stat:'dailyBattleWins'},
+];
+const MILESTONE_QUESTS = [
+  {id:'m_first',    icon:'🌍', title:'First card',       desc:'Pull your very first card',      target:1,   reward:50,  stat:'totalCards'},
+  {id:'m_10',       icon:'📦', title:'Collector I',      desc:'Collect 10 cards',               target:10,  reward:100, stat:'totalCards'},
+  {id:'m_50',       icon:'📦', title:'Collector II',     desc:'Collect 50 cards',               target:50,  reward:300, stat:'totalCards'},
+  {id:'m_100',      icon:'📦', title:'Collector III',    desc:'Collect 100 cards',              target:100, reward:500, stat:'totalCards'},
+  {id:'m_legendary',icon:'👑', title:'Legendary pull',   desc:'Pull your first Legendary card', target:1,   reward:200, stat:'totalLegendary'},
+  {id:'m_mythic',   icon:'🔴', title:'Mythic pull',      desc:'Pull your first Mythic card',    target:1,   reward:500, stat:'totalMythic'},
+  {id:'m_battle1',  icon:'🏆', title:'First victory',    desc:'Win your first battle',          target:1,   reward:150, stat:'totalBattleWins'},
+  {id:'m_battle5',  icon:'🏆', title:'Veteran',          desc:'Win 5 battles',                  target:5,   reward:250, stat:'totalBattleWins'},
+  {id:'m_battle10', icon:'🏆', title:'Champion',         desc:'Win 10 battles',                 target:10,  reward:400, stat:'totalBattleWins'},
+];
+
+var questStats = {
+  dailyPulls:0, dailyRarePulls:0, dailyBattleWins:0,
+  dailyQuestsClaimed:{}, dailyQuestsReset:null,
+  totalCards:0, totalLegendary:0, totalMythic:0, totalBattleWins:0,
+  milestoneClaimed:{}
+};
+
+function saveQuestStats(){
+  if(!currentUser) return;
+  return sb.from('user_stats').upsert({user_id:currentUser.id, quest_stats:JSON.stringify(questStats)},{onConflict:'user_id'});
+}
+
+function loadQuestStats(data){
+  if(data && data.quest_stats){
+    try{
+      var q=JSON.parse(data.quest_stats);
+      var now=Date.now();
+      if(!q.dailyQuestsReset||(now-q.dailyQuestsReset)>=24*60*60*1000){
+        q.dailyPulls=0;q.dailyRarePulls=0;q.dailyBattleWins=0;q.dailyQuestsClaimed={};q.dailyQuestsReset=now;
+      }
+      questStats=Object.assign(questStats,q);
+    }catch(e){}
+  }
+  questStats.totalCards=collection.length;
+  questStats.totalLegendary=collection.filter(function(c){return c.rarity==='legendary';}).length;
+  questStats.totalMythic=collection.filter(function(c){return c.rarity==='mythic';}).length;
+}
+
+function renderQuests(){
+  var dl=document.getElementById('daily-quests-list');
+  var ml=document.getElementById('milestone-quests-list');
+  if(!dl||!ml) return;
+  var timer=document.getElementById('quests-reset-timer');
+  if(timer&&questStats.dailyQuestsReset){
+    var msLeft=24*60*60*1000-(Date.now()-questStats.dailyQuestsReset);
+    if(msLeft>0) timer.textContent='Resets in '+formatCountdown(msLeft);
+  }
+  dl.innerHTML='';
+  DAILY_QUESTS.forEach(function(q){
+    var progress=Math.min(questStats[q.stat]||0,q.target);
+    var done=progress>=q.target;
+    var claimed=questStats.dailyQuestsClaimed&&questStats.dailyQuestsClaimed[q.id];
+    dl.innerHTML+=renderQuestCard(q,progress,done,claimed,'daily');
+  });
+  ml.innerHTML='';
+  MILESTONE_QUESTS.forEach(function(q){
+    var progress=Math.min(questStats[q.stat]||0,q.target);
+    var done=progress>=q.target;
+    var claimed=questStats.milestoneClaimed&&questStats.milestoneClaimed[q.id];
+    ml.innerHTML+=renderQuestCard(q,progress,done,claimed,'milestone');
+  });
+  document.querySelectorAll('.quest-claim-btn[data-quest-id]').forEach(function(btn){
+    btn.onclick=function(){claimQuest(btn.dataset.questId,btn.dataset.questType);};
+  });
+}
+
+function renderQuestCard(q,progress,done,claimed,type){
+  var pct=Math.round((progress/q.target)*100);
+  var cardClass='quest-card'+(done&&!claimed?' completed':claimed?' claimed':'');
+  var btnHtml=claimed
+    ?'<div class="quest-claimed-badge">Claimed</div>'
+    :done
+      ?'<button class="quest-claim-btn" data-quest-id="'+q.id+'" data-quest-type="'+type+'">Claim</button>'
+      :'<button class="quest-claim-btn" disabled>Claim</button>';
+  return '<div class="'+cardClass+'">'+
+    '<div class="quest-icon">'+q.icon+'</div>'+
+    '<div class="quest-info">'+
+      '<div class="quest-title">'+q.title+'</div>'+
+      '<div class="quest-desc">'+q.desc+'</div>'+
+      '<div class="quest-progress-bar"><div class="quest-progress-fill" style="width:'+pct+'%"></div></div>'+
+      '<div style="font-size:10px;color:var(--text3);margin-top:3px;">'+progress+' / '+q.target+'</div>'+
+    '</div>'+
+    '<div class="quest-reward">'+
+      '<div class="quest-coins"><div class="coin-icon" style="width:10px;height:10px;margin-right:2px;"></div>'+q.reward+'</div>'+
+      btnHtml+
+    '</div>'+
+  '</div>';
+}
+
+async function claimQuest(id,type){
+  if(!currentUser) return;
+  var q=[...DAILY_QUESTS,...MILESTONE_QUESTS].find(function(x){return x.id===id;});
+  if(!q) return;
+  if(type==='daily'){
+    if(!questStats.dailyQuestsClaimed) questStats.dailyQuestsClaimed={};
+    questStats.dailyQuestsClaimed[id]=true;
+  } else {
+    if(!questStats.milestoneClaimed) questStats.milestoneClaimed={};
+    questStats.milestoneClaimed[id]=true;
+  }
+  coins+=q.reward;
+  updateCoinDisplay();
+  await saveCoins();
+  await saveQuestStats();
+  renderQuests();
+  showToast('+'+q.reward+' coins!');
+}
+
+function trackQuestPull(cards){
+  questStats.dailyPulls=(questStats.dailyPulls||0)+1;
+  var hasRarePlus=cards.some(function(c){return ['rare','epic','legendary','mythic'].includes(c.rarity);});
+  if(hasRarePlus) questStats.dailyRarePulls=(questStats.dailyRarePulls||0)+1;
+  cards.forEach(function(c){
+    if(c.rarity==='legendary') questStats.totalLegendary=(questStats.totalLegendary||0)+1;
+    if(c.rarity==='mythic') questStats.totalMythic=(questStats.totalMythic||0)+1;
+  });
+  questStats.totalCards=collection.length;
+  if(!questStats.dailyQuestsReset) questStats.dailyQuestsReset=Date.now();
+  saveQuestStats();
+  renderQuests();
+}
+
+function trackQuestBattleWin(){
+  questStats.dailyBattleWins=(questStats.dailyBattleWins||0)+1;
+  questStats.totalBattleWins=(questStats.totalBattleWins||0)+1;
+  saveQuestStats();
+  renderQuests();
+}
+
 const PACK_COSTS  = {standard:0,premium:500,elite:2000};
 const PACK_BTN_CLASS = {standard:'',premium:'premium-btn',elite:'elite-btn'};
 const PACK_LABELS = {standard:'Standard Pack',premium:'Premium Pack',elite:'Elite Pack'};
@@ -800,6 +954,7 @@ function showPage(pageId){
   document.getElementById('tab-'+pageId).classList.add('active');
   if(pageId==='collection') renderCollection();
   if(pageId==='battle') renderTeamSlots();
+  if(pageId==='quests') renderQuests();
 }
 
 function updateNavForUser(user){
@@ -892,11 +1047,12 @@ async function loadCollection(){
   try {
     res1 = await sb.from('collections').select('*').eq('user_id', currentUser.id);
     console.log('collections result:', res1.data ? res1.data.length+' cards' : 'null', 'error:', res1.error);
-  loadQuestStats(res2.data);
+  
   } catch(e) { console.error('collections fetch threw:', e); res1 = {data: []}; }
   try {
     res2 = await sb.from('user_stats').select('*').eq('user_id', currentUser.id).single();
     console.log('user_stats result:', res2.data, 'error:', res2.error);
+  loadQuestStats(res2.data);
   } catch(e) { console.error('user_stats fetch threw:', e); res2 = {data: null}; }
   collection=(res1.data||[]).map(function(r){
     return {name:r.card_name,loc:r.loc,rarity:r.rarity,rating:r.rating,reviews:r.reviews,
