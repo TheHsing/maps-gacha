@@ -1873,7 +1873,8 @@ function openModal(name){
       '<div class="modal-stat"><div class="msl">ATK</div><div class="msv">'+card.atk.toLocaleString()+'</div><div class="ms-bar"><div class="ms-fill" style="width:'+(card.atk/100)+'%;background:#D85A30"></div></div></div>'+
       '<div class="modal-stat"><div class="msl">DEF</div><div class="msv">'+card.def.toLocaleString()+'</div><div class="ms-bar"><div class="ms-fill" style="width:'+(card.def/100)+'%;background:#1D9E75"></div></div></div>'+
     '</div>'+
-    '<div class="modal-meta"><span>First pulled '+card.date+'</span><span>'+card.rating+'★ · '+card.reviews.toLocaleString()+' reviews</span></div>'+
+    '<div class="modal-meta"><span>First pulled '+fmtDate(card.date)+'</span><span>'+card.rating+'★ · '+card.reviews.toLocaleString()+' reviews</span></div>'+
+    '<div style="margin-bottom:12px;"><a href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(card.name+' '+card.loc)+'" target="_blank" class="maps-link">Open in Google Maps ↗</a></div>'+
     '<div class="shard-info">'+
       '<div class="shard-row"><span class="shard-label">Copies</span><span class="shard-val">'+card.copies+'</span></div>'+
       '<div class="shard-row"><span class="shard-label">Sell value (1 copy)</span><span class="shard-val">'+coinVal.toLocaleString()+' coins</span></div>'+
